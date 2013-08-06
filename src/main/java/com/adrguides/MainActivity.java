@@ -1,3 +1,19 @@
+//        Guides is an Android application that reads audioguides using Text-to-Speech services.
+//        Copyright (C) 2013  Adrián Romero Corchado
+//
+//        This program is free software: you can redistribute it and/or modify
+//        it under the terms of the GNU General Public License as published by
+//        the Free Software Foundation, either version 3 of the License, or
+//        (at your option) any later version.
+//
+//        This program is distributed in the hope that it will be useful,
+//        but WITHOUT ANY WARRANTY; without even the implied warranty of
+//        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//        GNU General Public License for more details.
+//
+//        You should have received a copy of the GNU General Public License
+//        along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 package com.adrguides;
 
 import android.content.Intent;
@@ -54,7 +70,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         String myText1 = "¿Has dormido bién?";
         String myText2 = "Eso espero, porque es hora de levantarse.";
 
-        HashMap<String, String> ttsparams = new HashMap();
+        HashMap<String, String> ttsparams = new HashMap<String, String>();
         ttsparams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "end of wakeup message ID");
         tts.speak(myText1, TextToSpeech.QUEUE_FLUSH, ttsparams);
         tts.speak(myText2, TextToSpeech.QUEUE_ADD, ttsparams);
