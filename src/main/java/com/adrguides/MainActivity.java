@@ -40,12 +40,14 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
     }
     @Override
     public void onDestroy() {
         if (tts != null) {
             tts.shutdown();
         }
+        super.onDestroy();
     }
 
     @Override
@@ -80,6 +82,12 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         Intent installIntent = new Intent();
         installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
         startActivity(installIntent);
+    }
+
+    public void onReadActivityClicked(View view) {
+        Intent intent = new Intent(this, ReadGuideActivity.class);
+        // intent.a
+        startActivity(intent);
     }
 
     @Override
