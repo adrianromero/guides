@@ -10,5 +10,4 @@ import com.adrguides.model.Place;
 public interface LocationHandler {
 
     public void showPlace(Place place);
-    public TextToSpeech getTTS();
 }

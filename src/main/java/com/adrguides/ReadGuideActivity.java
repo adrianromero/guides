@@ -9,18 +9,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 import android.speech.tts.TextToSpeech;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
 import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
+import com.adrguides.tts.TextToSpeechSingleton;
 
-import java.util.List;
-import java.util.Locale;
 
-public class ReadGuideActivity extends Activity implements LocationHandler, FragmentManager.OnBackStackChangedListener, TextToSpeech.OnInitListener {
+public class ReadGuideActivity extends Activity implements LocationHandler, FragmentManager.OnBackStackChangedListener {
 
     private static final int TTS_REQUEST_CODE = 332342;
 
@@ -28,7 +26,6 @@ public class ReadGuideActivity extends Activity implements LocationHandler, Frag
     public static final String ARG_PLACE = "ARG_PLACE";
 
     private Guide guide;
-    private TextToSpeech tts;
 
     private static Guide getGuide() {
 
@@ -86,6 +83,7 @@ public class ReadGuideActivity extends Activity implements LocationHandler, Frag
 
         updateBreadCrumbs();
 
+        TextToSpeechSingleton.getInstance().init(getApplicationContext());
 
         Intent checkIntent = new Intent();
         checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
@@ -99,39 +97,23 @@ public class ReadGuideActivity extends Activity implements LocationHandler, Frag
         return true;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == TTS_REQUEST_CODE) {
-            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-                // success, create the TTS instance
-                tts = new TextToSpeech(this, this);
-            } else {
-
-//                // missing data, install it
-//                Intent installIntent = new Intent();
-//                installIntent.setAction(
-//                        TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-//                startActivity(installIntent);
-                tts = null;
-            }
-        }
-    }
-
-    @Override
-    public void onInit(int i) {
-        tts.setLanguage(new Locale("spa", "ESP"));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        if (tts != null) {
-            tts.stop();
-            tts.shutdown();
-            tts = null;
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == TTS_REQUEST_CODE) {
+//            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+//                // success, create the TTS instance
+//                tts = new TextToSpeech(this, this);
+//            } else {
+//
+////                // missing data, install it
+////                Intent installIntent = new Intent();
+////                installIntent.setAction(
+////                        TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+////                startActivity(installIntent);
+//                tts = null;
+//            }
+//        }
+//    }
 
     private void updateBreadCrumbs() {
         getActionBar().setTitle(guide.getTitle());
@@ -141,11 +123,6 @@ public class ReadGuideActivity extends Activity implements LocationHandler, Frag
         } else {
             getActionBar().setSubtitle(getFragmentManager().getBackStackEntryAt(entries - 1).getBreadCrumbTitle());
         }
-    }
-
-    public void onTestClicked(View view) {
-
-//        showLocation();
     }
 
     @Override
@@ -161,18 +138,16 @@ public class ReadGuideActivity extends Activity implements LocationHandler, Frag
 
         ft.add(R.id.guiderootview, locationfragment, LocationFragment.TAG);
         ft.addToBackStack(null);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        // ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+
         ft.setBreadCrumbTitle(place.getTitle());
         ft.commit();
     }
 
-    @Override
-    public TextToSpeech getTTS() {
-        return tts;
-    }
 
     @Override
     public void onBackStackChanged() {
         updateBreadCrumbs();
+        TextToSpeechSingleton.getInstance().getTTS().stop();
     }
 }

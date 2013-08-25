@@ -45,5 +45,21 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"/>
 
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PLAY"
+            android:id="@+id/btnPlay"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"/>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Button"
+            android:id="@+id/btnStop"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/btnPlay"/>
+
 
 </RelativeLayout>
