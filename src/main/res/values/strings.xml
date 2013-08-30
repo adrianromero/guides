@@ -8,4 +8,10 @@
     <string name="btn_install">Install TTS Data</string>
     <string name="title_activity_read_guide">Read Guide Activity</string>
 
+    <string name="action_play">Play</string>
+    <string name="action_pause">Pause</string>
+    <string name="action_previous">Previous</string>
+    <string name="action_next">Next</string>
+    <string name="action_first">First</string>
+
 </resources>

@@ -18,18 +18,17 @@ import com.adrguides.model.Place;
 import com.adrguides.tts.TextToSpeechSingleton;
 
 
-public class ReadGuideActivity extends Activity implements LocationHandler, FragmentManager.OnBackStackChangedListener {
+public class ReadGuideActivity extends Activity implements FragmentManager.OnBackStackChangedListener {
 
     private static final int TTS_REQUEST_CODE = 332342;
 
     public static final String ARG_GUIDE = "ARG_GUIDE";
     public static final String ARG_PLACE = "ARG_PLACE";
 
-    private Guide guide;
-
     private static Guide getGuide() {
 
         Place p1 = new Place();
+        p1.setId("001");
         p1.setTitle("Cuadro primero");
         p1.setText(new String[] {
                 "Este es el cuadro primero. \nNo es el mejor de todos pero al menos va el primero y eso se nota. Y eso es algo que no todo el mundo sabe apreciar.",
@@ -38,6 +37,7 @@ public class ReadGuideActivity extends Activity implements LocationHandler, Frag
         });
 
         Place p2 = new Place();
+        p2.setId("002");
         p2.setTitle("Cuadro segundo");
         p2.setText(new String[] {
                 "Este es el cuadro segundo.",
@@ -47,6 +47,7 @@ public class ReadGuideActivity extends Activity implements LocationHandler, Frag
 
 
         Place p3 = new Place();
+        p3.setId("003");
         p3.setTitle("Cuadro último");
         p3.setText(new String[] {
                 "Este es el último.",
@@ -64,36 +65,35 @@ public class ReadGuideActivity extends Activity implements LocationHandler, Frag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guide);
 
-        guide = getGuide();
+
+        TextToSpeechSingleton.getInstance().init(getApplicationContext());
+        if (TextToSpeechSingleton.getInstance().getGuide() == null) {
+            TextToSpeechSingleton.getInstance().setGuide(getGuide());
+        }
+
 
         FragmentManager fm = getFragmentManager();
         fm.addOnBackStackChangedListener(this);
 
-        Fragment guidefragment = fm.findFragmentByTag(GuideFragment.TAG);
-        if (guidefragment == null) {
-            guidefragment = new GuideFragment();
-            Bundle b = new Bundle();
-            b.putParcelable(ReadGuideActivity.ARG_GUIDE, guide);
-            guidefragment.setArguments(b);
-
+        Fragment locationfragment = fm.findFragmentByTag(LocationFragment.TAG);
+        if (locationfragment == null) {
+            locationfragment = new LocationFragment();
             FragmentTransaction ft = fm.beginTransaction();
-            ft.add(R.id.guiderootview, guidefragment, GuideFragment.TAG);
+            ft.add(R.id.guiderootview, locationfragment, LocationFragment.TAG);
             ft.commit();
         }
 
         updateBreadCrumbs();
 
-        TextToSpeechSingleton.getInstance().init(getApplicationContext());
-
-        Intent checkIntent = new Intent();
-        checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-        startActivityForResult(checkIntent, TTS_REQUEST_CODE);
+//        Intent checkIntent = new Intent();
+//        checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+//        startActivityForResult(checkIntent, TTS_REQUEST_CODE);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.read_guide, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -116,38 +116,18 @@ public class ReadGuideActivity extends Activity implements LocationHandler, Frag
 //    }
 
     private void updateBreadCrumbs() {
-        getActionBar().setTitle(guide.getTitle());
-        int entries = getFragmentManager().getBackStackEntryCount();
-        if (entries == 0) {
-            getActionBar().setSubtitle(" ");
+
+        Guide guide = TextToSpeechSingleton.getInstance().getGuide();
+        int chapter = TextToSpeechSingleton.getInstance().getChapter();
+        if (guide == null) {
+            getActionBar().setTitle(getResources().getText(R.string.title_activity_read_guide));
         } else {
-            getActionBar().setSubtitle(getFragmentManager().getBackStackEntryAt(entries - 1).getBreadCrumbTitle());
+            getActionBar().setTitle(guide.getTitle());
         }
     }
 
     @Override
-    public void showPlace(Place place) {
-
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-
-        Fragment locationfragment = new LocationFragment();
-        Bundle b = new Bundle();
-        b.putParcelable(ReadGuideActivity.ARG_PLACE, place);
-        locationfragment.setArguments(b);
-
-        ft.add(R.id.guiderootview, locationfragment, LocationFragment.TAG);
-        ft.addToBackStack(null);
-        // ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-
-        ft.setBreadCrumbTitle(place.getTitle());
-        ft.commit();
-    }
-
-
-    @Override
     public void onBackStackChanged() {
         updateBreadCrumbs();
-        TextToSpeechSingleton.getInstance().getTTS().stop();
     }
 }

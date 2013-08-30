@@ -9,7 +9,16 @@ import android.os.Parcelable;
 public class Place implements Parcelable {
 
     private String[] text;
-    private String title;
+    private String title; // not null
+    private String id; // nulllable
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -19,6 +28,9 @@ public class Place implements Parcelable {
         this.title = title;
     }
 
+    public String getVisibleLabel() {
+        return (id == null ? "" : id + " - ") + title;
+    }
 
     public String[] getText() {
         return text;
@@ -40,6 +52,7 @@ public class Place implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(getId());
         parcel.writeString(getTitle());
         parcel.writeStringArray(getText());
     }
@@ -47,6 +60,7 @@ public class Place implements Parcelable {
     public static final Parcelable.Creator<Place> CREATOR = new Parcelable.Creator<Place>() {
         public Place createFromParcel(Parcel in) {
             Place place = new Place();
+            place.setId(in.readString());
             place.setTitle(in.readString());
             place.setText(in.createStringArray());
             return place;
