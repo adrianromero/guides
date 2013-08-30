@@ -2,6 +2,7 @@
 
 Guides is an Android application that reads audioguides using Text-to-Spech services.
 
+Warning: Now this project is not functional at all.
 
 ## Acknowledgments ##
 
