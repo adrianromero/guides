@@ -13,5 +13,6 @@
     <string name="action_previous">Previous</string>
     <string name="action_next">Next</string>
     <string name="action_first">First</string>
+    <string name="action_list">List</string>
 
 </resources>

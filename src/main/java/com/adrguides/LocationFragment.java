@@ -74,7 +74,7 @@ public class LocationFragment extends Fragment implements TextToSpeechSingleton.
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 TextToSpeechSingleton.getInstance().playstartpause();
-                return false;
+                return true;
             }
         });
 
@@ -82,7 +82,7 @@ public class LocationFragment extends Fragment implements TextToSpeechSingleton.
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 TextToSpeechSingleton.getInstance().gotoNext();
-                return false;
+                return true;
             }
         });
 
@@ -90,14 +90,21 @@ public class LocationFragment extends Fragment implements TextToSpeechSingleton.
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 TextToSpeechSingleton.getInstance().gotoFirst();
-                return false;
+                return true;
             }
         });
         menu.findItem(R.id.action_previous).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 TextToSpeechSingleton.getInstance().gotoPrevious();
-                return false;
+                return true;
+            }
+        });
+        menu.findItem(R.id.action_list).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                new ListDialogFragment().show(getFragmentManager(), ListDialogFragment.TAG);
+                return true;
             }
         });
 

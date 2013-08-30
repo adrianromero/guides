@@ -28,6 +28,9 @@
           android:icon="@drawable/ic_media_previous"
           android:orderInCategory="50"/>
 
+    <item android:id="@+id/action_list"
+          android:title="@string/action_list"
+          android:orderInCategory="60"/>
 
 
 </menu>
