@@ -40,7 +40,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
     }
     @Override
     public void onDestroy() {
@@ -57,6 +56,17 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         return true;
     }
 
+    public void onReadActivityClicked(View view) {
+        Intent intent = new Intent(this, ReadGuideActivity.class);
+        startActivity(intent);
+    }
+
+    public void onLoadActivityClicked(View view) {
+        Intent intent = new Intent(this, LoadActivity.class);
+        intent.putExtra(LoadActivity.GUIDE_URL, "mockguide");
+        intent.putExtra(LoadActivity.GUIDE_NAME, "La guía de los mocos");
+        startActivity(intent);
+    }
 
     public void onCheckTTSClicked(View view) {
 
@@ -84,11 +94,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         startActivity(installIntent);
     }
 
-    public void onReadActivityClicked(View view) {
-        Intent intent = new Intent(this, ReadGuideActivity.class);
-        // intent.a
-        startActivity(intent);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

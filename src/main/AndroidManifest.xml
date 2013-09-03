@@ -22,8 +22,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.adrguides.ReadGuideActivity"
-            android:label="@string/title_activity_read_guide" >
+                android:name="com.adrguides.ReadGuideActivity"
+                android:label="@string/title_activity_read_guide" >
+        </activity>
+        <activity
+            android:name="com.adrguides.LoadActivity"
+            android:label="@string/title_activity_load"
+            android:noHistory="true">
         </activity>
     </application>
 

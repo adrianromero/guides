@@ -25,52 +25,45 @@ public class ReadGuideActivity extends Activity implements FragmentManager.OnBac
     public static final String ARG_GUIDE = "ARG_GUIDE";
     public static final String ARG_PLACE = "ARG_PLACE";
 
-    private static Guide getGuide() {
-
-        Place p1 = new Place();
-        p1.setId("001");
-        p1.setTitle("Cuadro primero");
-        p1.setText(new String[] {
-                "Este es el cuadro primero. \nNo es el mejor de todos pero al menos va el primero y eso se nota. Y eso es algo que no todo el mundo sabe apreciar.",
-                "Muy bonito.",
-                "Y me gusta mucho"
-        });
-
-        Place p2 = new Place();
-        p2.setId("002");
-        p2.setTitle("Cuadro segundo");
-        p2.setText(new String[] {
-                "Este es el cuadro segundo.",
-                "Muy abstracto.",
-                "Y me gusta menos que el primero y más que el segundo."
-        });
-
-
-        Place p3 = new Place();
-        p3.setId("003");
-        p3.setTitle("Cuadro último");
-        p3.setText(new String[] {
-                "Este es el último.",
-                "El mejor",
-                "Y el que más me gusta."
-        });
-        Guide guide = new Guide();
-        guide.setTitle("Los cuadritos");
-        guide.setPlaces(new Place[]{p1, p2, p3});
-        return guide;
-    }
+//    private static Guide getGuide() {
+//
+//        Place p1 = new Place();
+//        p1.setId("001");
+//        p1.setTitle("Cuadro primero");
+//        p1.setText(new String[] {
+//                "Este es el cuadro primero. \nNo es el mejor de todos pero al menos va el primero y eso se nota. Y eso es algo que no todo el mundo sabe apreciar.",
+//                "Muy bonito.",
+//                "Y me gusta mucho"
+//        });
+//
+//        Place p2 = new Place();
+//        p2.setId("002");
+//        p2.setTitle("Cuadro segundo");
+//        p2.setText(new String[] {
+//                "Este es el cuadro segundo.",
+//                "Muy abstracto.",
+//                "Y me gusta menos que el primero y más que el segundo."
+//        });
+//
+//
+//        Place p3 = new Place();
+//        p3.setId("003");
+//        p3.setTitle("Cuadro último");
+//        p3.setText(new String[] {
+//                "Este es el último.",
+//                "El mejor",
+//                "Y el que más me gusta."
+//        });
+//        Guide guide = new Guide();
+//        guide.setTitle("Los cuadritos");
+//        guide.setPlaces(new Place[]{p1, p2, p3});
+//        return guide;
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guide);
-
-
-        TextToSpeechSingleton.getInstance().init(getApplicationContext());
-        if (TextToSpeechSingleton.getInstance().getGuide() == null) {
-            TextToSpeechSingleton.getInstance().setGuide(getGuide());
-        }
-
 
         FragmentManager fm = getFragmentManager();
         fm.addOnBackStackChangedListener(this);

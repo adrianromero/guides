@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/mySwitcher"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+>
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+        <ProgressBar
+                android:id="@+id/progressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentLeft="true"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="**Guide Name**"
+                android:id="@+id/textGuideName"
+                android:layout_below="@+id/progressbar"
+                android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/textException"
+                android:layout_below="@+id/textView2"
+                android:layout_centerHorizontal="true"
+                android:maxLines="2"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/lbl_error_loading"
+                android:id="@+id/textView2"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"/>
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView"
+                android:layout_above="@+id/textView2"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_launcher"/>
+    </RelativeLayout>
+
+</ViewSwitcher>

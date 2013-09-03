@@ -42,10 +42,31 @@
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Button"
+            android:text="Read guide"
             android:id="@+id/button4"
             android:layout_below="@+id/button3"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:onClick="onReadActivityClicked"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Load guide"
+            android:id="@+id/button5"
+            android:layout_below="@+id/button4"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:onClick="onLoadActivityClicked"/>
+
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:layout_below="@+id/button5"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_launcher"
+            android:scaleType="fitCenter"/>
+
 </RelativeLayout>

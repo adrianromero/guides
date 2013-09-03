@@ -15,4 +15,8 @@
     <string name="action_first">First</string>
     <string name="action_list">List</string>
 
+
+    <string name="title_activity_load">Load Guide</string>
+    <string name="msg_loading">Loading {0}.</string><string name="lbl_error_loading">Error loading guide</string>
+
 </resources>
