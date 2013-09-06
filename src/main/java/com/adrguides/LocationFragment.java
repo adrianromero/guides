@@ -97,6 +97,14 @@ public class LocationFragment extends Fragment implements TextToSpeechSingleton.
             }
         });
 
+        menu.findItem(R.id.action_begin).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                TextToSpeechSingleton.getInstance().restartChapter();
+                return true;
+            }
+        });
+
         menu.findItem(R.id.action_next).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {

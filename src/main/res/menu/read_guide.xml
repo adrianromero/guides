@@ -13,24 +13,28 @@
           android:showAsAction="ifRoom|collapseActionView"
           android:actionViewClass="android.widget.SearchView" />
 
+    <item android:id="@+id/action_begin"
+          android:title="@string/action_begin"
+          android:orderInCategory="30"/>
+
     <item android:id="@+id/action_next"
           android:title="@string/action_next"
           android:icon="@drawable/ic_media_ff"
-          android:orderInCategory="30"/>
+          android:orderInCategory="40"/>
 
     <item android:id="@+id/action_previous"
           android:title="@string/action_previous"
           android:icon="@drawable/ic_media_rew"
-          android:orderInCategory="40"/>
+          android:orderInCategory="50"/>
 
     <item android:id="@+id/action_first"
           android:title="@string/action_first"
           android:icon="@drawable/ic_media_previous"
-          android:orderInCategory="50"/>
+          android:orderInCategory="60"/>
 
     <item android:id="@+id/action_list"
           android:title="@string/action_list"
-          android:orderInCategory="60"/>
+          android:orderInCategory="70"/>
 
 
 </menu>
