@@ -7,6 +7,7 @@ import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 
+import com.adrguides.R;
 import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
 
@@ -25,6 +26,7 @@ public class TextToSpeechSingleton implements TextToSpeech.OnInitListener {
         return ourInstance;
     }
 
+    private Context context;
     private SharedPreferences sharedPref;
     private TextToSpeech tts = null;
     private boolean initialized = false;
@@ -45,7 +47,7 @@ public class TextToSpeechSingleton implements TextToSpeech.OnInitListener {
 
     public void init(Context context, SharedPreferences sharedPref) {
 
-        // SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        this.context = context;
         this.sharedPref = sharedPref;
 
         if (!initialized && tts == null) {
@@ -136,15 +138,21 @@ public class TextToSpeechSingleton implements TextToSpeech.OnInitListener {
         return (float) Math.pow(exponent, value * factor);
     }
 
-    private void playresume() /* throws TTSException */ {
+    private void playresume() {
 
         tts.stop();
         playing = false;
 
         if (chapter < guide.getPlaces().length) {
 
-            tts.setLanguage(new Locale("es", "ES"));
+            Locale l = guide.getLocale();
 
+            if (tts.isLanguageAvailable(l) < 0) {
+                Log.d("com.adrguides.tts.TextToSpeechSingleton", "Language not available");
+                // throw new TTSException(context.getResources().getString(R.string.ex_languagenotavailable, l.getDisplayName(l)));
+            }
+
+            tts.setLanguage(l);
             tts.setPitch(calculateLogValue(sharedPref.getInt("pref_gdi_pitch", 0), 5.0, 0.1));
             tts.setSpeechRate(calculateLogValue(sharedPref.getInt("pref_gdi_speechrate", 0), 3.0, 0.1));
 

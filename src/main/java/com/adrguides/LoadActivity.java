@@ -65,8 +65,8 @@ public class LoadActivity extends Activity implements LoadGuideFragment.LoadGuid
             fm.beginTransaction().add(loadguide, LoadGuideFragment.TAG).commit();
             loadguide.loadGuide(this.getApplicationContext(), getIntent().getStringExtra(GUIDE_URL));
         }
-        String msg = MessageFormat.format(getResources().getString(R.string.msg_loading), getIntent().getStringExtra(GUIDE_NAME));
-        ((TextView) findViewById(R.id.textGuideName)).setText(msg);
+
+        ((TextView) findViewById(R.id.textGuideName)).setText(getResources().getString(R.string.msg_loading, getIntent().getStringExtra(GUIDE_NAME)));
 
     }
 

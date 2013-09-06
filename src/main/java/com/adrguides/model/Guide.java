@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * Created by adrian on 20/08/13.
@@ -15,6 +16,10 @@ import java.util.Arrays;
 public class Guide implements Parcelable {
 
     private String title = null;
+    private String language = "en";
+    private String country = "US";
+    private String variant = "";
+
     private Place[] places = null;
 
     public String getTitle() {
@@ -23,6 +28,34 @@ public class Guide implements Parcelable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getVariant() {
+        return variant;
+    }
+
+    public void setVariant(String variant) {
+        this.variant = variant;
+    }
+
+    public Locale getLocale() {
+        return new Locale(language, country, variant);
     }
 
     public Place[] getPlaces() {
@@ -41,6 +74,9 @@ public class Guide implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(getTitle());
+        parcel.writeString(getLanguage());
+        parcel.writeString(getCountry());
+        parcel.writeString(getVariant());
         parcel.writeParcelableArray(getPlaces(), i);
     }
 
@@ -48,6 +84,9 @@ public class Guide implements Parcelable {
         public Guide createFromParcel(Parcel in) {
             Guide guide = new Guide();
             guide.setTitle(in.readString());
+            guide.setLanguage(in.readString());
+            guide.setCountry(in.readString());
+            guide.setVariant(in.readString());
             guide.setPlaces((Place[]) in.readParcelableArray(null));
             return guide;
         }

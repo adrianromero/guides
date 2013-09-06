@@ -17,6 +17,7 @@
 package com.adrguides;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -43,6 +44,7 @@ import android.widget.ViewSwitcher;
 
 import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
+import com.adrguides.tts.TTSException;
 import com.adrguides.tts.TextToSpeechSingleton;
 
 import java.util.ArrayList;

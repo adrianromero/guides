@@ -102,6 +102,9 @@ public class LoadGuideFragment extends Fragment {
 
                     Guide guide = new Guide();
                     guide.setTitle(data.getString("title"));
+                    guide.setLanguage(data.optString("language", "en"));
+                    guide.setCountry(data.optString("country", "US"));
+                    guide.setVariant(data.optString("variant", ""));
 
                     JSONArray chapters = data.getJSONArray("chapters");
                     Place[] places = new Place[chapters.length()];

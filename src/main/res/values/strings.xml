@@ -29,5 +29,5 @@
     <string name="pref_gdi_speechrate_summary">Sets the speech rate for the text to speech engine.</string>
 
 
-
+    <string name="ex_languagenotavailable">{0} Speech language not available.</string>
 </resources>
