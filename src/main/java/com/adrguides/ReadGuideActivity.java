@@ -8,8 +8,10 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
+import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -25,45 +27,19 @@ public class ReadGuideActivity extends Activity implements FragmentManager.OnBac
     public static final String ARG_GUIDE = "ARG_GUIDE";
     public static final String ARG_PLACE = "ARG_PLACE";
 
-//    private static Guide getGuide() {
-//
-//        Place p1 = new Place();
-//        p1.setId("001");
-//        p1.setTitle("Cuadro primero");
-//        p1.setText(new String[] {
-//                "Este es el cuadro primero. \nNo es el mejor de todos pero al menos va el primero y eso se nota. Y eso es algo que no todo el mundo sabe apreciar.",
-//                "Muy bonito.",
-//                "Y me gusta mucho"
-//        });
-//
-//        Place p2 = new Place();
-//        p2.setId("002");
-//        p2.setTitle("Cuadro segundo");
-//        p2.setText(new String[] {
-//                "Este es el cuadro segundo.",
-//                "Muy abstracto.",
-//                "Y me gusta menos que el primero y más que el segundo."
-//        });
-//
-//
-//        Place p3 = new Place();
-//        p3.setId("003");
-//        p3.setTitle("Cuadro último");
-//        p3.setText(new String[] {
-//                "Este es el último.",
-//                "El mejor",
-//                "Y el que más me gusta."
-//        });
-//        Guide guide = new Guide();
-//        guide.setTitle("Los cuadritos");
-//        guide.setPlaces(new Place[]{p1, p2, p3});
-//        return guide;
-//    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guide);
+
+
+        TextToSpeechSingleton.getInstance().init(getApplicationContext(), PreferenceManager.getDefaultSharedPreferences(this));
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
+//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+//        return sharedPref.getString("pref_rpi_url", "");
+
 
         FragmentManager fm = getFragmentManager();
         fm.addOnBackStackChangedListener(this);
@@ -88,6 +64,12 @@ public class ReadGuideActivity extends Activity implements FragmentManager.OnBac
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    public void onSettingsClicked(MenuItem item) {
+
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
 //    @Override

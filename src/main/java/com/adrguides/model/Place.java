@@ -1,5 +1,6 @@
 package com.adrguides.model;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,9 +9,10 @@ import android.os.Parcelable;
  */
 public class Place implements Parcelable {
 
-    private String[] text;
+    private Section[] sections;
     private String title; // not null
     private String id; // nulllable
+    private Bitmap image; // nullable
 
     public String getId() {
         return id;
@@ -32,12 +34,20 @@ public class Place implements Parcelable {
         return (id == null ? "" : id + " - ") + title;
     }
 
-    public String[] getText() {
-        return text;
+    public Bitmap getImage() {
+        return image;
     }
 
-    public void setText(String[] text) {
-        this.text = text;
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
+
+    public Section[] getSections() {
+        return sections;
+    }
+
+    public void setSections(Section[] sections) {
+        this.sections = sections;
     }
 
     @Override
@@ -54,7 +64,8 @@ public class Place implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(getId());
         parcel.writeString(getTitle());
-        parcel.writeStringArray(getText());
+        parcel.writeParcelable(getImage(), i);
+        parcel.writeParcelableArray(getSections(), i);
     }
 
     public static final Parcelable.Creator<Place> CREATOR = new Parcelable.Creator<Place>() {
@@ -62,7 +73,8 @@ public class Place implements Parcelable {
             Place place = new Place();
             place.setId(in.readString());
             place.setTitle(in.readString());
-            place.setText(in.createStringArray());
+            place.setImage((Bitmap) in.readParcelable(null));
+            place.setSections((Section[]) in.readParcelableArray(null));
             return place;
         }
 

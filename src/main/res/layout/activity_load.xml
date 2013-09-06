@@ -1,61 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/mySwitcher"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
->
-    <RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+    <ImageView
+            android:id="@+id/loadBackground"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            >
-        <ProgressBar
-                android:id="@+id/progressbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentLeft="true"/>
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="**Guide Name**"
-                android:id="@+id/textGuideName"
-                android:layout_below="@+id/progressbar"
-                android:layout_centerHorizontal="true"/>
-    </RelativeLayout>
-
-    <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/background"
+            android:cropToPadding="false"
+            android:scaleType="centerCrop"/>
+    <ViewSwitcher
+                  android:id="@+id/mySwitcher"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_alignParentTop="true"
+                  android:layout_alignParentLeft="true"
             >
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="New Text"
-                android:id="@+id/textException"
-                android:layout_below="@+id/textView2"
-                android:layout_centerHorizontal="true"
-                android:maxLines="2"/>
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+            <ProgressBar
+                    android:id="@+id/progressbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentLeft="true"
+                    android:clickable="false"
+                    android:background="#80282828"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"/>
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/lbl_error_loading"
-                android:id="@+id/textView2"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="**Guide Name**"
+                    android:id="@+id/textGuideName"
+                    android:layout_below="@+id/progressbar"
+                    android:background="#80282828"
+                    android:textColor="#ffffff"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentLeft="true"
+                    android:gravity="center"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"/>
 
-        <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageView"
-                android:layout_above="@+id/textView2"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_launcher"/>
-    </RelativeLayout>
+        </RelativeLayout>
 
-</ViewSwitcher>
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="New Text"
+                    android:id="@+id/textException"
+                    android:layout_below="@+id/textView2"
+                    android:textColor="#ffffff"
+                    android:background="#80282828"
+                    android:maxLines="2"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:gravity="center"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="@string/lbl_error_loading"
+                    android:id="@+id/textView2"
+                    android:textColor="#ffffff"
+                    android:background="#80242424"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentLeft="true"
+                    android:gravity="center"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+
+        </RelativeLayout>
+
+    </ViewSwitcher>
+
+</RelativeLayout>

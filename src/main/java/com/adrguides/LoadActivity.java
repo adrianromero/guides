@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -56,8 +57,6 @@ public class LoadActivity extends Activity implements LoadGuideFragment.LoadGuid
             }
         }
 
-        TextToSpeechSingleton.getInstance().init(getApplicationContext());
-
         FragmentManager fm = getFragmentManager();
         loadguide = (LoadGuideFragment) fm.findFragmentByTag(LoadGuideFragment.TAG);
         if (loadguide == null) {
@@ -91,26 +90,17 @@ public class LoadActivity extends Activity implements LoadGuideFragment.LoadGuid
     }
 
     @Override
-    public void onFinishLoad(JSONObject result) {
+    public void onFinishLoad(LoadedGuide result) {
 
-        Log.d("com.adrguides.GuideFragment", "onFinishLoad --> " + result);
+        if (result.getStatus() == 0) {
+            TextToSpeechSingleton.getInstance().setGuide(result.getGuide());
 
-        if (result.optInt("status", -1) == 0) {
-            try {
-                TextToSpeechSingleton.getInstance().setGuide(Guide.createFromJSON(result.getJSONObject("data")));
-
-                Intent intent = new Intent(this, ReadGuideActivity.class);
-                startActivity(intent);
-                return;
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-                ((TextView)findViewById(R.id.textException)).setText(e.getMessage());
-            }
+            Intent intent = new Intent(this, ReadGuideActivity.class);
+            startActivity(intent);
         } else {
-            ((TextView)findViewById(R.id.textException)).setText(result.optString("exception"));
+            ((TextView)findViewById(R.id.textException)).setText(result.getException());
+            ViewSwitcher sw = (ViewSwitcher) findViewById(R.id.mySwitcher);
+            sw.showNext();
         }
-        ViewSwitcher sw = (ViewSwitcher) findViewById(R.id.mySwitcher);
-        sw.showNext();
     }
 }

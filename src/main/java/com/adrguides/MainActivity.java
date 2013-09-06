@@ -17,12 +17,15 @@
 package com.adrguides;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Activity;
+import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -40,6 +43,11 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
+//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+//        return sharedPref.getString("pref_rpi_url", "");
     }
     @Override
     public void onDestroy() {
@@ -55,6 +63,23 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
+    public void onSettingsClicked(MenuItem item) {
+
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+
+    //// Test code
+
+
+
+
+
+
+
+
 
     public void onReadActivityClicked(View view) {
         Intent intent = new Intent(this, ReadGuideActivity.class);

@@ -1,9 +1,26 @@
+//        Guides is an Android application that reads audioguides using Text-to-Speech services.
+//        Copyright (C) 2013  Adrián Romero Corchado
+//
+//        This program is free software: you can redistribute it and/or modify
+//        it under the terms of the GNU General Public License as published by
+//        the Free Software Foundation, either version 3 of the License, or
+//        (at your option) any later version.
+//
+//        This program is distributed in the hope that it will be useful,
+//        but WITHOUT ANY WARRANTY; without even the implied warranty of
+//        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//        GNU General Public License for more details.
+//
+//        You should have received a copy of the GNU General Public License
+//        along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 package com.adrguides;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.database.Cursor;
 import android.database.MatrixCursor;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
@@ -18,9 +35,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FilterQueryProvider;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
@@ -129,24 +148,67 @@ public class LocationFragment extends Fragment implements TextToSpeechSingleton.
         int paragraph = TextToSpeechSingleton.getInstance().getParagraph();
         // boolean playing = TextToSpeechSingleton.getInstance().isPlaying();
 
-        TextView title = ((TextView) v.findViewById(R.id.textTitle));
-        TextView content = ((TextView) v.findViewById(R.id.textContent));
+        TextView title = (TextView) v.findViewById(R.id.textTitle);
+        TextView content = (TextView) v.findViewById(R.id.textContent);
+
         if (guide == null || chapter >= guide.getPlaces().length) {
             title.setVisibility(View.GONE);
             content.setVisibility(View.GONE);
+            switchImage(null);
         } else {
             Place mychapter = guide.getPlaces()[chapter];
             title.setVisibility(View.VISIBLE);
             title.setText(mychapter.getVisibleLabel());
             if (paragraph >= 0) {
                 content.setVisibility(View.VISIBLE);
-                content.setText(mychapter.getText()[paragraph]);
+                content.setText(mychapter.getSections()[paragraph].getText());
+                Bitmap b = mychapter.getSections()[paragraph].getImage();
+                if (b == null) {
+                    b = mychapter.getImage();
+                }
+                switchImage(b);
             } else {
                 content.setVisibility(View.GONE);
+                Bitmap b = mychapter.getImage();
+                if (b == null && mychapter.getSections().length > 0) {
+                    b = mychapter.getSections()[0].getImage();
+                }
+                switchImage(b);
             }
         }
 
         getActivity().invalidateOptionsMenu();
+    }
+
+    private Bitmap currentImage = null;
+    private void switchImage(Bitmap image) {
+
+        if (image == currentImage) {
+            return;
+        }
+
+        currentImage = image;
+
+        ViewSwitcher switcher = (ViewSwitcher) v.findViewById(R.id.switcherBackgroundGuide);
+
+        ImageView iv0 = (ImageView) v.findViewById(R.id.imageBackgroundGuide_0);
+        ImageView iv1 = (ImageView) v.findViewById(R.id.imageBackgroundGuide_1);
+
+        if (switcher.getDisplayedChild() == 0) {
+            if (image == null) {
+                iv1.setImageResource(R.drawable.place_default);
+            } else {
+                iv1.setImageBitmap(currentImage);
+            }
+            switcher.showNext();
+        } else {
+            if (image == null) {
+                iv0.setImageResource(R.drawable.place_default);
+            } else {
+                iv0.setImageBitmap(currentImage);
+            }
+            switcher.showPrevious();
+        }
     }
 
     @Override

@@ -21,10 +21,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+                android:name="com.adrguides.SettingsActivity"
+                android:label="@string/title_activity_settings">
+        </activity>
+
         <activity
                 android:name="com.adrguides.ReadGuideActivity"
-                android:label="@string/title_activity_read_guide" >
+                android:label="@string/title_activity_read_guide"
+                android:parentActivityName="com.adrguides.MainActivity">
         </activity>
+
         <activity
             android:name="com.adrguides.LoadActivity"
             android:label="@string/title_activity_load"

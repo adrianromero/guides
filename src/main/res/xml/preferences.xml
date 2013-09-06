@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" xmlns:robobunny="http://robobunny.com">
+    <CheckBoxPreference
+            android:key="pref_gdi_autoplay"
+            android:title="@string/pref_gdi_autoplay"
+            android:summary="@string/pref_gdi_autoplay_summary"
+            android:defaultValue="false" />
+    <com.adrguides.robobunny.SeekBarLogPreference
+            android:key="pref_gdi_pitch"
+            android:title="@string/pref_gdi_pitch"
+            android:summary="@string/pref_gdi_pitch_summary"
+            robobunny:valueformat="\#,\#\#0\%"
+            robobunny:exponent="5.0"
+            robobunny:factor="0.1"
+            robobunny:min="-10"
+            android:max="10"
+            android:defaultValue="0" />
+    <com.adrguides.robobunny.SeekBarLogPreference
+            android:key="pref_gdi_speechrate"
+            android:title="@string/pref_gdi_speechrate"
+            android:summary="@string/pref_gdi_speechrate_summary"
+            robobunny:valueformat="\#,\#\#0\%"
+            robobunny:exponent="3.0"
+            robobunny:factor="0.1"
+            robobunny:min="-10"
+            android:max="10"
+            android:defaultValue="0" />
+</PreferenceScreen>

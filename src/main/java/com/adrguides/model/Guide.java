@@ -56,30 +56,4 @@ public class Guide implements Parcelable {
             return new Guide[size];
         }
     };
-
-
-    public static final Guide createFromJSON(JSONObject json) throws JSONException {
-
-        Guide guide = new Guide();
-        guide.setTitle(json.getString("title"));
-
-        JSONArray chapters = json.getJSONArray("chapters");
-        Place[] places = new Place[chapters.length()];
-        guide.setPlaces(places);
-        for (int i = 0; i < chapters.length(); i++) {
-            JSONObject chapter = chapters.getJSONObject(i);
-            Place p = new Place();
-            p.setId(chapter.has("id") ? chapter.getString("id") : null);
-            p.setTitle(chapter.getString("title"));
-
-            JSONArray paragraphs = chapter.getJSONArray("paragraphs");
-            String[] strs = new String[paragraphs.length()];
-            p.setText(strs);
-            for (int j = 0; j < paragraphs.length(); j++) {
-                strs[j] = paragraphs.getString(j);
-            }
-            places[i] = p;
-        }
-        return guide;
-    }
 }

@@ -1,18 +1,28 @@
 {
     "title": "La guía de los mocos",
+    "language": "es",
+    "country": "ES",
+    "variant": "",
     "chapters": [
         {
             "id": "001",
             "title": "Cuadro primero",
             "paragraphs" : [
-                "Este es el cuadro primero. \nNo es el mejor de todos pero al menos va el primero y eso se nota. Y eso es algo que no todo el mundo sabe apreciar..",
-                "Muy bonito.",
-                "Y me gusta mucho"
+                {"image_asset": "madrid_1.jpg",
+                 "text": "Este es el cuadro primero"
+                },
+                {"image_asset": "madrid_2.jpg",
+                 "text": "Muy bonito. Es nuevo."
+                },
+                {"image_asset": "madrid_3.jpg",
+                 "text": "Y además hasta a Pepe el Soso le gusta"
+                }
             ]
         },
         {
             "id": "002",
             "title": "Cuadro segundo",
+            "image_asset": "madrid_3.jpg",
             "paragraphs" : [
                 "Este es el cuadro segundo.",
                 "Muy abstracto.",
@@ -23,7 +33,7 @@
             "id": "003",
             "title": "Cuadro último",
             "paragraphs" : [
-                "Este es el último.",
+                "Este es el último. \nNo es el mejor de todos pero al menos va el último y eso se nota. Y eso es algo que pocos saben apreciar.",
                 "El mejor",
                 "Y el que más me gusta."
             ]

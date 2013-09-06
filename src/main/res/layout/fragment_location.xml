@@ -3,8 +3,34 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/place_default"
         >
+
+    <ViewSwitcher
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:inAnimation="@anim/fade_in"
+            android:outAnimation="@anim/fade_out"
+            android:id="@+id/switcherBackgroundGuide"
+        >
+
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/imageBackgroundGuide_0"
+                android:cropToPadding="false"
+                android:scaleType="centerCrop"
+                />
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/imageBackgroundGuide_1"
+                android:cropToPadding="false"
+                android:scaleType="centerCrop"
+                />
+    </ViewSwitcher>
+
 
     <TextView
             android:layout_width="wrap_content"
@@ -15,19 +41,20 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
-            android:background="#30ffffff"
+            android:background="#80242424"
             android:gravity="center"
             android:paddingLeft="3dp"
             android:paddingTop="3dp"
             android:paddingRight="3dp"
-            android:paddingBottom="3dp"/>
+            android:paddingBottom="3dp"
+            android:textColor="#ffffff"/>
 
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="textContent"
             android:id="@+id/textContent"
-            android:background="#30ffffff"
+            android:background="#80242424"
             android:paddingLeft="3dp"
             android:paddingTop="3dp"
             android:paddingRight="3dp"
@@ -35,7 +62,12 @@
             android:maxLines="10"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentRight="true"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+
 
 
 </RelativeLayout>
