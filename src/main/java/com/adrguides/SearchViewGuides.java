@@ -33,7 +33,7 @@ public class SearchViewGuides {
                 SimpleCursorAdapter adapter = new SimpleCursorAdapter(context, android.R.layout.simple_list_item_activated_1, getSuggestionsCursor(null), from, to, 0);
                 adapter.setFilterQueryProvider(new FilterQueryProvider() {
                     public Cursor runQuery(CharSequence constraint) {
-                        return getSuggestionsCursor(new String(constraint.toString()));
+                        return getSuggestionsCursor(constraint.toString());
                     }
                 });
                 searchView.setSuggestionsAdapter(adapter);
