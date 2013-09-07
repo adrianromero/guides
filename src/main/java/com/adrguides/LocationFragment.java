@@ -16,40 +16,22 @@
 
 package com.adrguides;
 
-import android.app.Activity;
-import android.app.DialogFragment;
 import android.app.Fragment;
-import android.database.Cursor;
-import android.database.MatrixCursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.UtteranceProgressListener;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
-import android.widget.SearchView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
-import com.adrguides.tts.TTSException;
 import com.adrguides.tts.TextToSpeechSingleton;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
 
 /**
  * Created by adrian on 19/08/13.
@@ -137,7 +119,7 @@ public class LocationFragment extends Fragment implements TextToSpeechSingleton.
             }
         });
 
-        searchview = new SearchViewGuides(this.getActivity(), menu.findItem(R.id.menu_search));
+        searchview = new SearchViewGuides(getActivity(), menu.findItem(R.id.menu_search));
     }
 
     @Override
