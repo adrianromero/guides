@@ -235,12 +235,14 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
     }
 
     private Bitmap currentImage = null;
+    private boolean firsttime = true;
     private void switchImage(Bitmap image) {
 
-        if (image == currentImage) {
+        if (image == currentImage && !firsttime) {
             return;
         }
 
+        firsttime = false;
         currentImage = image;
 
         ViewSwitcher switcher = (ViewSwitcher) v.findViewById(R.id.switcherBackgroundGuide);
