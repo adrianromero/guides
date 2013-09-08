@@ -56,10 +56,10 @@ public class LoadGuideFragment extends Fragment {
     }
 
     public void startListening() {
+        listening = true;
         if (loadGuideresult != null) {
             publishLoadGuideResult();
         }
-        listening = true;
     }
     public void stopListening() {
         listening = false;

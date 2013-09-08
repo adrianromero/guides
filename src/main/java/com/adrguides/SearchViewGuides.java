@@ -1,5 +1,6 @@
 package com.adrguides;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -19,7 +20,11 @@ import java.util.ArrayList;
  */
 public class SearchViewGuides {
 
-    public SearchViewGuides(final Context context, final MenuItem menuitem) {
+    private TTSFragment ttsFragment;
+
+    public SearchViewGuides(final Activity activity, final MenuItem menuitem) {
+
+        ttsFragment = (TTSFragment) activity.getFragmentManager().findFragmentByTag(TTSFragment.TAG);
 
         final SearchView searchView = (SearchView) menuitem.getActionView();
         // Configure the search info and add any event listeners
@@ -30,7 +35,7 @@ public class SearchViewGuides {
                 String[] from = {"text"};
                 int[] to = {android.R.id.text1};
 
-                SimpleCursorAdapter adapter = new SimpleCursorAdapter(context, android.R.layout.simple_list_item_activated_1, getSuggestionsCursor(null), from, to, 0);
+                SimpleCursorAdapter adapter = new SimpleCursorAdapter(activity, android.R.layout.simple_list_item_activated_1, getSuggestionsCursor(null), from, to, 0);
                 adapter.setFilterQueryProvider(new FilterQueryProvider() {
                     public Cursor runQuery(CharSequence constraint) {
                         return getSuggestionsCursor(constraint.toString());
@@ -70,14 +75,14 @@ public class SearchViewGuides {
                 }
 
                 Log.d("com.adrguides.SearchViewGuides", "man submitao");
-                Place[] places = TextToSpeechSingleton.getInstance().getGuide().getPlaces();
+                Place[] places = ttsFragment.getGuide().getPlaces();
                 for(int i = 0; i < places.length; i++){
                     Place item = places[i];
                     if ((item.getId() != null && item.getId().equals(s)) ||
                             item.getTitle().toLowerCase().equals(s.toLowerCase()) ||
                             item.getVisibleLabel().toLowerCase().equals(s.toLowerCase())) {
 
-                        TextToSpeechSingleton.getInstance().gotoChapter(i);
+                        ttsFragment.gotoChapter(i);
                         menuitem.collapseActionView();
                         return true;
                     }
@@ -99,7 +104,7 @@ public class SearchViewGuides {
         MatrixCursor cursor = new MatrixCursor(columnNames);
         String[] temp = new String[3];
         int id = 0;
-        for(Place item : TextToSpeechSingleton.getInstance().getGuide().getPlaces()){
+        for(Place item : ttsFragment.getGuide().getPlaces()){
 
             if (filter == null ||
                     (item.getId() != null && item.getId().contains(filter)) ||

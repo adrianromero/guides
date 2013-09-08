@@ -18,7 +18,11 @@ package com.adrguides;
 
 import android.app.Fragment;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,48 +30,51 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
-import com.adrguides.tts.TextToSpeechSingleton;
+
 
 /**
  * Created by adrian on 19/08/13.
  */
-public class LocationFragment extends Fragment implements TextToSpeechSingleton.PlayingListener {
+public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingListener {
 
     public final static String TAG = "LOCATION_FRAGMENT";
 
     private View v;
     private SearchViewGuides searchview;
 
+    private TTSFragment ttsfragment;
+
     @Override
     public void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setHasOptionsMenu(true);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
         v = inflater.inflate(R.layout.fragment_location, container, false);
-
         return v;
     }
 
-    public void onResume () {
-        super.onResume();
+    public void onStart () {
+        super.onStart();
 
-        TextToSpeechSingleton.getInstance().setPlayingListener(this);
+        ttsfragment = (TTSFragment) getFragmentManager().findFragmentByTag(TTSFragment.TAG);
+        ttsfragment.setPlayingListener(this);
         printStatus();
     }
-    public void onPause () {
-        super.onPause();
-
-        TextToSpeechSingleton.getInstance().setPlayingListener(null);
+    public void onStop () {
+        ttsfragment.setPlayingListener(null);
+        ttsfragment = null;
+        super.onStop();
     }
+
     public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
@@ -76,7 +83,7 @@ public class LocationFragment extends Fragment implements TextToSpeechSingleton.
         menu.findItem(R.id.action_playpause).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                TextToSpeechSingleton.getInstance().playstartpause();
+                ttsfragment.playstartpause();
                 return true;
             }
         });
@@ -84,7 +91,7 @@ public class LocationFragment extends Fragment implements TextToSpeechSingleton.
         menu.findItem(R.id.action_begin).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                TextToSpeechSingleton.getInstance().restartChapter();
+                ttsfragment.restartChapter();
                 return true;
             }
         });
@@ -92,7 +99,7 @@ public class LocationFragment extends Fragment implements TextToSpeechSingleton.
         menu.findItem(R.id.action_next).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                TextToSpeechSingleton.getInstance().gotoNext();
+                ttsfragment.gotoNext();
                 return true;
             }
         });
@@ -100,14 +107,14 @@ public class LocationFragment extends Fragment implements TextToSpeechSingleton.
         menu.findItem(R.id.action_first).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                TextToSpeechSingleton.getInstance().gotoFirst();
+                ttsfragment.gotoFirst();
                 return true;
             }
         });
         menu.findItem(R.id.action_previous).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                TextToSpeechSingleton.getInstance().gotoPrevious();
+                ttsfragment.gotoPrevious();
                 return true;
             }
         });
@@ -126,28 +133,58 @@ public class LocationFragment extends Fragment implements TextToSpeechSingleton.
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        boolean playing = TextToSpeechSingleton.getInstance().isPlaying();
+        if (ttsfragment.isTTSReady() && ttsfragment.isGuideAvailable() && ttsfragment.isGuideLanguageAvailable()) {
 
-        MenuItem playpause = menu.findItem(R.id.action_playpause);
-        playpause.setTitle(playing ? R.string.action_pause : R.string.action_play);
-        playpause.setIcon(playing ? R.drawable.ic_media_pause : R.drawable.ic_media_play);
+            boolean playing = ttsfragment.isPlaying();
+
+            menu.findItem(R.id.action_playpause)
+                    .setEnabled(true)
+                    .setTitle(playing ? R.string.action_pause : R.string.action_play)
+                    .setIcon(playing ? R.drawable.ic_media_pause : R.drawable.ic_media_play);
+            menu.findItem(R.id.menu_search)
+                    .setEnabled(true)
+                    .setIcon(R.drawable.ic_menu_search);
+            menu.findItem(R.id.action_begin).setEnabled(true);
+            menu.findItem(R.id.action_next).setEnabled(true);
+            menu.findItem(R.id.action_first).setEnabled(true);
+            menu.findItem(R.id.action_previous).setEnabled(true);
+            menu.findItem(R.id.action_list).setEnabled(true);
+        } else {
+            menu.findItem(R.id.action_playpause)
+                    .setEnabled(false)
+                    .setIcon(getDrawableDisabled(R.drawable.ic_media_play));
+            menu.findItem(R.id.menu_search)
+                    .setEnabled(false)
+                    .setIcon(getDrawableDisabled(R.drawable.ic_menu_search));
+            menu.findItem(R.id.action_begin).setEnabled(false);
+            menu.findItem(R.id.action_next).setEnabled(false);
+            menu.findItem(R.id.action_first).setEnabled(false);
+            menu.findItem(R.id.action_previous).setEnabled(false);
+            menu.findItem(R.id.action_list).setEnabled(false);
+        }
+    }
+
+    private Drawable getDrawableDisabled(int res) {
+        Drawable resIcon = getResources().getDrawable(res);
+        resIcon.mutate().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
+        return resIcon;
     }
 
     private void printStatus() {
 
-        Guide guide = TextToSpeechSingleton.getInstance().getGuide();
-        int chapter = TextToSpeechSingleton.getInstance().getChapter();
-        int paragraph = TextToSpeechSingleton.getInstance().getParagraph();
-        // boolean playing = TextToSpeechSingleton.getInstance().isPlaying();
-
         TextView title = (TextView) v.findViewById(R.id.textTitle);
         TextView content = (TextView) v.findViewById(R.id.textContent);
+        TextView message = (TextView) v.findViewById(R.id.textMessage);
+        ProgressBar progress = (ProgressBar) v.findViewById(R.id.progressMessage);
 
-        if (guide == null || chapter >= guide.getPlaces().length) {
-            title.setVisibility(View.GONE);
-            content.setVisibility(View.GONE);
-            switchImage(null);
-        } else {
+        if (ttsfragment.isTTSReady() && ttsfragment.isGuideAvailable() && ttsfragment.isGuideLanguageAvailable()) {
+
+            Guide guide = ttsfragment.getGuide();
+            int chapter = ttsfragment.getChapter();
+            int paragraph = ttsfragment.getParagraph();
+
+            message.setVisibility(View.GONE);
+            progress.setVisibility(View.GONE);
             Place mychapter = guide.getPlaces()[chapter];
             title.setVisibility(View.VISIBLE);
             title.setText(mychapter.getVisibleLabel());
@@ -166,6 +203,31 @@ public class LocationFragment extends Fragment implements TextToSpeechSingleton.
                     b = mychapter.getSections()[0].getImage();
                 }
                 switchImage(b);
+            }
+        } else {
+            title.setVisibility(View.GONE);
+            content.setVisibility(View.GONE);
+            message.setVisibility(View.VISIBLE);
+            switchImage(null);
+
+            switchImage(null);
+            if (!ttsfragment.isTTSReady()) {
+                // Language not available
+                if (ttsfragment.isInitialized()) {
+                    // error
+                    message.setText(getResources().getString(R.string.msg_tts_not_available));
+                    progress.setVisibility(View.GONE);
+                } else {
+                    // Initializing
+                    message.setText(getResources().getString(R.string.msg_tts_initializing));
+                    progress.setVisibility(View.VISIBLE);
+                }
+            } else if (!ttsfragment.isGuideAvailable()) {
+                message.setText(getResources().getString(R.string.msg_guide_not_available));
+                progress.setVisibility(View.GONE);
+            } else { // !ttsfragment.isGuideLanguageAvailable
+                message.setText(getResources().getString(R.string.msg_guide_language_not_available, ttsfragment.getGuide().getLocale().getDisplayName()));
+                progress.setVisibility(View.GONE);
             }
         }
 
@@ -207,7 +269,9 @@ public class LocationFragment extends Fragment implements TextToSpeechSingleton.
     public void update() {
         v.post(new Runnable(){
             public void run() {
-                printStatus();
+                if (ttsfragment != null) { // Fragment not stopped
+                    printStatus();
+                }
             }
         });
     }

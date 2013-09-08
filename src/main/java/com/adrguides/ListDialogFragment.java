@@ -21,7 +21,10 @@ public class ListDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        Guide guide = TextToSpeechSingleton.getInstance().getGuide();
+
+        final TTSFragment ttsfragment = (TTSFragment) getFragmentManager().findFragmentByTag(TTSFragment.TAG);
+
+        Guide guide = ttsfragment.getGuide();
         Place[] places = guide.getPlaces();
 
         String[] labels = new String[places.length];
@@ -32,7 +35,7 @@ public class ListDialogFragment extends DialogFragment {
         builder.setTitle(guide.getTitle());
         builder.setItems(labels, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                TextToSpeechSingleton.getInstance().gotoChapter(which);
+                ttsfragment.gotoChapter(which);
             }
         });
         return builder.create();

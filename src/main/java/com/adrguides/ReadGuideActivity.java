@@ -1,26 +1,19 @@
 package com.adrguides;
 
-import android.app.ActionBar;
 import android.app.Fragment;
-import android.app.FragmentBreadCrumbs;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 import android.preference.PreferenceManager;
-import android.speech.tts.TextToSpeech;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
 import com.adrguides.model.Guide;
-import com.adrguides.model.Place;
 import com.adrguides.tts.TextToSpeechSingleton;
 
 
-public class ReadGuideActivity extends Activity implements FragmentManager.OnBackStackChangedListener {
+public class ReadGuideActivity extends Activity {
 
     private static final int TTS_REQUEST_CODE = 332342;
 
@@ -32,27 +25,40 @@ public class ReadGuideActivity extends Activity implements FragmentManager.OnBac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guide);
 
-
-        TextToSpeechSingleton.getInstance().init(getApplicationContext(), PreferenceManager.getDefaultSharedPreferences(this));
-
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
-//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-//        return sharedPref.getString("pref_rpi_url", "");
-
-
         FragmentManager fm = getFragmentManager();
-        fm.addOnBackStackChangedListener(this);
 
-        Fragment locationfragment = fm.findFragmentByTag(LocationFragment.TAG);
-        if (locationfragment == null) {
-            locationfragment = new LocationFragment();
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.add(R.id.guiderootview, locationfragment, LocationFragment.TAG);
-            ft.commit();
+        TTSFragment ttsfragment = (TTSFragment) fm.findFragmentByTag(TTSFragment.TAG);
+        if (ttsfragment == null) {
+
+            ttsfragment = new TTSFragment();
+
+            ttsfragment.setGuide(TextToSpeechSingleton.getInstance().getGuide());
+            TextToSpeechSingleton.getInstance().setGuide(null);
+
+            fm.beginTransaction()
+                    .add(ttsfragment, TTSFragment.TAG)
+                    .commit();
         }
 
-        updateBreadCrumbs();
+        Fragment locationfragment = fm.findFragmentByTag(ReadGuideFragment.TAG);
+        if (locationfragment == null) {
+            locationfragment = new ReadGuideFragment();
+            fm.beginTransaction()
+                    .add(R.id.guiderootview, locationfragment, ReadGuideFragment.TAG)
+                    .commit();
+        }
+
+
+        Guide guide = ttsfragment.getGuide();
+        int chapter = ttsfragment.getChapter();
+        if (guide == null) {
+            getActionBar().setTitle(getResources().getText(R.string.title_activity_read_guide));
+        } else {
+            getActionBar().setTitle(guide.getTitle());
+        }
+
 
 //        Intent checkIntent = new Intent();
 //        checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
@@ -90,19 +96,4 @@ public class ReadGuideActivity extends Activity implements FragmentManager.OnBac
 //        }
 //    }
 
-    private void updateBreadCrumbs() {
-
-        Guide guide = TextToSpeechSingleton.getInstance().getGuide();
-        int chapter = TextToSpeechSingleton.getInstance().getChapter();
-        if (guide == null) {
-            getActionBar().setTitle(getResources().getText(R.string.title_activity_read_guide));
-        } else {
-            getActionBar().setTitle(guide.getTitle());
-        }
-    }
-
-    @Override
-    public void onBackStackChanged() {
-        updateBreadCrumbs();
-    }
 }

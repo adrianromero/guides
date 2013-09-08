@@ -39,7 +39,7 @@ public class HTTPUtils {
         Log.d("com.adrguides.HTTPUtils", "loading");
 
         try {
-            Thread.sleep(500);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
         }
 
