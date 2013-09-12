@@ -16,6 +16,7 @@
 
 package com.adrguides;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,6 +28,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -46,8 +49,25 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
-//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-//        return sharedPref.getString("pref_rpi_url", "");
+
+
+        SpinnerAdapter mSpinnerAdapter = new ArrayAdapter(getActionBar().getThemedContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                new String[] {"one","two","three"});
+
+        ActionBar.OnNavigationListener mOnNavigationListener = new ActionBar.OnNavigationListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(int position, long itemId) {
+
+                return true;
+            }
+        };
+
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        actionBar.setListNavigationCallbacks(mSpinnerAdapter, mOnNavigationListener);
     }
     @Override
     public void onDestroy() {
