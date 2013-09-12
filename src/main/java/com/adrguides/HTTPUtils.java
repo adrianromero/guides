@@ -38,11 +38,6 @@ public class HTTPUtils {
 
         Log.d("com.adrguides.HTTPUtils", "loading");
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-        }
-
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(context.getAssets().open("mockguide.json"), "UTF-8"));
 

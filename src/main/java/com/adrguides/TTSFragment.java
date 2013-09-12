@@ -52,11 +52,6 @@ public class TTSFragment extends Fragment implements TextToSpeech.OnInitListener
     @Override
     public void onInit(int i) {
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-        }
-
         initialized = true;
         if (TextToSpeech.SUCCESS != i) {
             tts = null;
