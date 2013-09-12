@@ -30,6 +30,7 @@
         <activity
                 android:name="com.adrguides.ReadGuideActivity"
                 android:label="@string/title_activity_read_guide"
+                android:uiOptions="splitActionBarWhenNarrow"
                 android:parentActivityName="com.adrguides.MainActivity">
         </activity>
 

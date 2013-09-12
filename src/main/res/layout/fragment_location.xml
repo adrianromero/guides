@@ -5,32 +5,12 @@
                 android:layout_height="match_parent"
         >
 
-    <ViewSwitcher
+    <ImageSwitcher
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
-            android:inAnimation="@anim/fade_in"
-            android:outAnimation="@anim/fade_out"
-            android:id="@+id/switcherBackgroundGuide"
-        >
-
-        <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/imageBackgroundGuide_0"
-                android:cropToPadding="false"
-                android:scaleType="centerCrop"
-                />
-        <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/imageBackgroundGuide_1"
-                android:cropToPadding="false"
-                android:scaleType="centerCrop"
-                />
-    </ViewSwitcher>
-
+            android:id="@+id/switcherImageGuide"/>
 
     <TextView
             android:layout_width="wrap_content"
@@ -60,6 +40,7 @@
             android:paddingRight="3dp"
             android:paddingBottom="3dp"
             android:maxLines="10"
+            android:scrollbars="vertical"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"

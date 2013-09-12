@@ -16,12 +16,15 @@
 
 package com.adrguides;
 
+import android.app.ActionBar;
 import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,8 +32,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -59,6 +65,25 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_location, container, false);
+
+        ImageSwitcher imageSwitcher = (ImageSwitcher) v.findViewById(R.id.switcherImageGuide);
+        imageSwitcher.setInAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
+        imageSwitcher.setOutAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+        imageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
+            @Override
+            public View makeView() {
+                ImageView iView = new ImageView(getActivity());
+                iView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                iView.setCropToPadding(false);
+                iView.setLayoutParams(new ImageSwitcher.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                iView.setBackgroundColor(0xFF000000);
+                return iView;
+            }
+        });
+
+        ((TextView) v.findViewById(R.id.textContent)).setMovementMethod(new ScrollingMovementMethod());
+
         return v;
     }
 
@@ -241,29 +266,14 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
         if (image == currentImage && !firsttime) {
             return;
         }
-
         firsttime = false;
         currentImage = image;
 
-        ViewSwitcher switcher = (ViewSwitcher) v.findViewById(R.id.switcherBackgroundGuide);
-
-        ImageView iv0 = (ImageView) v.findViewById(R.id.imageBackgroundGuide_0);
-        ImageView iv1 = (ImageView) v.findViewById(R.id.imageBackgroundGuide_1);
-
-        if (switcher.getDisplayedChild() == 0) {
-            if (image == null) {
-                iv1.setImageResource(R.drawable.place_default);
-            } else {
-                iv1.setImageBitmap(currentImage);
-            }
-            switcher.showNext();
+        ImageSwitcher imageSwitcher = (ImageSwitcher) v.findViewById(R.id.switcherImageGuide);
+        if (currentImage == null) {
+            imageSwitcher.setImageResource(R.drawable.place_default);
         } else {
-            if (image == null) {
-                iv0.setImageResource(R.drawable.place_default);
-            } else {
-                iv0.setImageBitmap(currentImage);
-            }
-            switcher.showPrevious();
+            imageSwitcher.setImageDrawable(new BitmapDrawable(getResources(), currentImage));
         }
     }
 
