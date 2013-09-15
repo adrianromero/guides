@@ -21,6 +21,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,11 +33,20 @@ import com.adrguides.model.Place;
 import com.adrguides.model.Section;
 import com.adrguides.tts.TextToSpeechSingleton;
 
+import org.apache.http.client.methods.HttpGet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.UUID;
 
 /**
  * Created by adrian on 2/09/13.
@@ -97,6 +108,9 @@ public class LoadGuideFragment extends Fragment {
                 result.setException("Context not available.");
 
             } else {
+
+                initBitmapStorage(context);
+
                 try {
                     JSONObject data = HTTPUtils.execGET(context, url);
 
@@ -147,14 +161,74 @@ public class LoadGuideFragment extends Fragment {
             return result;
         }
 
-        private Bitmap loadImage(Context context, JSONObject json) throws JSONException, IOException {
+        private String loadImage(Context context, JSONObject json) throws JSONException, IOException {
             if (json.has("image_asset")) {
-                return BitmapFactory.decodeStream(context.getAssets().open(json.getString("image_asset")));
+                return saveBitmap(context, BitmapFactory.decodeStream(context.getAssets().open(json.getString("image_asset"))));
+            } else if (json.has("image_url")) {
+                URL url = new URL(json.getString("image_url"));
+
+                URLConnection urlconn =  url.openConnection();
+                urlconn.setReadTimeout(10000 /* milliseconds */);
+                urlconn.setConnectTimeout(15000 /* milliseconds */);
+                urlconn.setAllowUserInteraction(false);
+                urlconn.setDoInput(true);
+                urlconn.setDoOutput(false);
+                if (urlconn instanceof HttpURLConnection) {
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    int responsecode = connection.getResponseCode();
+                    if (responsecode != HttpURLConnection.HTTP_OK) {
+                        return null;
+                    }
+                }
+                InputStream in = null;
+                try {
+                    in = urlconn.getInputStream();
+                    return saveBitmap(context, BitmapFactory.decodeStream(in));
+                } finally {
+                    if (in != null){
+                        in.close();
+                    }
+                }
             } else {
                 return null;
             }
         }
 
+        private void initBitmapStorage(Context context) {
+
+            Log.d("com.adrguides.LoadGuideFragment", "dir -> " + context.getFilesDir().getAbsolutePath());
+
+            File[] bmps = context.getFilesDir().listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File file, String s) {
+                    return s.startsWith("guide-");
+                }
+            });
+            for (File b: bmps) {
+                b.delete();
+            }
+        }
+
+        private String saveBitmap(Context context, Bitmap bmp) {
+
+            String name = "guide-" + UUID.randomUUID().toString() + ".png";
+            OutputStream out = null;
+            try {
+                out =  context.openFileOutput(name, Context.MODE_PRIVATE);
+                bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+                return name;
+            } catch (IOException e) {
+                return null;
+            } finally {
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                    }
+                }
+            }
+        }
 
         @Override
         protected void onPostExecute(LoadedGuide r) {

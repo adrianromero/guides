@@ -43,6 +43,8 @@ import android.widget.ViewSwitcher;
 import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
 
+import java.io.File;
+
 
 /**
  * Created by adrian on 19/08/13.
@@ -207,6 +209,7 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             Guide guide = ttsfragment.getGuide();
             int chapter = ttsfragment.getChapter();
             int paragraph = ttsfragment.getParagraph();
+            String b;
 
             message.setVisibility(View.GONE);
             progress.setVisibility(View.GONE);
@@ -216,24 +219,22 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             if (paragraph >= 0) {
                 content.setVisibility(View.VISIBLE);
                 content.setText(mychapter.getSections()[paragraph].getText());
-                Bitmap b = mychapter.getSections()[paragraph].getImage();
+                b = mychapter.getSections()[paragraph].getImage();
                 if (b == null) {
                     b = mychapter.getImage();
                 }
-                switchImage(b);
             } else {
                 content.setVisibility(View.GONE);
-                Bitmap b = mychapter.getImage();
+                b = mychapter.getImage();
                 if (b == null && mychapter.getSections().length > 0) {
                     b = mychapter.getSections()[0].getImage();
                 }
-                switchImage(b);
             }
+            switchImage(b);
         } else {
             title.setVisibility(View.GONE);
             content.setVisibility(View.GONE);
             message.setVisibility(View.VISIBLE);
-            switchImage(null);
 
             switchImage(null);
             if (!ttsfragment.isTTSReady()) {
@@ -259,12 +260,18 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
         getActivity().invalidateOptionsMenu();
     }
 
-    private Bitmap currentImage = null;
+    private String currentImage = null;
     private boolean firsttime = true;
-    private void switchImage(Bitmap image) {
+    private SwitchImageThread t = null;
+    private void switchImage(String image) {
 
         if (image == currentImage && !firsttime) {
             return;
+        }
+
+        if (t != null) {
+            t.cancel();
+            t = null;
         }
         firsttime = false;
         currentImage = image;
@@ -273,7 +280,37 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
         if (currentImage == null) {
             imageSwitcher.setImageResource(R.drawable.place_default);
         } else {
-            imageSwitcher.setImageDrawable(new BitmapDrawable(getResources(), currentImage));
+            t = new SwitchImageThread(new File(this.getActivity().getFilesDir(),currentImage).getPath());
+            t.start();
+        }
+    }
+
+    private class SwitchImageThread extends Thread {
+
+        private String file;
+        private boolean canceled = false;
+
+        public SwitchImageThread(String file) {
+            this.file = file;
+        }
+
+        public synchronized void cancel() {
+            canceled = true;
+        }
+        public synchronized boolean isCancelled() {
+            return canceled;
+        }
+
+        @Override
+        public void run() {
+            final Drawable dr = new BitmapDrawable(getResources(),file);
+            v.post(new Runnable(){
+                public void run() {
+                    if (ttsfragment != null && !isCancelled()) { // Fragment not stopped
+                        ((ImageSwitcher) v.findViewById(R.id.switcherImageGuide)).setImageDrawable(dr);
+                    }
+                }
+            });
         }
     }
 

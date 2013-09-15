@@ -10,7 +10,7 @@ import android.os.Parcelable;
 public class Section implements Parcelable {
 
     private String text = null; // not null
-    private Bitmap image = null; // Nullable
+    private String image = null; // Nullable
 
     public String getText() {
         return text;
@@ -20,18 +20,18 @@ public class Section implements Parcelable {
         this.text = text;
     }
 
-    public Bitmap getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(Bitmap image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(getText());
-        parcel.writeParcelable(getImage(), i);
+        parcel.writeString(getImage());
     }
 
     @Override
@@ -43,7 +43,7 @@ public class Section implements Parcelable {
         public Section createFromParcel(Parcel in) {
             Section section = new Section();
             section.setText(in.readString());
-            section.setImage((Bitmap) in.readParcelable(null));
+            section.setImage(in.readString());
             return section;
         }
 

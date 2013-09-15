@@ -12,7 +12,7 @@ public class Place implements Parcelable {
     private Section[] sections;
     private String title; // not null
     private String id; // nulllable
-    private Bitmap image; // nullable
+    private String image; // nullable
 
     public String getId() {
         return id;
@@ -34,11 +34,11 @@ public class Place implements Parcelable {
         return (id == null ? "" : id + " - ") + title;
     }
 
-    public Bitmap getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(Bitmap image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
@@ -64,7 +64,7 @@ public class Place implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(getId());
         parcel.writeString(getTitle());
-        parcel.writeParcelable(getImage(), i);
+        parcel.writeString(getImage());
         parcel.writeParcelableArray(getSections(), i);
     }
 
@@ -73,7 +73,7 @@ public class Place implements Parcelable {
             Place place = new Place();
             place.setId(in.readString());
             place.setTitle(in.readString());
-            place.setImage((Bitmap) in.readParcelable(null));
+            place.setImage(in.readString());
             place.setSections((Section[]) in.readParcelableArray(null));
             return place;
         }
