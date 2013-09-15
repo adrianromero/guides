@@ -47,6 +47,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by adrian on 2/09/13.
@@ -98,8 +101,8 @@ public class LoadGuideFragment extends Fragment {
 
         @Override
         protected LoadedGuide doInBackground(Object... params) {
-            Context context = (Context) params[0];
-            String url = (String) params[1];
+            final Context context = (Context) params[0];
+            final String url = (String) params[1];
 
             LoadedGuide result = new LoadedGuide();
 
@@ -110,6 +113,8 @@ public class LoadGuideFragment extends Fragment {
             } else {
 
                 initBitmapStorage(context);
+
+                ExecutorService exec = Executors.newFixedThreadPool(5);
 
                 try {
                     JSONObject data = HTTPUtils.execGET(context, url);
@@ -124,30 +129,56 @@ public class LoadGuideFragment extends Fragment {
                     Place[] places = new Place[chapters.length()];
                     guide.setPlaces(places);
                     for (int i = 0; i < chapters.length(); i++) {
-                        JSONObject chapter = chapters.getJSONObject(i);
-                        Place p = new Place();
+                        final JSONObject chapter = chapters.getJSONObject(i);
+                        final Place p = new Place();
                         p.setId(chapter.has("id") ? chapter.getString("id") : null);
                         p.setTitle(chapter.getString("title"));
-                        p.setImage(loadImage(context, chapter));
+                        exec.submit(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    p.setImage(loadImage(context, chapter));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
 
                         JSONArray paragraphs = chapter.getJSONArray("paragraphs");
                         Section[] sections = new Section[paragraphs.length()];
                         p.setSections(sections);
                         for (int j = 0; j < paragraphs.length(); j++) {
-                            sections[j] = new Section();
-                            JSONObject s = paragraphs.optJSONObject(j);
+                            final Section section = new Section();
+                            final JSONObject s = paragraphs.optJSONObject(j);
                             if (s == null) {
-                                sections[j].setText(paragraphs.getString(j));
+                                section.setText(paragraphs.getString(j));
                             } else {
-                                sections[j].setImage(loadImage(context, s));
-                                sections[j].setText(s.getString("text"));
+                                section.setText(s.getString("text"));
+                                exec.submit(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                           section.setImage(loadImage(context, s));
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
                             }
+                            sections[j] = section;
                         }
                         places[i] = p;
                     }
 
                     result.setStatus(0);
                     result.setGuide(guide);
+
+                    shutdownAndAwaitTermination(exec);
+
                 } catch (IOException e) {
                     Log.d("com.adrguides.GuideFragment", null, e);
                     result.setStatus(-1);
@@ -159,6 +190,22 @@ public class LoadGuideFragment extends Fragment {
                 }
             }
             return result;
+        }
+
+        void shutdownAndAwaitTermination(ExecutorService pool) {
+            pool.shutdown();
+            try {
+                if (!pool.awaitTermination(120, TimeUnit.SECONDS)) {
+                    pool.shutdownNow();
+                    if (!pool.awaitTermination(120, TimeUnit.SECONDS)) {
+                        System.err.println("Pool did not terminate");
+                    }
+                }
+
+            } catch (InterruptedException ie) {
+                pool.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
         }
 
         private String loadImage(Context context, JSONObject json) throws JSONException, IOException {
