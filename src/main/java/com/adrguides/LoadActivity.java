@@ -19,6 +19,7 @@ package com.adrguides;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -60,10 +61,14 @@ public class LoadActivity extends Activity implements LoadGuideFragment.LoadGuid
         FragmentManager fm = getFragmentManager();
         loadguide = (LoadGuideFragment) fm.findFragmentByTag(LoadGuideFragment.TAG);
         if (loadguide == null) {
+            // Calculate rezize dimensions
+            Point size = new Point();
+            this.getWindowManager().getDefaultDisplay().getSize(size);
+            int imagesize = Math.max(size.x, size.y);
             // loading guide
             loadguide = new LoadGuideFragment();
             fm.beginTransaction().add(loadguide, LoadGuideFragment.TAG).commit();
-            loadguide.loadGuide(this.getApplicationContext(), getIntent().getStringExtra(GUIDE_URL));
+            loadguide.loadGuide(getApplicationContext(), getIntent().getStringExtra(GUIDE_URL), imagesize);
         }
 
         ((TextView) findViewById(R.id.textGuideName)).setText(getResources().getString(R.string.msg_loading, getIntent().getStringExtra(GUIDE_NAME)));

@@ -38,10 +38,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -89,11 +91,10 @@ public class LoadGuideFragment extends Fragment {
         }
     }
 
-    public void loadGuide(Context context, String url) {
+    public void loadGuide(Context context, String url, int imagesize) {
         loadGuideresult = null;
         Log.d("com.adrguides.GuideFragment", "loadGuide: " + url);
-        Log.d("com.adrguides.GuideFragment", "getActivity() == null: " + (getActivity() == null));
-        new GuideLoader().execute(context, url);
+        new GuideLoader().execute(context, url, imagesize);
 
     }
 
@@ -103,6 +104,7 @@ public class LoadGuideFragment extends Fragment {
         protected LoadedGuide doInBackground(Object... params) {
             final Context context = (Context) params[0];
             final String url = (String) params[1];
+            final int imagesize = (Integer) params[2];
 
             LoadedGuide result = new LoadedGuide();
 
@@ -116,8 +118,17 @@ public class LoadGuideFragment extends Fragment {
 
                 ExecutorService exec = Executors.newFixedThreadPool(5);
 
+                InputStream inguide = null;
                 try {
-                    JSONObject data = HTTPUtils.execGET(context, url);
+                    // Read JSON
+                    inguide = HTTPUtils.openAddress(context, url);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inguide, "UTF-8"));
+                    StringBuffer jsontext = new StringBuffer();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        jsontext.append(line).append('\n');
+                    }
+                    JSONObject data = new JSONObject(jsontext.toString());
 
                     Guide guide = new Guide();
                     guide.setTitle(data.getString("title"));
@@ -137,7 +148,7 @@ public class LoadGuideFragment extends Fragment {
                             @Override
                             public void run() {
                                 try {
-                                    p.setImage(loadImage(context, chapter));
+                                    p.setImage(loadImage(context, chapter.optString("image"), imagesize));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 } catch (IOException e) {
@@ -160,7 +171,7 @@ public class LoadGuideFragment extends Fragment {
                                     @Override
                                     public void run() {
                                         try {
-                                           section.setImage(loadImage(context, s));
+                                           section.setImage(loadImage(context, s.optString("image"), imagesize));
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         } catch (IOException e) {
@@ -187,6 +198,13 @@ public class LoadGuideFragment extends Fragment {
                     Log.d("com.adrguides.GuideFragment", null, e);
                     result.setStatus(-1);
                     result.setException(e.getMessage());
+                } finally {
+                    if (inguide != null) {
+                        try {
+                            inguide.close();
+                        } catch (IOException e) {
+                        }
+                    }
                 }
             }
             return result;
@@ -208,40 +226,6 @@ public class LoadGuideFragment extends Fragment {
             }
         }
 
-        private String loadImage(Context context, JSONObject json) throws JSONException, IOException {
-            if (json.has("image_asset")) {
-                return saveBitmap(context, BitmapFactory.decodeStream(context.getAssets().open(json.getString("image_asset"))));
-            } else if (json.has("image_url")) {
-                URL url = new URL(json.getString("image_url"));
-
-                URLConnection urlconn =  url.openConnection();
-                urlconn.setReadTimeout(10000 /* milliseconds */);
-                urlconn.setConnectTimeout(15000 /* milliseconds */);
-                urlconn.setAllowUserInteraction(false);
-                urlconn.setDoInput(true);
-                urlconn.setDoOutput(false);
-                if (urlconn instanceof HttpURLConnection) {
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("GET");
-                    int responsecode = connection.getResponseCode();
-                    if (responsecode != HttpURLConnection.HTTP_OK) {
-                        return null;
-                    }
-                }
-                InputStream in = null;
-                try {
-                    in = urlconn.getInputStream();
-                    return saveBitmap(context, BitmapFactory.decodeStream(in));
-                } finally {
-                    if (in != null){
-                        in.close();
-                    }
-                }
-            } else {
-                return null;
-            }
-        }
-
         private void initBitmapStorage(Context context) {
 
             Log.d("com.adrguides.LoadGuideFragment", "dir -> " + context.getFilesDir().getAbsolutePath());
@@ -257,21 +241,39 @@ public class LoadGuideFragment extends Fragment {
             }
         }
 
-        private String saveBitmap(Context context, Bitmap bmp) {
-
-            String name = "guide-" + UUID.randomUUID().toString() + ".png";
-            OutputStream out = null;
-            try {
-                out =  context.openFileOutput(name, Context.MODE_PRIVATE);
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
-                return name;
-            } catch (IOException e) {
+        private String loadImage(Context context, String address, int imagesize) throws JSONException, IOException {
+            if (address == null || address.equals("")) {
                 return null;
-            } finally {
-                if (out != null) {
-                    try {
+            } else {
+                InputStream in = null;
+                OutputStream out = null;
+                String name = "guide-" + UUID.randomUUID().toString() + ".png";
+                try {
+                    // read bitmap from source.
+                    in = HTTPUtils.openAddress(context, address);
+                    Bitmap bmp = BitmapFactory.decodeStream(in);
+
+                    // resize if needed to save space
+                    int originsize = Math.min(bmp.getHeight(), bmp.getWidth());
+                    if (originsize > imagesize) {
+                        float factor = imagesize  / originsize;
+                        Log.d("com.adrguides.LoadGuideFragment", "factor --> " + factor);
+                        Bitmap newbmp = Bitmap.createScaledBitmap(bmp, (int) (bmp.getWidth() * factor), (int) (bmp.getHeight() * factor), true);
+                        bmp.recycle();
+                        bmp = newbmp;
+                    }
+
+                    // store in local filesystem.
+                    out =  context.openFileOutput(name, Context.MODE_PRIVATE);
+                    bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+                    bmp.recycle();
+                    return name;
+                } finally {
+                    if (out != null) {
                         out.close();
-                    } catch (IOException e) {
+                    }
+                    if (in != null){
+                        in.close();
                     }
                 }
             }

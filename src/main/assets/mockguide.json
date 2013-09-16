@@ -3,40 +3,35 @@
     "language": "es",
     "country": "ES",
     "variant": "",
-    "chapters": [
-        {
-            "id": "001",
-            "title": "Cuadro primero",
-            "paragraphs" : [
-                {"image_asset": "madrid_1.jpg",
-                 "text": "Este es el cuadro primero"
-                },
-                {"image_asset": "madrid_2.jpg",
-                 "text": "Muy bonito. Es nuevo."
-                },
-                {"image_asset": "madrid_3.jpg",
-                 "text": "Y además hasta a Pepe el Soso le gusta"
-                }
-            ]
-        },
-        {
-            "id": "002",
-            "title": "Cuadro segundo",
-            "image_asset": "madrid_3.jpg",
-            "paragraphs" : [
-                "Este es el cuadro segundo.",
-                "Muy abstracto.",
-                "Y me gusta menos que el primero y más que el segundo."
-            ]
-        },
-        {
-            "id": "003",
-            "title": "Cuadro último",
-            "paragraphs" : [
-                "Este es el último. \nNo es el mejor de todos pero al menos va el último y eso se nota.",
-                "El mejor",
-                "Y el que más me gusta."
-            ]
-        }
-    ]
+    "chapters": [{
+        "id": "001",
+        "title": "Cuadro primero",
+        "paragraphs": [{
+            "image": "file:///android_asset/madrid_1.jpg",
+            "text": "Este es el cuadro primero"
+        }, {
+            "image": "file:///android_asset/madrid_2.jpg",
+            "text": "Muy bonito. Es nuevo."
+        }, {
+            "image": "file:///android_asset/madrid_3.jpg",
+            "text": "Y además hasta a Pepe el Soso le gusta"
+        }]
+    }, {
+        "id": "002",
+        "title": "Cuadro segundo",
+        "image": "file:///android_asset/madrid_3.jpg",
+        "paragraphs": [
+            "Este es el cuadro segundo.",
+            "Muy abstracto.",
+            "Y me gusta menos que el primero y más que el segundo."
+        ]
+    }, {
+        "id": "003",
+        "title": "Cuadro último",
+        "paragraphs": [
+            "Este es el último. \nNo es el mejor de todos pero al menos va el último y eso se nota.",
+            "El mejor",
+            "Y el que más me gusta."
+        ]
+    }]
 }
