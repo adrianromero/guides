@@ -1,7 +1,6 @@
 package com.adrguides;
 
 import android.app.Activity;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.util.Log;
@@ -11,9 +10,6 @@ import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 
 import com.adrguides.model.Place;
-import com.adrguides.tts.TextToSpeechSingleton;
-
-import java.util.ArrayList;
 
 /**
  * Created by adrian on 29/08/13.

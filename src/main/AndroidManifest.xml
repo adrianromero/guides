@@ -40,6 +40,17 @@
             android:name="com.adrguides.LoadActivity"
             android:label="@string/title_activity_load"
             android:noHistory="true">
+<!--
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.tour\\.md" />
+                <data android:host="*" />
+            </intent-filter>
+-->
         </activity>
     </application>
 

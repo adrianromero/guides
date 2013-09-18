@@ -21,20 +21,8 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.View;
-import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
-
-import com.adrguides.model.Guide;
-import com.adrguides.tts.TextToSpeechSingleton;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.MessageFormat;
 
 /**
  * Created by adrian on 2/09/13.
@@ -98,9 +86,8 @@ public class LoadActivity extends Activity implements LoadGuideFragment.LoadGuid
     public void onFinishLoad(LoadedGuide result) {
 
         if (result.getStatus() == 0) {
-            TextToSpeechSingleton.getInstance().setGuide(result.getGuide());
-
             Intent intent = new Intent(this, ReadGuideActivity.class);
+            intent.putExtra(ReadGuideActivity.ARG_GUIDE, result.getGuide());
             startActivity(intent);
         } else {
             ((TextView)findViewById(R.id.textException)).setText(result.getException());

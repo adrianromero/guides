@@ -18,22 +18,17 @@ package com.adrguides;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ViewSwitcher;
 
 import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
 import com.adrguides.model.Section;
-import com.adrguides.tts.TextToSpeechSingleton;
+import com.adrguides.utils.HTTPUtils;
 
-import org.apache.http.client.methods.HttpGet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,9 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -103,7 +96,7 @@ public class LoadGuideFragment extends Fragment {
         @Override
         protected LoadedGuide doInBackground(Object... params) {
             final Context context = (Context) params[0];
-            final String url = (String) params[1];
+            final String address = (String) params[1];
             final int imagesize = (Integer) params[2];
 
             LoadedGuide result = new LoadedGuide();
@@ -120,8 +113,10 @@ public class LoadGuideFragment extends Fragment {
 
                 InputStream inguide = null;
                 try {
+                    final URL urldoc = new URL(address);
+
                     // Read JSON
-                    inguide = HTTPUtils.openAddress(context, url);
+                    inguide = HTTPUtils.openAddress(context, urldoc);
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inguide, "UTF-8"));
                     StringBuffer jsontext = new StringBuffer();
                     String line;
@@ -144,18 +139,6 @@ public class LoadGuideFragment extends Fragment {
                         final Place p = new Place();
                         p.setId(chapter.has("id") ? chapter.getString("id") : null);
                         p.setTitle(chapter.getString("title"));
-                        exec.submit(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    p.setImage(loadImage(context, chapter.optString("image"), imagesize));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
 
                         JSONArray paragraphs = chapter.getJSONArray("paragraphs");
                         Section[] sections = new Section[paragraphs.length()];
@@ -171,7 +154,7 @@ public class LoadGuideFragment extends Fragment {
                                     @Override
                                     public void run() {
                                         try {
-                                           section.setImage(loadImage(context, s.optString("image"), imagesize));
+                                           section.setImage(loadImage(context, urldoc, s.optString("image"), imagesize));
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         } catch (IOException e) {
@@ -241,7 +224,7 @@ public class LoadGuideFragment extends Fragment {
             }
         }
 
-        private String loadImage(Context context, String address, int imagesize) throws JSONException, IOException {
+        private String loadImage(Context context, URL baseurl, String address, int imagesize) throws JSONException, IOException {
             if (address == null || address.equals("")) {
                 return null;
             } else {
@@ -250,7 +233,7 @@ public class LoadGuideFragment extends Fragment {
                 String name = "guide-" + UUID.randomUUID().toString() + ".png";
                 try {
                     // read bitmap from source.
-                    in = HTTPUtils.openAddress(context, address);
+                    in = HTTPUtils.openAddress(context, new URL(baseurl, address));
                     Bitmap bmp = BitmapFactory.decodeStream(in);
 
                     // resize if needed to save space

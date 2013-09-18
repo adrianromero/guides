@@ -87,7 +87,8 @@ public class Guide implements Parcelable {
             guide.setLanguage(in.readString());
             guide.setCountry(in.readString());
             guide.setVariant(in.readString());
-            guide.setPlaces((Place[]) in.readParcelableArray(null));
+            Parcelable[] places = in.readParcelableArray(getClass().getClassLoader());
+            guide.setPlaces(Arrays.copyOf(places, places.length, Place[].class));
             return guide;
         }
 

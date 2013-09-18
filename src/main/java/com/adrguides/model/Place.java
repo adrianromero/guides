@@ -1,8 +1,9 @@
 package com.adrguides.model;
 
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.Arrays;
 
 /**
  * Created by adrian on 20/08/13.
@@ -12,7 +13,6 @@ public class Place implements Parcelable {
     private Section[] sections;
     private String title; // not null
     private String id; // nulllable
-    private String image; // nullable
 
     public String getId() {
         return id;
@@ -32,14 +32,6 @@ public class Place implements Parcelable {
 
     public String getVisibleLabel() {
         return (id == null ? "" : id + " - ") + title;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 
     public Section[] getSections() {
@@ -64,7 +56,6 @@ public class Place implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(getId());
         parcel.writeString(getTitle());
-        parcel.writeString(getImage());
         parcel.writeParcelableArray(getSections(), i);
     }
 
@@ -73,8 +64,8 @@ public class Place implements Parcelable {
             Place place = new Place();
             place.setId(in.readString());
             place.setTitle(in.readString());
-            place.setImage(in.readString());
-            place.setSections((Section[]) in.readParcelableArray(null));
+            Parcelable[] sections = in.readParcelableArray(getClass().getClassLoader());
+            place.setSections(Arrays.copyOf(sections, sections.length, Section[].class));
             return place;
         }
 

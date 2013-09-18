@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Guides</string>
+    <string name="app_name">Guidebook</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="btn_talk">Talk</string>
     <string name="btn_install">Install TTS Data</string>
-    <string name="title_activity_read_guide">Read Guide Activity</string>
+    <string name="title_activity_read_guide">Read Guidebook</string>
     <string name="title_activity_settings">Settings</string>
 
     <string name="action_play">Play</string>
@@ -18,16 +18,16 @@
     <string name="action_list">List</string>
 
 
-    <string name="title_activity_load">Load Guide</string>
+    <string name="title_activity_load">Load Guidebook</string>
     <string name="msg_loading">Loading %s.</string>
-    <string name="lbl_error_loading">Error loading guide</string>
+    <string name="lbl_error_loading">Error loading guidebook</string>
     <string name="msg_guide_not_available">Guide not available.</string>
-    <string name="msg_guide_language_not_available">Guide locale %s not available.</string>
+    <string name="msg_guide_language_not_available">Guidebook locale %s not available.</string>
     <string name="msg_tts_not_available">Text To Speech engine cannot be loaded.</string>
     <string name="msg_tts_initializing">Initializing Text To Speech engine.</string>
 
     <string name="pref_gdi_autoplay">Auto play</string>
-    <string name="pref_gdi_autoplay_summary">Defines if auto play guides.</string>
+    <string name="pref_gdi_autoplay_summary">Defines whether start playing guidebooks automatically.</string>
     <string name="pref_gdi_pitch">Pitch</string>
     <string name="pref_gdi_pitch_summary">Sets the speech pitch for the text to speech engine.</string>
     <string name="pref_gdi_speechrate">Speech rate</string>

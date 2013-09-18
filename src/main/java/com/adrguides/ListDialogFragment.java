@@ -8,7 +8,6 @@ import android.os.Bundle;
 
 import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
-import com.adrguides.tts.TextToSpeechSingleton;
 
 /**
  * Created by adrian on 31/08/13.

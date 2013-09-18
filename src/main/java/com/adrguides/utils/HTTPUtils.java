@@ -14,7 +14,7 @@
 //        You should have received a copy of the GNU General Public License
 //        along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package com.adrguides;
+package com.adrguides.utils;
 
 import android.content.Context;
 import android.util.Log;
@@ -35,12 +35,10 @@ import org.json.JSONObject;
 
 public class HTTPUtils {
 
-    public static InputStream openAddress(Context context, String address) throws IOException {
-        if (address.startsWith("file:///android_asset/")) {
-            return context.getAssets().open(address.substring(22)); // "file:///android_asset/".length() == 22
+    public static InputStream openAddress(Context context, URL url) throws IOException {
+        if ("file".equals(url.getProtocol()) && url.getPath().startsWith("/android_asset/")) {
+            return context.getAssets().open(url.getPath().substring(15)); // "/android_asset/".length() == 15
         } else {
-            URL url = new URL(address);
-
             URLConnection urlconn =  url.openConnection();
             urlconn.setReadTimeout(10000 /* milliseconds */);
             urlconn.setConnectTimeout(15000 /* milliseconds */);
@@ -62,7 +60,7 @@ public class HTTPUtils {
 
     public static JSONObject execGETMock(Context context, String address) throws IOException {
 
-        Log.d("com.adrguides.HTTPUtils", "loading");
+        Log.d("com.adrguides.utils.HTTPUtils", "loading");
 
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(context.getAssets().open("mockguide.json"), "UTF-8"));
@@ -76,7 +74,7 @@ public class HTTPUtils {
         reader.close();
 
         try {
-            Log.i("com.adrguides.HTTPUtils", "result -> " + jsontext.toString());
+            Log.i("com.adrguides.utils.HTTPUtils", "result -> " + jsontext.toString());
             return new JSONObject(jsontext.toString());
         } catch (JSONException ex) {
             throw new IOException(MessageFormat.format("Parse exception: {0}.", ex.getMessage()));

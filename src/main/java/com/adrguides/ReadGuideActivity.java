@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.adrguides.model.Guide;
-import com.adrguides.tts.TextToSpeechSingleton;
 
 
 public class ReadGuideActivity extends Activity {
@@ -18,7 +17,7 @@ public class ReadGuideActivity extends Activity {
     private static final int TTS_REQUEST_CODE = 332342;
 
     public static final String ARG_GUIDE = "ARG_GUIDE";
-    public static final String ARG_PLACE = "ARG_PLACE";
+    // public static final String ARG_PLACE = "ARG_PLACE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +30,7 @@ public class ReadGuideActivity extends Activity {
 
         TTSFragment ttsfragment = (TTSFragment) fm.findFragmentByTag(TTSFragment.TAG);
         if (ttsfragment == null) {
-
             ttsfragment = new TTSFragment();
-
-            ttsfragment.setGuide(TextToSpeechSingleton.getInstance().getGuide());
-            TextToSpeechSingleton.getInstance().setGuide(null);
-
             fm.beginTransaction()
                     .add(ttsfragment, TTSFragment.TAG)
                     .commit();

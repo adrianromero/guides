@@ -53,6 +53,8 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
 
     public final static String TAG = "LOCATION_FRAGMENT";
 
+    private final static String IMAGE_BLANK = "<<IMAGE_BLANK>>";
+
     private View v;
     private SearchViewGuides searchview;
 
@@ -220,14 +222,15 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
                 content.setVisibility(View.VISIBLE);
                 content.setText(mychapter.getSections()[paragraph].getText());
                 b = mychapter.getSections()[paragraph].getImage();
-                if (b == null) {
-                    b = mychapter.getImage();
-                }
             } else {
                 content.setVisibility(View.GONE);
-                b = mychapter.getImage();
-                if (b == null && mychapter.getSections().length > 0) {
+                if (mychapter.getSections().length > 0) {
                     b = mychapter.getSections()[0].getImage();
+                    if (b == null) {
+                        b = IMAGE_BLANK;
+                    }
+                } else {
+                    b = IMAGE_BLANK;
                 }
             }
             switchImage(b);
@@ -236,7 +239,7 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             content.setVisibility(View.GONE);
             message.setVisibility(View.VISIBLE);
 
-            switchImage(null);
+            switchImage(IMAGE_BLANK);
             if (!ttsfragment.isTTSReady()) {
                 // Language not available
                 if (ttsfragment.isInitialized()) {
@@ -261,11 +264,11 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
     }
 
     private String currentImage = null;
-    private boolean firsttime = true;
+
     private SwitchImageThread t = null;
     private void switchImage(String image) {
 
-        if (image == currentImage && !firsttime) {
+        if (image == null || image.equals(currentImage)) {
             return;
         }
 
@@ -273,11 +276,11 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             t.cancel();
             t = null;
         }
-        firsttime = false;
+
         currentImage = image;
 
         ImageSwitcher imageSwitcher = (ImageSwitcher) v.findViewById(R.id.switcherImageGuide);
-        if (currentImage == null) {
+        if (currentImage.equals(IMAGE_BLANK)) {
             imageSwitcher.setImageResource(R.drawable.place_default);
         } else {
             t = new SwitchImageThread(new File(this.getActivity().getFilesDir(),currentImage).getPath());
