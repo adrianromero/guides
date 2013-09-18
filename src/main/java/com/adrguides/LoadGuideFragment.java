@@ -115,63 +115,22 @@ public class LoadGuideFragment extends Fragment {
                 try {
                     final URL urldoc = new URL(address);
 
-                    // Read JSON
+                    // Read Document
                     inguide = HTTPUtils.openAddress(context, urldoc);
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inguide, "UTF-8"));
-                    StringBuffer jsontext = new StringBuffer();
+                    StringBuffer text = new StringBuffer();
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        jsontext.append(line).append('\n');
+                        text.append(line).append('\n');
                     }
-                    JSONObject data = new JSONObject(jsontext.toString());
 
-                    Guide guide = new Guide();
-                    guide.setTitle(data.getString("title"));
-                    guide.setLanguage(data.optString("language", "en"));
-                    guide.setCountry(data.optString("country", "US"));
-                    guide.setVariant(data.optString("variant", ""));
-
-                    JSONArray chapters = data.getJSONArray("chapters");
-                    Place[] places = new Place[chapters.length()];
-                    guide.setPlaces(places);
-                    for (int i = 0; i < chapters.length(); i++) {
-                        final JSONObject chapter = chapters.getJSONObject(i);
-                        final Place p = new Place();
-                        p.setId(chapter.has("id") ? chapter.getString("id") : null);
-                        p.setTitle(chapter.getString("title"));
-
-                        JSONArray paragraphs = chapter.getJSONArray("paragraphs");
-                        Section[] sections = new Section[paragraphs.length()];
-                        p.setSections(sections);
-                        for (int j = 0; j < paragraphs.length(); j++) {
-                            final Section section = new Section();
-                            final JSONObject s = paragraphs.optJSONObject(j);
-                            if (s == null) {
-                                section.setText(paragraphs.getString(j));
-                            } else {
-                                section.setText(s.getString("text"));
-                                exec.submit(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                           section.setImage(loadImage(context, urldoc, s.optString("image"), imagesize));
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-                            }
-                            sections[j] = section;
-                        }
-                        places[i] = p;
-                    }
+                    FutureImage future = new FutureImage(context, urldoc, imagesize);
+                    future.beginExecutor();
+                    Guide guide = loadGuide(text.toString(), future);
+                    future.endExecutor();
 
                     result.setStatus(0);
                     result.setGuide(guide);
-
-                    shutdownAndAwaitTermination(exec);
 
                 } catch (IOException e) {
                     Log.d("com.adrguides.GuideFragment", null, e);
@@ -193,44 +152,102 @@ public class LoadGuideFragment extends Fragment {
             return result;
         }
 
-        void shutdownAndAwaitTermination(ExecutorService pool) {
-            pool.shutdown();
-            try {
-                if (!pool.awaitTermination(120, TimeUnit.SECONDS)) {
-                    pool.shutdownNow();
-                    if (!pool.awaitTermination(120, TimeUnit.SECONDS)) {
-                        System.err.println("Pool did not terminate");
+        private Guide loadGuide(String text, FutureImage future) throws JSONException {
+
+
+            JSONObject data = new JSONObject(text);
+
+            Guide guide = new Guide();
+            guide.setTitle(data.getString("title"));
+            guide.setLanguage(data.optString("language", "en"));
+            guide.setCountry(data.optString("country", "US"));
+            guide.setVariant(data.optString("variant", ""));
+
+            JSONArray chapters = data.getJSONArray("chapters");
+            Place[] places = new Place[chapters.length()];
+            guide.setPlaces(places);
+            for (int i = 0; i < chapters.length(); i++) {
+                final JSONObject chapter = chapters.getJSONObject(i);
+                final Place p = new Place();
+                p.setId(chapter.has("id") ? chapter.getString("id") : null);
+                p.setTitle(chapter.getString("title"));
+
+                JSONArray paragraphs = chapter.getJSONArray("paragraphs");
+                Section[] sections = new Section[paragraphs.length()];
+                p.setSections(sections);
+                for (int j = 0; j < paragraphs.length(); j++) {
+                    final Section section = new Section();
+                    final JSONObject s = paragraphs.optJSONObject(j);
+                    if (s == null) {
+                        section.setText(paragraphs.getString(j));
+                    } else {
+                        section.setText(s.getString("text"));
+                        section.setImage(future.loadImage(s.optString("image")));
                     }
+                    sections[j] = section;
                 }
-
-            } catch (InterruptedException ie) {
-                pool.shutdownNow();
-                Thread.currentThread().interrupt();
+                places[i] = p;
             }
+            return guide;
         }
 
-        private void initBitmapStorage(Context context) {
+        private class FutureImage {
 
-            Log.d("com.adrguides.LoadGuideFragment", "dir -> " + context.getFilesDir().getAbsolutePath());
+            private ExecutorService exec;
+            private Context context;
+            private URL baseurl;
+            private int imagesize;
 
-            File[] bmps = context.getFilesDir().listFiles(new FilenameFilter() {
-                @Override
-                public boolean accept(File file, String s) {
-                    return s.startsWith("guide-");
-                }
-            });
-            for (File b: bmps) {
-                b.delete();
+            public FutureImage(Context context, URL baseurl, int imagesize) {
+                this.context = context;
+                this.baseurl = baseurl;
+                this.imagesize = imagesize;
             }
-        }
 
-        private String loadImage(Context context, URL baseurl, String address, int imagesize) throws JSONException, IOException {
-            if (address == null || address.equals("")) {
-                return null;
-            } else {
+            public void beginExecutor() {
+                exec = Executors.newFixedThreadPool(5);
+            }
+
+            public void endExecutor() {
+                exec.shutdown();
+                try {
+                    if (!exec.awaitTermination(120, TimeUnit.SECONDS)) {
+                        exec.shutdownNow();
+                        if (!exec.awaitTermination(120, TimeUnit.SECONDS)) {
+                            System.err.println("Pool did not terminate");
+                        }
+                    }
+
+                } catch (InterruptedException ie) {
+                    exec.shutdownNow();
+                    Thread.currentThread().interrupt();
+                }
+            }
+
+            public String loadImage(final String address) {
+                if (address == null || address.equals("")) {
+                    return null;
+                } else {
+                    final String name = "guide-" + UUID.randomUUID().toString() + ".png";
+                    exec.submit(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                loadImageTask(address, name);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    return name;
+                }
+            }
+
+            private String loadImageTask(String address, String name) throws IOException {
+
                 InputStream in = null;
                 OutputStream out = null;
-                String name = "guide-" + UUID.randomUUID().toString() + ".png";
+
                 try {
                     // read bitmap from source.
                     in = HTTPUtils.openAddress(context, new URL(baseurl, address));
@@ -259,6 +276,21 @@ public class LoadGuideFragment extends Fragment {
                         in.close();
                     }
                 }
+            }
+        }
+
+        private void initBitmapStorage(Context context) {
+
+            Log.d("com.adrguides.LoadGuideFragment", "dir -> " + context.getFilesDir().getAbsolutePath());
+
+            File[] bmps = context.getFilesDir().listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File file, String s) {
+                    return s.startsWith("guide-");
+                }
+            });
+            for (File b: bmps) {
+                b.delete();
             }
         }
 

@@ -306,7 +306,9 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
 
         @Override
         public void run() {
-            final Drawable dr = new BitmapDrawable(getResources(),file);
+            // if file does not exist bitmap will be null and drawable will be a black rectangle.
+            // that is OK for me.
+            final Drawable dr = new BitmapDrawable(getResources(), file);
             v.post(new Runnable(){
                 public void run() {
                     if (ttsfragment != null && !isCancelled()) { // Fragment not stopped
