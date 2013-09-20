@@ -1,3 +1,7 @@
+// Developed by Kirk Baucom and published as Public Domain
+// http://robobunny.com/wp/2013/08/24/android-seekbar-preference-v2/
+// Modifications by Adrián Romero as Public Domain
+
 package com.adrguides.robobunny;
 
 import android.content.Context;
@@ -9,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;

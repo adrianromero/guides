@@ -1,4 +1,4 @@
-//        Guides is an Android application that reads audioguides using Text-to-Speech services.
+//        Guidebook is an Android application that reads audioguides using Text-to-Speech services.
 //        Copyright (C) 2013  Adrián Romero Corchado
 //
 //        This program is free software: you can redistribute it and/or modify
@@ -17,13 +17,11 @@
 package com.adrguides;
 
 import android.app.ActionBar;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
