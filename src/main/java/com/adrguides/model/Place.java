@@ -3,16 +3,24 @@ package com.adrguides.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by adrian on 20/08/13.
  */
 public class Place implements Parcelable {
 
-    private Section[] sections;
-    private String title; // not null
     private String id; // nulllable
+    private String title; // not null
+
+    private List<Section> sections = new ArrayList<Section>();
+
+    public Place() {
+        id = null;
+        title = "* * *";
+    }
 
     public String getId() {
         return id;
@@ -34,11 +42,11 @@ public class Place implements Parcelable {
         return (id == null ? "" : id + " - ") + title;
     }
 
-    public Section[] getSections() {
+    public List<Section> getSections() {
         return sections;
     }
 
-    public void setSections(Section[] sections) {
+    public void setSections(List<Section> sections) {
         this.sections = sections;
     }
 
@@ -56,7 +64,7 @@ public class Place implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(getId());
         parcel.writeString(getTitle());
-        parcel.writeParcelableArray(getSections(), i);
+        parcel.writeTypedList(getSections());
     }
 
     public static final Parcelable.Creator<Place> CREATOR = new Parcelable.Creator<Place>() {
@@ -64,8 +72,7 @@ public class Place implements Parcelable {
             Place place = new Place();
             place.setId(in.readString());
             place.setTitle(in.readString());
-            Parcelable[] sections = in.readParcelableArray(getClass().getClassLoader());
-            place.setSections(Arrays.copyOf(sections, sections.length, Section[].class));
+            place.setSections(in.createTypedArrayList(Section.CREATOR));
             return place;
         }
 

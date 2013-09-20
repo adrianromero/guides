@@ -11,6 +11,8 @@ import android.widget.SimpleCursorAdapter;
 
 import com.adrguides.model.Place;
 
+import java.util.List;
+
 /**
  * Created by adrian on 29/08/13.
  */
@@ -71,9 +73,9 @@ public class SearchViewGuides {
                 }
 
                 Log.d("com.adrguides.SearchViewGuides", "man submitao");
-                Place[] places = ttsFragment.getGuide().getPlaces();
-                for(int i = 0; i < places.length; i++){
-                    Place item = places[i];
+                List<Place> places = ttsFragment.getGuide().getPlaces();
+                for(int i = 0; i < places.size(); i++){
+                    Place item = places.get(i);
                     if ((item.getId() != null && item.getId().equals(s)) ||
                             item.getTitle().toLowerCase().equals(s.toLowerCase()) ||
                             item.getVisibleLabel().toLowerCase().equals(s.toLowerCase())) {

@@ -109,8 +109,6 @@ public class LoadGuideFragment extends Fragment {
 
                 initBitmapStorage(context);
 
-                ExecutorService exec = Executors.newFixedThreadPool(5);
-
                 InputStream inguide = null;
                 try {
                     final URL urldoc = new URL(address);
@@ -124,10 +122,8 @@ public class LoadGuideFragment extends Fragment {
                         text.append(line).append('\n');
                     }
 
-                    FutureImage future = new FutureImage(context, urldoc, imagesize);
-                    future.beginExecutor();
-                    Guide guide = loadGuide(text.toString(), future);
-                    future.endExecutor();
+                    LoadGuide loadguide = new LoadGuideJSON(context, urldoc, imagesize);
+                    Guide guide = loadguide.load(text.toString());
 
                     result.setStatus(0);
                     result.setGuide(guide);
@@ -136,7 +132,7 @@ public class LoadGuideFragment extends Fragment {
                     Log.d("com.adrguides.GuideFragment", null, e);
                     result.setStatus(-1);
                     result.setException(e.getMessage());
-                } catch (JSONException e) { // Parsing JSON text
+                } catch (Exception e) { // Parsing JSON text
                     Log.d("com.adrguides.GuideFragment", null, e);
                     result.setStatus(-1);
                     result.setException(e.getMessage());
@@ -150,133 +146,6 @@ public class LoadGuideFragment extends Fragment {
                 }
             }
             return result;
-        }
-
-        private Guide loadGuide(String text, FutureImage future) throws JSONException {
-
-
-            JSONObject data = new JSONObject(text);
-
-            Guide guide = new Guide();
-            guide.setTitle(data.getString("title"));
-            guide.setLanguage(data.optString("language", "en"));
-            guide.setCountry(data.optString("country", "US"));
-            guide.setVariant(data.optString("variant", ""));
-
-            JSONArray chapters = data.getJSONArray("chapters");
-            Place[] places = new Place[chapters.length()];
-            guide.setPlaces(places);
-            for (int i = 0; i < chapters.length(); i++) {
-                final JSONObject chapter = chapters.getJSONObject(i);
-                final Place p = new Place();
-                p.setId(chapter.has("id") ? chapter.getString("id") : null);
-                p.setTitle(chapter.getString("title"));
-
-                JSONArray paragraphs = chapter.getJSONArray("paragraphs");
-                Section[] sections = new Section[paragraphs.length()];
-                p.setSections(sections);
-                for (int j = 0; j < paragraphs.length(); j++) {
-                    final Section section = new Section();
-                    final JSONObject s = paragraphs.optJSONObject(j);
-                    if (s == null) {
-                        section.setText(paragraphs.getString(j));
-                    } else {
-                        section.setText(s.getString("text"));
-                        section.setImage(future.loadImage(s.optString("image")));
-                    }
-                    sections[j] = section;
-                }
-                places[i] = p;
-            }
-            return guide;
-        }
-
-        private class FutureImage {
-
-            private ExecutorService exec;
-            private Context context;
-            private URL baseurl;
-            private int imagesize;
-
-            public FutureImage(Context context, URL baseurl, int imagesize) {
-                this.context = context;
-                this.baseurl = baseurl;
-                this.imagesize = imagesize;
-            }
-
-            public void beginExecutor() {
-                exec = Executors.newFixedThreadPool(5);
-            }
-
-            public void endExecutor() {
-                exec.shutdown();
-                try {
-                    if (!exec.awaitTermination(120, TimeUnit.SECONDS)) {
-                        exec.shutdownNow();
-                        if (!exec.awaitTermination(120, TimeUnit.SECONDS)) {
-                            System.err.println("Pool did not terminate");
-                        }
-                    }
-
-                } catch (InterruptedException ie) {
-                    exec.shutdownNow();
-                    Thread.currentThread().interrupt();
-                }
-            }
-
-            public String loadImage(final String address) {
-                if (address == null || address.equals("")) {
-                    return null;
-                } else {
-                    final String name = "guide-" + UUID.randomUUID().toString() + ".png";
-                    exec.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                loadImageTask(address, name);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                    return name;
-                }
-            }
-
-            private String loadImageTask(String address, String name) throws IOException {
-
-                InputStream in = null;
-                OutputStream out = null;
-
-                try {
-                    // read bitmap from source.
-                    in = HTTPUtils.openAddress(context, new URL(baseurl, address));
-                    Bitmap bmp = BitmapFactory.decodeStream(in);
-
-                    // resize if needed to save space
-                    int originsize = Math.min(bmp.getHeight(), bmp.getWidth());
-                    if (originsize > imagesize) {
-                        float factor = imagesize  / originsize;
-                        Log.d("com.adrguides.LoadGuideFragment", "factor --> " + factor);
-                        Bitmap newbmp = Bitmap.createScaledBitmap(bmp, (int) (bmp.getWidth() * factor), (int) (bmp.getHeight() * factor), true);
-                        bmp.recycle();
-                        bmp = newbmp;
-                    }
-
-                    // store in local filesystem.
-                    out =  context.openFileOutput(name, Context.MODE_PRIVATE);
-                    bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
-                    bmp.recycle();
-                    return name;
-                } finally {
-                    if (out != null) {
-                        out.close();
-                    }
-                    if (in != null){
-                        in.close();
-                    }
-                }
-            }
         }
 
         private void initBitmapStorage(Context context) {

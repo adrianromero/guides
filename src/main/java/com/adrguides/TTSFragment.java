@@ -138,7 +138,7 @@ public class TTSFragment extends Fragment implements TextToSpeech.OnInitListener
         tts.stop();
         playing = false;
 
-        if (i >= 0 && i < guide.getPlaces().length) {
+        if (i >= 0 && i < guide.getPlaces().size()) {
             chapter = i;
             paragraph = -1;
         }
@@ -178,22 +178,22 @@ public class TTSFragment extends Fragment implements TextToSpeech.OnInitListener
         tts.stop();
         playing = false;
 
-        if (chapter < guide.getPlaces().length) {
+        if (chapter < guide.getPlaces().size()) {
 
             tts.setLanguage(guide.getLocale());
             tts.setPitch(calculateLogValue(sharedPref.getInt("pref_gdi_pitch", 0), 5.0, 0.1));
             tts.setSpeechRate(calculateLogValue(sharedPref.getInt("pref_gdi_speechrate", 0), 3.0, 0.1));
 
 
-            Place place = guide.getPlaces()[chapter];
+            Place place = guide.getPlaces().get(chapter);
 
             if (paragraph < 0) {
                 paragraph = 0;
             }
-            for (int i = paragraph; i < place.getSections().length; i++) {
+            for (int i = paragraph; i < place.getSections().size(); i++) {
 
-                Log.d("com.adrguides.TTS", "playing --> " + Integer.toString(i) + " = " + place.getSections()[i].getText());
-                String textparagraph = place.getSections()[i].getText();
+                Log.d("com.adrguides.TTS", "playing --> " + Integer.toString(i) + " = " + place.getSections().get(i).getText());
+                String textparagraph = place.getSections().get(i).getText();
                 HashMap<String, String> ttsparams = new HashMap<String, String>();
                 ttsparams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, Integer.toString(i));
                 tts.speak(textparagraph, i == 0 ? TextToSpeech.QUEUE_FLUSH : TextToSpeech.QUEUE_ADD, ttsparams);

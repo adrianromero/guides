@@ -215,17 +215,17 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
 
             message.setVisibility(View.GONE);
             progress.setVisibility(View.GONE);
-            Place mychapter = guide.getPlaces()[chapter];
+            Place mychapter = guide.getPlaces().get(chapter);
             title.setVisibility(View.VISIBLE);
             title.setText(mychapter.getVisibleLabel());
             if (paragraph >= 0) {
                 content.setVisibility(View.VISIBLE);
-                content.setText(mychapter.getSections()[paragraph].getText());
-                b = mychapter.getSections()[paragraph].getImage();
+                content.setText(mychapter.getSections().get(paragraph).getText());
+                b = mychapter.getSections().get(paragraph).getImage();
             } else {
                 content.setVisibility(View.GONE);
-                if (mychapter.getSections().length > 0) {
-                    b = mychapter.getSections()[0].getImage();
+                if (mychapter.getSections().size() > 0) {
+                    b = mychapter.getSections().get(0).getImage();
                     if (b == null) {
                         b = IMAGE_BLANK;
                     }

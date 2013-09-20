@@ -9,6 +9,8 @@ import android.os.Bundle;
 import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
 
+import java.util.List;
+
 /**
  * Created by adrian on 31/08/13.
  */
@@ -24,11 +26,11 @@ public class ListDialogFragment extends DialogFragment {
         final TTSFragment ttsfragment = (TTSFragment) getFragmentManager().findFragmentByTag(TTSFragment.TAG);
 
         Guide guide = ttsfragment.getGuide();
-        Place[] places = guide.getPlaces();
+        List<Place> places = guide.getPlaces();
 
-        String[] labels = new String[places.length];
-        for (int i = 0; i < places.length; i++) {
-            labels[i] = places[i].getVisibleLabel();
+        String[] labels = new String[places.size()];
+        for (int i = 0; i < places.size(); i++) {
+            labels[i] = places.get(i).getVisibleLabel();
         }
 
         builder.setTitle(guide.getTitle());

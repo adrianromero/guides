@@ -16,12 +16,59 @@
 
 package com.adrguides;
 
+import android.content.Context;
+
+import com.adrguides.model.Guide;
+import com.adrguides.model.Place;
+import com.adrguides.model.Section;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URL;
+
 /**
  * Created by adrian on 18/09/13.
  */
-public class LoadGuideJSON {
+public class LoadGuideJSON extends LoadGuide {
 
-//    public Guide loadGuide(String file) {
-//
-//    }
+    public LoadGuideJSON(Context context, URL baseurl, int imagesize) {
+        super(context, baseurl, imagesize);
+    }
+
+    @Override
+    protected Guide load_imp(String text) throws Exception {
+
+        JSONObject data = new JSONObject(text);
+
+        Guide guide = new Guide();
+        guide.setTitle(data.getString("title"));
+        guide.setLanguage(data.optString("language", "en"));
+        guide.setCountry(data.optString("country", "US"));
+        guide.setVariant(data.optString("variant", ""));
+
+        JSONArray chapters = data.getJSONArray("chapters");
+        for (int i = 0; i < chapters.length(); i++) {
+            final JSONObject chapter = chapters.getJSONObject(i);
+            final Place p = new Place();
+            p.setId(chapter.has("id") ? chapter.getString("id") : null);
+            p.setTitle(chapter.getString("title"));
+
+            JSONArray paragraphs = chapter.getJSONArray("paragraphs");
+            for (int j = 0; j < paragraphs.length(); j++) {
+                final Section section = new Section();
+                final JSONObject s = paragraphs.optJSONObject(j);
+                if (s == null) {
+                    section.setText(paragraphs.getString(j));
+                } else {
+                    section.setText(s.getString("text"));
+                    section.setImage(loadImage(s.optString("image")));
+                }
+                p.getSections().add(section);
+            }
+            guide.getPlaces().add(p);
+        }
+        return guide;
+    }
 }

@@ -7,7 +7,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -15,12 +17,19 @@ import java.util.Locale;
  */
 public class Guide implements Parcelable {
 
-    private String title = null;
-    private String language = "en";
-    private String country = "US";
-    private String variant = "";
+    private String title;
+    private String language;
+    private String country;
+    private String variant;
 
-    private Place[] places = null;
+    private List<Place> places = new ArrayList<Place>();
+
+    public Guide() {
+        title = "* * *";
+        language = Locale.getDefault().getLanguage();
+        country = Locale.getDefault().getCountry();
+        variant = Locale.getDefault().getVariant();
+    }
 
     public String getTitle() {
         return title;
@@ -58,11 +67,11 @@ public class Guide implements Parcelable {
         return new Locale(language, country, variant);
     }
 
-    public Place[] getPlaces() {
+    public List<Place> getPlaces() {
         return places;
     }
 
-    public void setPlaces(Place[] places) {
+    public void setPlaces(List<Place> places) {
         this.places = places;
     }
 
@@ -77,7 +86,7 @@ public class Guide implements Parcelable {
         parcel.writeString(getLanguage());
         parcel.writeString(getCountry());
         parcel.writeString(getVariant());
-        parcel.writeParcelableArray(getPlaces(), i);
+        parcel.writeTypedList(getPlaces());
     }
 
     public static final Parcelable.Creator<Guide> CREATOR = new Parcelable.Creator<Guide>() {
@@ -87,8 +96,7 @@ public class Guide implements Parcelable {
             guide.setLanguage(in.readString());
             guide.setCountry(in.readString());
             guide.setVariant(in.readString());
-            Parcelable[] places = in.readParcelableArray(getClass().getClassLoader());
-            guide.setPlaces(Arrays.copyOf(places, places.length, Place[].class));
+            guide.setPlaces(in.createTypedArrayList(Place.CREATOR));
             return guide;
         }
 

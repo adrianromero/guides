@@ -9,7 +9,7 @@ import android.os.Parcelable;
  */
 public class Section implements Parcelable {
 
-    private String text = null; // not null
+    private String text = ""; // not null
     private String image = null; // Nullable
 
     public String getText() {
