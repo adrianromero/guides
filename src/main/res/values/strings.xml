@@ -6,7 +6,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="btn_talk">Talk</string>
     <string name="btn_install">Install TTS Data</string>
-    <string name="title_activity_read_guide">Read Guidebook</string>
+    <string name="title_activity_read_guide">Read guidebook</string>
     <string name="title_activity_settings">Settings</string>
 
     <string name="action_play">Play</string>
@@ -18,7 +18,7 @@
     <string name="action_list">List</string>
 
 
-    <string name="title_activity_load">Load Guidebook</string>
+    <string name="title_activity_load">Guidebook</string>
     <string name="msg_loading">Loading %s.</string>
     <string name="lbl_error_loading">Error loading guidebook</string>
     <string name="msg_guide_not_available">Guide not available.</string>

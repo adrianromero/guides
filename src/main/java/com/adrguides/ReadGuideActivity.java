@@ -60,16 +60,6 @@ public class ReadGuideActivity extends Activity {
                     .commit();
         }
 
-
-        Guide guide = ttsfragment.getGuide();
-        int chapter = ttsfragment.getChapter();
-        if (guide == null) {
-            getActionBar().setTitle(getResources().getText(R.string.title_activity_read_guide));
-        } else {
-            getActionBar().setTitle(guide.getTitle());
-        }
-
-
 //        Intent checkIntent = new Intent();
 //        checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
 //        startActivityForResult(checkIntent, TTS_REQUEST_CODE);

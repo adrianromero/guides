@@ -19,6 +19,7 @@ package com.adrguides;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
@@ -30,6 +31,9 @@ import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -106,8 +110,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
     public void onLoadActivityClicked(View view) {
         Intent intent = new Intent(this, LoadActivity.class);
-        intent.putExtra(LoadActivity.GUIDE_URL, "file:///android_asset/mockguide.json");
-        intent.putExtra(LoadActivity.GUIDE_NAME, "La guía de los mocos");
+        intent.setData(Uri.parse("file:///android_asset/mockguide.json"));
         startActivity(intent);
     }
 

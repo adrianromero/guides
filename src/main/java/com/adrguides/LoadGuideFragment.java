@@ -109,7 +109,9 @@ public class LoadGuideFragment extends Fragment {
                         text.append(line).append('\n');
                     }
 
-                    LoadGuide loadguide = new LoadGuideJSON(context, urldoc, imagesize);
+                    //LoadGuide loadguide = new LoadGuideJSON(context, urldoc, imagesize);
+                    LoadGuide loadguide = new LoadGuideHTML(context, urldoc, imagesize);
+
                     Guide guide = loadguide.load(text.toString());
 
                     result.setStatus(0);

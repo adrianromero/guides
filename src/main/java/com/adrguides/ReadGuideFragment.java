@@ -208,6 +208,9 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             int paragraph = ttsfragment.getParagraph();
             String b;
 
+            // Print title in bar
+            getActivity().getActionBar().setTitle(guide.getTitle());
+
             message.setVisibility(View.GONE);
             progress.setVisibility(View.GONE);
             Place mychapter = guide.getPlaces().get(chapter);
@@ -230,6 +233,9 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             }
             switchImage(b);
         } else {
+
+            getActivity().getActionBar().setTitle(getResources().getText(R.string.title_activity_read_guide));
+
             title.setVisibility(View.GONE);
             content.setVisibility(View.GONE);
             message.setVisibility(View.VISIBLE);

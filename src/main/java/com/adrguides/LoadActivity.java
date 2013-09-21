@@ -21,6 +21,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -28,9 +29,6 @@ import android.widget.ViewSwitcher;
  * Created by adrian on 2/09/13.
  */
 public class LoadActivity extends Activity implements LoadGuideFragment.LoadGuideCallbacks {
-
-    public static final String GUIDE_URL = "GUIDE_URL";
-    public static final String GUIDE_NAME = "GUIDE_NAME";
 
     private LoadGuideFragment loadguide;
 
@@ -46,6 +44,8 @@ public class LoadActivity extends Activity implements LoadGuideFragment.LoadGuid
             }
         }
 
+
+
         FragmentManager fm = getFragmentManager();
         loadguide = (LoadGuideFragment) fm.findFragmentByTag(LoadGuideFragment.TAG);
         if (loadguide == null) {
@@ -56,10 +56,12 @@ public class LoadActivity extends Activity implements LoadGuideFragment.LoadGuid
             // loading guide
             loadguide = new LoadGuideFragment();
             fm.beginTransaction().add(loadguide, LoadGuideFragment.TAG).commit();
-            loadguide.loadGuide(getApplicationContext(), getIntent().getStringExtra(GUIDE_URL), imagesize);
+
+            Log.d("com.adrguides.LoadActivity", "Loading Data --> " + getIntent().getDataString());
+            loadguide.loadGuide(getApplicationContext(), getIntent().getDataString(), imagesize);
         }
 
-        ((TextView) findViewById(R.id.textGuideName)).setText(getResources().getString(R.string.msg_loading, getIntent().getStringExtra(GUIDE_NAME)));
+        ((TextView) findViewById(R.id.textGuideName)).setText(getResources().getString(R.string.msg_loading, getIntent().getData().getLastPathSegment()));
 
     }
 

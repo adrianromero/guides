@@ -109,12 +109,18 @@ public class LoadGuideHTML extends LoadGuide {
 
             int start = 0;
             while (start < text.length()) {
-                int i = Math.min(text.indexOf('.', start), text.indexOf(';'));
+                int i = text.indexOf('.', start);
+                int j = text.indexOf(';', start);
+                if (i < 0 || j < 0) {
+                    i = Math.max(i, j);
+                } else {
+                    i = Math.min(i, j);
+                }
                 if (i < 0) {
                     addSection(text.substring(start));
                     start = text.length();
                 } else {
-                    addSection(text.substring(start, i));
+                    addSection(text.substring(start, i + 1));
                     start = i + 1;
                 }
             }
