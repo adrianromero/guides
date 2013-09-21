@@ -109,8 +109,8 @@ public class LoadGuideHTML extends LoadGuide {
 
             int start = 0;
             while (start < text.length()) {
-                int i = text.indexOf('.', start);
-                int j = text.indexOf(';', start);
+                int i = text.indexOf(". ", start);
+                int j = text.indexOf("; ", start);
                 if (i < 0 || j < 0) {
                     i = Math.max(i, j);
                 } else {
@@ -120,7 +120,7 @@ public class LoadGuideHTML extends LoadGuide {
                     addSection(text.substring(start));
                     start = text.length();
                 } else {
-                    addSection(text.substring(start, i + 1));
+                    addSection(text.substring(start, i + 2));
                     start = i + 1;
                 }
             }
@@ -147,7 +147,7 @@ public class LoadGuideHTML extends LoadGuide {
                     section.setText(texttrimmed);
                     place.getSections().add(section);
                 } else { // if section has image but no text add it.
-                    place.getSections().get(place.getSections().size() - 1).setText(texttrimmed)  ;
+                    place.getSections().get(place.getSections().size() - 1).setText(texttrimmed);
                 }
             }
         }
