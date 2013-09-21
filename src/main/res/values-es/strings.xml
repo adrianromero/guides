@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Guidebook</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="hello_world">¿Hola mundo!</string>
+    <string name="btn_talk">Hablar</string>
+    <string name="btn_install">Instalar datos de síntesis de voz</string>
+    <string name="title_activity_read_guide">Leer guía</string>
+    <string name="title_activity_settings">Ajustes</string>
+
+    <string name="action_play">Reproducir</string>
+    <string name="action_pause">Pausa</string>
+    <string name="action_begin">Principio</string>
+    <string name="action_previous">Anterior</string>
+    <string name="action_next">Siguiente</string>
+    <string name="action_first">Primero</string>
+    <string name="action_list">Lista</string>
+
+
+    <string name="title_activity_load">Guidebook</string>
+    <string name="msg_loading">Cargando %s.</string>
+    <string name="lbl_error_loading">Error cargando guía</string>
+    <string name="msg_guide_not_available">Guía no disponible.</string>
+    <string name="msg_guide_language_not_available">El idioma de la guía %s no está disponible.</string>
+    <string name="msg_tts_not_available">El sistema de síntesis de voz no se puede cargar.</string>
+    <string name="msg_tts_initializing">Inicializando el sistema de síntesis de voz.</string>
+
+    <string name="pref_gdi_autoplay">Reproducción automática</string>
+    <string name="pref_gdi_autoplay_summary">Define si empezar la reproducción de la guía automáticamente..</string>
+    <string name="pref_gdi_pitch">Tono</string>
+    <string name="pref_gdi_pitch_summary">Ajusta el tono del sistema de síntesis de voz.</string>
+    <string name="pref_gdi_speechrate">Velocidad del habla.</string>
+    <string name="pref_gdi_speechrate_summary">Ajusta la velocidad del habla del sistema de síntesis de voz.</string>
+
+</resources>

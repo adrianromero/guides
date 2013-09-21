@@ -21,7 +21,7 @@
     <string name="title_activity_load">Guidebook</string>
     <string name="msg_loading">Loading %s.</string>
     <string name="lbl_error_loading">Error loading guidebook</string>
-    <string name="msg_guide_not_available">Guide not available.</string>
+    <string name="msg_guide_not_available">Guidebook not available.</string>
     <string name="msg_guide_language_not_available">Guidebook locale %s not available.</string>
     <string name="msg_tts_not_available">Text To Speech engine cannot be loaded.</string>
     <string name="msg_tts_initializing">Initializing Text To Speech engine.</string>
@@ -32,7 +32,4 @@
     <string name="pref_gdi_pitch_summary">Sets the speech pitch for the text to speech engine.</string>
     <string name="pref_gdi_speechrate">Speech rate</string>
     <string name="pref_gdi_speechrate_summary">Sets the speech rate for the text to speech engine.</string>
-
-
-    <string name="ex_languagenotavailable">%s Speech language not available.</string>
 </resources>
