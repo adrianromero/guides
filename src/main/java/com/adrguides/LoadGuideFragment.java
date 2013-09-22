@@ -118,6 +118,8 @@ public class LoadGuideFragment extends Fragment {
 
                     Guide guide = loadguide.load(text.toString());
 
+                    sanitized(guide);
+
                     result.setStatus(0);
                     result.setGuide(guide);
 
@@ -154,6 +156,10 @@ public class LoadGuideFragment extends Fragment {
             for (File b: bmps) {
                 b.delete();
             }
+        }
+
+        private void sanitized(Guide guide) throws Exception {
+//            if (guide.getTitle())
         }
 
         @Override
