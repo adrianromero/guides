@@ -23,6 +23,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.adrguides.model.Guide;
+import com.adrguides.model.Place;
+import com.adrguides.model.Section;
 import com.adrguides.utils.HTTPUtils;
 
 import java.io.BufferedReader;
@@ -159,7 +161,29 @@ public class LoadGuideFragment extends Fragment {
         }
 
         private void sanitized(Guide guide) throws Exception {
-//            if (guide.getTitle())
+            if (guide.getTitle() == null || guide.getTitle().equals("")) {
+                throw new Exception("Guidebook needs to have a title.");
+            }
+            if (guide.getLanguage() == null || guide.getLanguage().equals("")) {
+                throw new Exception("Guidebook needs to have a language.");
+            }
+            if (guide.getPlaces().size() == 0) {
+                throw new Exception("Guidebook needs to have at least one chapter.");
+            }
+
+            for (Place p : guide.getPlaces()) {
+                if (p.getTitle() == null || p.getTitle().equals("")) {
+                    throw new Exception("All chapters needs to have a title.");
+                }
+                if (p.getSections().size() == 0) {
+                    throw new Exception("All chapters needs to have at least one paragraph.");
+                }
+                for (Section s : p.getSections()) {
+                    if (s.getText() == null || s.getText().equals("")) {
+                        throw new Exception("All paragraphs needs to have at leat one word.");
+                    }
+                }
+            }
         }
 
         @Override
