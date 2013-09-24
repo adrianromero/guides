@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -43,6 +44,8 @@ public abstract class LoadGuide {
     private Context context;
     private URL baseurl;
     private int imagesize;
+
+    private HashMap<String, String> images = new HashMap<String, String>();
 
     public LoadGuide(Context context, URL baseurl, int imagesize) {
         this.context = context;
@@ -63,18 +66,24 @@ public abstract class LoadGuide {
         if (address == null || address.equals("")) {
             return null;
         } else {
-            final String name = "guide-" + UUID.randomUUID().toString() + ".png";
-            exec.submit(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        loadImageTask(address, name);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+            String s = images.get(address);
+            if (s != null) {
+                return s;
+            } else {
+                final String name = "guide-" + UUID.randomUUID().toString() + ".png";
+                images.put(address, name);
+                exec.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            loadImageTask(address, name);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            });
-            return name;
+                });
+                return name;
+            }
         }
     }
 
