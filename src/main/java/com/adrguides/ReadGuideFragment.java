@@ -224,11 +224,8 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
                 content.setVisibility(View.GONE);
                 if (mychapter.getSections().size() > 0) {
                     b = mychapter.getSections().get(0).getImage();
-                    if (b == null) {
-                        b = IMAGE_BLANK;
-                    }
                 } else {
-                    b = IMAGE_BLANK;
+                    b = null;
                 }
             }
             switchImage(b);
@@ -240,7 +237,7 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             content.setVisibility(View.GONE);
             message.setVisibility(View.VISIBLE);
 
-            switchImage(IMAGE_BLANK);
+            switchImage(null);
             if (!ttsfragment.isTTSReady()) {
                 // Language not available
                 if (ttsfragment.isInitialized()) {
@@ -264,12 +261,17 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
         getActivity().invalidateOptionsMenu();
     }
 
-    private String currentImage = null;
+    private String currentImage = null; // not already asigned an image
 
     private SwitchImageThread t = null;
     private void switchImage(String image) {
 
-        if (image == null || image.equals(currentImage)) {
+        if (image == null) {
+            image = IMAGE_BLANK;
+        }
+
+        if (image.equals(currentImage)) {
+            // do not switch if the image is the same
             return;
         }
 

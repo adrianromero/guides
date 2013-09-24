@@ -17,6 +17,7 @@
 package com.adrguides;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
@@ -95,12 +96,10 @@ public class LoadGuideHTML extends LoadGuide {
             Place place = guide.getPlaces().get(guide.getPlaces().size() - 1);
 
             if (place.getSections().size() == 0
-                    || place.getSections().get(place.getSections().size() - 1).getImage() != null) {
+                    || !place.getSections().get(place.getSections().size() - 1).getText().equals("")) {
                 Section section = new Section();
                 section.setImage(loadImage(elem.attr("src")));
                 place.getSections().add(section);
-            } else if (place.getSections().get(0).getImage() == null) {
-                place.getSections().get(0).setImage(loadImage(elem.attr("src")));
             } else {
                 place.getSections().get(place.getSections().size() - 1).setImage(loadImage(elem.attr("src")));
             }
@@ -136,7 +135,7 @@ public class LoadGuideHTML extends LoadGuide {
         if (guide.getPlaces().size() == 0) {
             throw new Exception("Cannot create a new section in an empty guide.");
         }
-
+        Log.d("com.adrguides.LoadGuideHTML", "adding text -> " + text);
         if (text != null) {
             String texttrimmed = text.trim();
             if (!texttrimmed.equals("")) {

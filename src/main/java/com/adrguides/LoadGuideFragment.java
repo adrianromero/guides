@@ -178,10 +178,33 @@ public class LoadGuideFragment extends Fragment {
                 if (p.getSections().size() == 0) {
                     throw new Exception("All chapters needs to have at least one paragraph.");
                 }
-                for (Section s : p.getSections()) {
+
+                Section lastsection = p.getSections().get(p.getSections().size() -1);
+                if (lastsection.getText() == null || lastsection.getText().equals("")) {
+                    // this is supposed to be the place image
+                    String img = lastsection.getImage();
+                    p.getSections().remove(p.getSections().size() -1);
+                    int h = 0;
+                    while(h < p.getSections().size() && p.getSections().get(h).getImage() == null) {
+                        p.getSections().get(h).setImage(img);
+                        h++;
+                    }
+                }
+
+                String lastimg = null;
+                for (int i = 0; i < p.getSections().size(); i++) {
+                    Section s = p.getSections().get(i);
                     if (s.getText() == null || s.getText().equals("")) {
                         throw new Exception("All paragraphs needs to have at leat one word.");
                     }
+                    if (s.getImage() == null) {
+                        s.setImage(lastimg);
+                    } else if (p.getSections().get(0).getImage() == null) {
+                       for (int j = 0; j < i; j++) {
+                           p.getSections().get(j).setImage(s.getImage());
+                       }
+                    }
+                    lastimg = s.getImage();
                 }
             }
         }
