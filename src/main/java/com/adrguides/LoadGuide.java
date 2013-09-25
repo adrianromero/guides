@@ -41,8 +41,9 @@ public abstract class LoadGuide {
 
     private ExecutorService exec;
 
+    protected URL baseurl;
+
     private Context context;
-    private URL baseurl;
     private int imagesize;
 
     private HashMap<String, String> images = new HashMap<String, String>();

@@ -50,8 +50,10 @@ public class LoadGuideHTML extends LoadGuide {
 
         guide = new Guide();
 
-        if (address.endsWith("?.guidebook")) {
-            guide.setAddress(address.substring(0, address.length() - 11));
+        // address
+        Elements canonical = doc.head().getElementsByAttributeValue("rel", "canonical");
+        if (canonical.size() == 1 && canonical.get(0).tagName().equals("link")) {
+            guide.setAddress(new URL(baseurl, canonical.get(0).attr("href")).toString());
         }
 
         // Title if exists
