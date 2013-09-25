@@ -42,6 +42,8 @@ public class LoadGuideJSON extends LoadGuide {
         JSONObject data = new JSONObject(text);
 
         Guide guide = new Guide();
+
+        guide.setAddress(data.optString("address")); // null if no address exist
         guide.setTitle(data.getString("title"));
         guide.setLanguage(data.optString("language", "en"));
         guide.setCountry(data.optString("country", "US"));
