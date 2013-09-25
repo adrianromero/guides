@@ -53,11 +53,11 @@ public abstract class LoadGuide {
         this.imagesize = imagesize;
     }
 
-    protected abstract Guide load_imp(String file) throws Exception;
+    protected abstract Guide load_imp(String address, String file) throws Exception;
 
-    public final Guide load(String file) throws Exception {
+    public final Guide load(String address, String file) throws Exception {
         beginExecutor();
-        Guide guide = load_imp(file);
+        Guide guide = load_imp(address, file);
         endExecutor();
         return guide;
     }

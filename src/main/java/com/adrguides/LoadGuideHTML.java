@@ -43,13 +43,16 @@ public class LoadGuideHTML extends LoadGuide {
     private Guide guide;
 
     @Override
-    protected Guide load_imp(String text) throws Exception {
+    protected Guide load_imp(String address, String text) throws Exception {
 
 
         Document doc = Jsoup.parse(text);
 
         guide = new Guide();
 
+        if (address.endsWith("?.guidebook")) {
+            guide.setAddress(address.substring(0, address.length() - 11));
+        }
 
         // Title if exists
         guide.setTitle(doc.title());

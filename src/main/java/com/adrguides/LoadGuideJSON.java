@@ -37,7 +37,7 @@ public class LoadGuideJSON extends LoadGuide {
     }
 
     @Override
-    protected Guide load_imp(String text) throws Exception {
+    protected Guide load_imp(String address, String text) throws Exception {
 
         JSONObject data = new JSONObject(text);
 

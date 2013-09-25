@@ -28,6 +28,7 @@ import java.util.Locale;
  */
 public class Guide implements Parcelable {
 
+    private String address;
     private String title;
     private String language;
     private String country;
@@ -36,10 +37,19 @@ public class Guide implements Parcelable {
     private List<Place> places = new ArrayList<Place>();
 
     public Guide() {
+        address = null;
         title = "* * *";
         language = Locale.getDefault().getLanguage();
         country = Locale.getDefault().getCountry();
         variant = Locale.getDefault().getVariant();
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getTitle() {
@@ -93,6 +103,7 @@ public class Guide implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(getAddress());
         parcel.writeString(getTitle());
         parcel.writeString(getLanguage());
         parcel.writeString(getCountry());
@@ -103,6 +114,7 @@ public class Guide implements Parcelable {
     public static final Parcelable.Creator<Guide> CREATOR = new Parcelable.Creator<Guide>() {
         public Guide createFromParcel(Parcel in) {
             Guide guide = new Guide();
+            guide.setAddress(in.readString());
             guide.setTitle(in.readString());
             guide.setLanguage(in.readString());
             guide.setCountry(in.readString());

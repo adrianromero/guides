@@ -36,5 +36,9 @@
           android:title="@string/action_list"
           android:orderInCategory="70"/>
 
+    <item android:id="@+id/action_viewguide"
+        android:title="@string/action_viewguide"
+        android:orderInCategory="80"
+        android:showAsAction="never"/>
 
 </menu>

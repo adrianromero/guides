@@ -1,12 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
-        android:orderInCategory="300"
+        android:orderInCategory="310"
         android:showAsAction="never"
         android:onClick="onSettingsClicked"/>
     <item android:id="@+id/action_about"
         android:title="@string/action_about"
-        android:orderInCategory="310"
+        android:orderInCategory="320"
         android:showAsAction="never"
         android:onClick="onAboutClicked"/>
 </menu>

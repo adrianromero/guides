@@ -118,7 +118,7 @@ public class LoadGuideFragment extends Fragment {
                         loadguide = new LoadGuideHTML(context, urldoc, imagesize);
                     }
 
-                    Guide guide = loadguide.load(text.toString());
+                    Guide guide = loadguide.load(address, text.toString());
 
                     sanitized(guide);
 
