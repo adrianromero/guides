@@ -78,6 +78,12 @@ public class ReadGuideActivity extends Activity {
         startActivity(intent);
     }
 
+    public void onAboutClicked(MenuItem item) {
+
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
+    }
+
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        if (requestCode == TTS_REQUEST_CODE) {

@@ -4,4 +4,9 @@
         android:orderInCategory="300"
         android:showAsAction="never"
         android:onClick="onSettingsClicked"/>
+    <item android:id="@+id/action_about"
+        android:title="@string/action_about"
+        android:orderInCategory="310"
+        android:showAsAction="never"
+        android:onClick="onAboutClicked"/>
 </menu>

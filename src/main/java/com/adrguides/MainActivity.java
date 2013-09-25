@@ -92,6 +92,11 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         startActivity(intent);
     }
 
+    public void onAboutClicked(MenuItem item) {
+
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
+    }
 
     //// Test code
 

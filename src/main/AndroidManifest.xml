@@ -30,6 +30,11 @@
         </activity>
 
         <activity
+            android:name="com.adrguides.AboutActivity"
+            android:label="@string/title_activity_about">
+        </activity>
+
+        <activity
                 android:name="com.adrguides.ReadGuideActivity"
                 android:label="@string/title_activity_read_guide"
                 android:uiOptions="splitActionBarWhenNarrow">

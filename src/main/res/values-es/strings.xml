@@ -3,11 +3,13 @@
 
     <string name="app_name">Guidebook</string>
     <string name="action_settings">Ajustes</string>
-    <string name="hello_world">¿Hola mundo!</string>
+    <string name="action_about">Acerca de</string>
+    <string name="hello_world">¡Hola mundo!</string>
     <string name="btn_talk">Hablar</string>
     <string name="btn_install">Instalar datos de síntesis de voz</string>
     <string name="title_activity_read_guide">Leer guía</string>
     <string name="title_activity_settings">Ajustes</string>
+    <string name="title_activity_about">Acerca de</string>
 
     <string name="action_play">Reproducir</string>
     <string name="action_pause">Pausa</string>
@@ -33,4 +35,18 @@
     <string name="pref_gdi_speechrate">Velocidad del habla.</string>
     <string name="pref_gdi_speechrate_summary">Ajusta la velocidad del habla del sistema de síntesis de voz.</string>
 
+    <string name="html_about"><![CDATA[
+        <h2>${app_name} ${app_version}</h2>
+        <p>
+        Guidebook es una aplicación Android que lee audioguías usando síntesis de voz.
+        </p>
+        <h2>Licencia</h2>
+        <p>Publicado bajo licencia GNU General Public License, Version 3.0.</p>
+        <p style="text-align:justify;">
+        Copyright &copy; 2013 Adrián Romero Corchado.
+        </p>
+        <p style="text-align:justify;">
+        <a href="https://github.com/adrianromero/guides">https://github.com/adrianromero/guides</a>
+        </p>
+    ]]></string>
 </resources>
