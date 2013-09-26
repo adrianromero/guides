@@ -22,6 +22,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.adrguides.model.Guide;
+import com.adrguides.utils.GuidesException;
 import com.adrguides.utils.HTTPUtils;
 
 import java.io.IOException;

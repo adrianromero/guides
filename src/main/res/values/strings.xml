@@ -50,4 +50,13 @@
         <a href="https://github.com/adrianromero/guides">https://github.com/adrianromero/guides</a>
         </p>
     ]]></string>
+
+    <string name="ex_guidebookneedstitle">Guidebook needs to have a title.</string>
+    <string name="ex_guidebookneedslanguage">Guidebook needs to have a language.</string>
+    <string name="ex_guidebookneedschapters">Guidebook needs to have at least one chapter.</string>
+    <string name="ex_chaptersneedtitle">All chapters need to have a title.</string>
+    <string name="ex_chaptersneedparagrahps">All chapters nees to have at least one paragraph.</string>
+    <string name="ex_paragraphsneedwords">All paragraphs need to have at leat one word.</string>
+    <string name="ex_cannotaddimage">Cannot add an image to an empty guide.</string>
+
 </resources>

@@ -22,6 +22,7 @@ import android.util.Log;
 import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
 import com.adrguides.model.Section;
+import com.adrguides.utils.GuidesException;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -82,7 +83,7 @@ public class LoadGuideHTML extends LoadGuide {
         guide.setLanguage(loc.length > 2 ? loc[2] : "");
     }
 
-    private void navigateElement(Element elem) throws Exception {
+    private void navigateElement(Element elem) throws GuidesException {
         ArrayList places;
 
         if (elem.hasClass("guidebook_title")) {
@@ -96,7 +97,7 @@ public class LoadGuideHTML extends LoadGuide {
 
         } else if (elem.hasClass("guidebook_image")) {
             if (guide.getPlaces().size() == 0) {
-                throw new Exception("Cannot create a add an image in an empty guide.");
+                throw new GuidesException(R.string.ex_cannotaddimage, "Cannot add an image to an empty guide.");
             }
             Place place = guide.getPlaces().get(guide.getPlaces().size() - 1);
 
@@ -135,10 +136,10 @@ public class LoadGuideHTML extends LoadGuide {
         }
     }
 
-    private void addSection(String text) throws Exception {
+    private void addSection(String text) throws GuidesException {
 
         if (guide.getPlaces().size() == 0) {
-            throw new Exception("Cannot create a new section in an empty guide.");
+            throw new GuidesException(R.string.ex_cannotaddimage, "Cannot add an image to an empty guide.");
         }
         Log.d("com.adrguides.LoadGuideHTML", "adding text -> " + text);
         if (text != null) {
@@ -157,7 +158,7 @@ public class LoadGuideHTML extends LoadGuide {
         }
     }
 
-    private void navigateChildren(Element content) throws Exception {
+    private void navigateChildren(Element content) throws GuidesException {
         Elements children = content.children();
         for (Element e : children) {
             navigateElement(e);

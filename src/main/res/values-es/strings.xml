@@ -50,4 +50,12 @@
         <a href="https://github.com/adrianromero/guides">https://github.com/adrianromero/guides</a>
         </p>
     ]]></string>
+
+    <string name="ex_guidebookneedstitle">La guía necesita definir un título.</string>
+    <string name="ex_guidebookneedslanguage">La guía necesita definir un idioma.</string>
+    <string name="ex_guidebookneedschapters">La guía necesita definir al menos un capítulo.</string>
+    <string name="ex_chaptersneedtitle">Todos los capítulos necesitan definir un título.</string>
+    <string name="ex_chaptersneedparagrahps">Todos los capítulos necesitan contener al menos un párrafo.</string>
+    <string name="ex_paragraphsneedwords">Todos los párrafos necesitan contener al menos una palabra.</string>
+    <string name="ex_cannotaddimage">No se puede añadir una imagen a una guía sin capítulos.</string>
 </resources>

@@ -25,6 +25,7 @@ import android.util.Log;
 import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
 import com.adrguides.model.Section;
+import com.adrguides.utils.GuidesException;
 import com.adrguides.utils.HTTPUtils;
 
 import java.io.BufferedReader;
@@ -125,6 +126,10 @@ public class LoadGuideFragment extends Fragment {
                     result.setStatus(0);
                     result.setGuide(guide);
 
+                } catch (GuidesException e) { // Exception reading guide...
+                    Log.d("com.adrguides.GuideFragment", null, e);
+                    result.setStatus(-1);
+                    result.setException(context.getString(e.getResource()));
                 } catch (IOException e) {
                     Log.d("com.adrguides.GuideFragment", null, e);
                     result.setStatus(-1);
@@ -160,23 +165,23 @@ public class LoadGuideFragment extends Fragment {
             }
         }
 
-        private void sanitized(Guide guide) throws Exception {
+        private void sanitized(Guide guide) throws GuidesException {
             if (guide.getTitle() == null || guide.getTitle().equals("")) {
-                throw new Exception("Guidebook needs to have a title.");
+                throw new GuidesException(R.string.ex_guidebookneedstitle, "Guidebook needs to have a title.");
             }
             if (guide.getLanguage() == null || guide.getLanguage().equals("")) {
-                throw new Exception("Guidebook needs to have a language.");
+                throw new GuidesException(R.string.ex_guidebookneedslanguage, "Guidebook needs to have a language.");
             }
             if (guide.getPlaces().size() == 0) {
-                throw new Exception("Guidebook needs to have at least one chapter.");
+                throw new GuidesException(R.string.ex_guidebookneedschapters, "Guidebook needs to have at least one chapter.");
             }
 
             for (Place p : guide.getPlaces()) {
                 if (p.getTitle() == null || p.getTitle().equals("")) {
-                    throw new Exception("All chapters needs to have a title.");
+                    throw new GuidesException(R.string.ex_chaptersneedtitle, "All chapters need to have a title.");
                 }
                 if (p.getSections().size() == 0) {
-                    throw new Exception("All chapters needs to have at least one paragraph.");
+                    throw new GuidesException(R.string.ex_chaptersneedparagrahps, "All chapters nees to have at least one paragraph.");
                 }
 
                 Section lastsection = p.getSections().get(p.getSections().size() -1);
@@ -195,7 +200,7 @@ public class LoadGuideFragment extends Fragment {
                 for (int i = 0; i < p.getSections().size(); i++) {
                     Section s = p.getSections().get(i);
                     if (s.getText() == null || s.getText().equals("")) {
-                        throw new Exception("All paragraphs needs to have at leat one word.");
+                        throw new GuidesException(R.string.ex_paragraphsneedwords, "All paragraphs need to have at leat one word.");
                     }
                     if (s.getImage() == null) {
                         s.setImage(lastimg);
