@@ -173,11 +173,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         TextView msg = (TextView) this.findViewById(R.id.messageText);
         msg.setText("success");
 
-//        tts.setLanguage(Locale.US);
-//        tts.isLanguageAvailable(new Locale("spa", "ESP"));
-
-//        tts.setOnUtteranceProgressListener(new UtteranceListener());
-
         List<TextToSpeech.EngineInfo> engines = tts.getEngines();
         Log.d("com.adrguides.MainActivity", "TTS Engines >>");
         for (TextToSpeech.EngineInfo e : engines) {
@@ -191,18 +186,4 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         }
     }
 
-//    private class UtteranceListener extends UtteranceProgressListener {
-//        @Override
-//        public void onStart(String s) {
-//
-//        }
-//        @Override
-//        public void onDone(String s) {
-//
-//        }
-//        @Override
-//        public void onError(String s) {
-//
-//        }
-//    }
 }
