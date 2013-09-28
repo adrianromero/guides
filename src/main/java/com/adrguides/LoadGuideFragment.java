@@ -44,7 +44,7 @@ public class LoadGuideFragment extends Fragment {
     public static final String TAG = "LoadGuideFragment-Tag";
 
     private LoadedGuide loadGuideresult = null;
-    private boolean listening = false;
+    private LoadGuideCallbacks listener = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,23 +54,17 @@ public class LoadGuideFragment extends Fragment {
         setRetainInstance(true);
     }
 
-    public void startListening() {
-        listening = true;
-        if (loadGuideresult != null) {
+    public void setLoadListener(LoadGuideCallbacks listener){
+        this.listener = listener;
+        if (listener != null && loadGuideresult != null) {
             publishLoadGuideResult();
         }
     }
-    public void stopListening() {
-        listening = false;
-    }
 
     private void publishLoadGuideResult() {
-        if (listening) {
-            LoadGuideCallbacks callback = (LoadGuideCallbacks) getActivity();
-            if (callback != null) {
-                callback.onFinishLoad(loadGuideresult);
-                loadGuideresult = null;
-            }
+        if (listener != null) {
+            listener.onFinishLoad(loadGuideresult);
+            loadGuideresult = null;
         }
     }
 

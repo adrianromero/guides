@@ -17,6 +17,7 @@
 package com.adrguides;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Point;
@@ -28,23 +29,13 @@ import android.widget.ViewSwitcher;
 /**
  * Created by adrian on 2/09/13.
  */
-public class LoadActivity extends Activity implements LoadGuideFragment.LoadGuideCallbacks {
+public class LoadActivity extends Activity {
 
     private LoadGuideFragment loadguide;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_load);
-
-        if (savedInstanceState != null) {
-            ((TextView)findViewById(R.id.textException)).setText(savedInstanceState.getCharSequence("_textException"));
-            if (savedInstanceState.getInt("_displayedChild") == 1) {
-                ((ViewSwitcher) findViewById(R.id.mySwitcher)).showNext();
-            }
-        }
-
-
 
         FragmentManager fm = getFragmentManager();
         loadguide = (LoadGuideFragment) fm.findFragmentByTag(LoadGuideFragment.TAG);
@@ -61,40 +52,12 @@ public class LoadActivity extends Activity implements LoadGuideFragment.LoadGuid
             loadguide.loadGuide(getApplicationContext(), getIntent().getDataString(), imagesize);
         }
 
-        ((TextView) findViewById(R.id.textGuideName)).setText(getResources().getString(R.string.msg_loading, getIntent().getData().getLastPathSegment()));
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        loadguide.startListening();
-    }
-    @Override
-    public void onStop() {
-        super.onStop();
-        loadguide.stopListening();
-    }
-
-    @Override
-    public void  onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-
-        savedInstanceState.putCharSequence("_textException", ((TextView)findViewById(R.id.textException)).getText());
-        savedInstanceState.putInt("_displayedChild", ((ViewSwitcher) findViewById(R.id.mySwitcher)).getDisplayedChild());
-    }
-
-    @Override
-    public void onFinishLoad(LoadedGuide result) {
-
-        if (result.getStatus() == 0) {
-            Intent intent = new Intent(this, ReadGuideActivity.class);
-            intent.putExtra(ReadGuideActivity.ARG_GUIDE, result.getGuide());
-            startActivity(intent);
-        } else {
-            ((TextView)findViewById(R.id.textException)).setText(result.getException());
-            ViewSwitcher sw = (ViewSwitcher) findViewById(R.id.mySwitcher);
-            sw.showNext();
+        Fragment loadfragment = fm.findFragmentByTag(LoadFragment.TAG);
+        if (loadfragment == null) {
+            loadfragment = new LoadFragment();
+            fm.beginTransaction()
+                    .add(android.R.id.content, loadfragment, ReadGuideFragment.TAG)
+                    .commit();
         }
     }
 }
