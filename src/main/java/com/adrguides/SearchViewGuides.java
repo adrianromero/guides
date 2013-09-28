@@ -52,7 +52,11 @@ public class SearchViewGuides {
                 SimpleCursorAdapter adapter = new SimpleCursorAdapter(activity.getActionBar().getThemedContext(), android.R.layout.simple_list_item_activated_1, getSuggestionsCursor(null), from, to, 0);
                 adapter.setFilterQueryProvider(new FilterQueryProvider() {
                     public Cursor runQuery(CharSequence constraint) {
-                        return getSuggestionsCursor(constraint.toString());
+                        if (constraint == null) {
+                            return null;
+                        } else {
+                            return getSuggestionsCursor(constraint.toString());
+                        }
                     }
                 });
                 searchView.setSuggestionsAdapter(adapter);
