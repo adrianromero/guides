@@ -31,14 +31,12 @@ import android.widget.ViewSwitcher;
  */
 public class LoadActivity extends Activity {
 
-    private LoadGuideFragment loadguide;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         FragmentManager fm = getFragmentManager();
-        loadguide = (LoadGuideFragment) fm.findFragmentByTag(LoadGuideFragment.TAG);
+        LoadGuideFragment loadguide = (LoadGuideFragment) fm.findFragmentByTag(LoadGuideFragment.TAG);
         if (loadguide == null) {
             // Calculate rezize dimensions
             Point size = new Point();
