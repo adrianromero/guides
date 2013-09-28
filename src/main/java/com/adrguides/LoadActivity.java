@@ -54,7 +54,7 @@ public class LoadActivity extends Activity {
         if (loadfragment == null) {
             loadfragment = new LoadFragment();
             fm.beginTransaction()
-                    .add(android.R.id.content, loadfragment, ReadGuideFragment.TAG)
+                    .add(android.R.id.content, loadfragment, LoadFragment.TAG)
                     .commit();
         }
     }
