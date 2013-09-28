@@ -100,14 +100,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
     //// Test code
 
-
-
-
-
-
-
-
-
     public void onReadActivityClicked(View view) {
         Intent intent = new Intent(this, ReadGuideActivity.class);
         startActivity(intent);
