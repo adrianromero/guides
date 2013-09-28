@@ -38,7 +38,7 @@ public class ReadGuideActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_guide);
+        // setContentView(R.layout.activity_guide);
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
@@ -56,7 +56,7 @@ public class ReadGuideActivity extends Activity {
         if (locationfragment == null) {
             locationfragment = new ReadGuideFragment();
             fm.beginTransaction()
-                    .add(R.id.guiderootview, locationfragment, ReadGuideFragment.TAG)
+                    .add(android.R.id.content, locationfragment, ReadGuideFragment.TAG)
                     .commit();
         }
 
