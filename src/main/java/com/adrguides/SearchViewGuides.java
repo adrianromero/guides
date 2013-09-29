@@ -92,7 +92,6 @@ public class SearchViewGuides {
                     return false;
                 }
 
-                Log.d("com.adrguides.SearchViewGuides", "man submitao");
                 List<Place> places = ttsFragment.getGuide().getPlaces();
                 for(int i = 0; i < places.size(); i++){
                     Place item = places.get(i);
@@ -116,7 +115,6 @@ public class SearchViewGuides {
 
 
     private Cursor getSuggestionsCursor(String filter) {
-        Log.d("com.adrguides.SearchViewGuides",  "man filtrao");
 
         String[] columnNames = {"_id", "_title", "text"};
         MatrixCursor cursor = new MatrixCursor(columnNames);
