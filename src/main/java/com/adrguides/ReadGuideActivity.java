@@ -19,9 +19,11 @@ package com.adrguides;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.app.Activity;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -38,31 +40,83 @@ public class ReadGuideActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // setContentView(R.layout.activity_guide);
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         FragmentManager fm = getFragmentManager();
 
+        LoadGuideFragment loadguide = (LoadGuideFragment) fm.findFragmentByTag(LoadGuideFragment.TAG);
+        if (loadguide == null) {
+            // Calculate rezize dimensions
+            Point size = new Point();
+            this.getWindowManager().getDefaultDisplay().getSize(size);
+            int imagesize = Math.max(size.x, size.y);
+            // loading guide
+            loadguide = new LoadGuideFragment();
+            fm.beginTransaction().add(loadguide, LoadGuideFragment.TAG).commit();
+
+            Log.d("com.adrguides.LoadActivity", "Loading Data --> " + getIntent().getDataString());
+            loadguide.loadGuide(getApplicationContext(), getIntent().getDataString(), imagesize);
+
+            Fragment loadfragment = new LoadFragment();
+            fm.beginTransaction()
+                    .add(android.R.id.content, loadfragment, LoadFragment.TAG)
+                    .commit();
+        }
+
+
+
+//        TTSFragment ttsfragment = (TTSFragment) fm.findFragmentByTag(TTSFragment.TAG);
+//        if (ttsfragment == null) {
+//            ttsfragment = new TTSFragment();
+//            fm.beginTransaction()
+//                    .add(ttsfragment, TTSFragment.TAG)
+//                    .commit();
+//        }
+//
+//        Fragment locationfragment = fm.findFragmentByTag(ReadGuideFragment.TAG);
+//        if (locationfragment == null) {
+//            locationfragment = new ReadGuideFragment();
+//            fm.beginTransaction()
+//                    .add(android.R.id.content, locationfragment, ReadGuideFragment.TAG)
+//                    .commit();
+//        }
+
+//        Intent checkIntent = new Intent();
+//        checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+//        startActivityForResult(checkIntent, TTS_REQUEST_CODE);
+    }
+
+    public void loadGuide(Guide guide) {
+
+        Log.d("com.adrguides.ReadGuideActivity", "loadGuide");
+        FragmentManager fm = getFragmentManager();
+
         TTSFragment ttsfragment = (TTSFragment) fm.findFragmentByTag(TTSFragment.TAG);
         if (ttsfragment == null) {
             ttsfragment = new TTSFragment();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("GUIDE", guide);
+            ttsfragment.setArguments(bundle);
             fm.beginTransaction()
                     .add(ttsfragment, TTSFragment.TAG)
                     .commit();
         }
 
+        openReadGuideFragment();
+    }
+
+    public void openReadGuideFragment() {
+
+        Log.d("com.adrguides.ReadGuideActivity", "openReadGuideFragment");
+        FragmentManager fm = getFragmentManager();
         Fragment locationfragment = fm.findFragmentByTag(ReadGuideFragment.TAG);
         if (locationfragment == null) {
             locationfragment = new ReadGuideFragment();
             fm.beginTransaction()
-                    .add(android.R.id.content, locationfragment, ReadGuideFragment.TAG)
+                    .replace(android.R.id.content, locationfragment, ReadGuideFragment.TAG)
                     .commit();
         }
-
-//        Intent checkIntent = new Intent();
-//        checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-//        startActivityForResult(checkIntent, TTS_REQUEST_CODE);
     }
 
     @Override

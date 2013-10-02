@@ -19,6 +19,7 @@ package com.adrguides;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,9 +82,8 @@ public class LoadFragment extends Fragment implements LoadGuideFragment.LoadGuid
     public void onFinishLoad(LoadedGuide result) {
 
         if (result.getStatus() == 0) {
-            Intent intent = new Intent(getActivity(), ReadGuideActivity.class);
-            intent.putExtra(ReadGuideActivity.ARG_GUIDE, result.getGuide());
-            startActivity(intent);
+            Log.d("com.adrguides.LoadFragment", "going loading");
+            ((ReadGuideActivity) getActivity()).loadGuide(result.getGuide());
         } else {
             ((TextView) v.findViewById(R.id.textException)).setText(result.getException());
             ViewSwitcher sw = (ViewSwitcher) v.findViewById(R.id.mySwitcher);
