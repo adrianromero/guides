@@ -43,51 +43,47 @@ public class ReadGuideActivity extends Activity {
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
-        FragmentManager fm = getFragmentManager();
-
-        LoadGuideFragment loadguide = (LoadGuideFragment) fm.findFragmentByTag(LoadGuideFragment.TAG);
+        LoadGuideFragment loadguide = (LoadGuideFragment) getFragmentManager().findFragmentByTag(LoadGuideFragment.TAG);
         if (loadguide == null) {
-            // Calculate rezize dimensions
-            Point size = new Point();
-            this.getWindowManager().getDefaultDisplay().getSize(size);
-            int imagesize = Math.max(size.x, size.y);
-            // loading guide
-            loadguide = new LoadGuideFragment();
-            fm.beginTransaction().add(loadguide, LoadGuideFragment.TAG).commit();
-
-            Log.d("com.adrguides.LoadActivity", "Loading Data --> " + getIntent().getDataString());
-            loadguide.loadGuide(getApplicationContext(), getIntent().getDataString(), imagesize);
-
-            Fragment loadfragment = new LoadFragment();
-            fm.beginTransaction()
-                    .add(android.R.id.content, loadfragment, LoadFragment.TAG)
-                    .commit();
+            // It is the first time?
+            loadGuide(getIntent().getDataString());
         }
-
-
-
-//        TTSFragment ttsfragment = (TTSFragment) fm.findFragmentByTag(TTSFragment.TAG);
-//        if (ttsfragment == null) {
-//            ttsfragment = new TTSFragment();
-//            fm.beginTransaction()
-//                    .add(ttsfragment, TTSFragment.TAG)
-//                    .commit();
-//        }
-//
-//        Fragment locationfragment = fm.findFragmentByTag(ReadGuideFragment.TAG);
-//        if (locationfragment == null) {
-//            locationfragment = new ReadGuideFragment();
-//            fm.beginTransaction()
-//                    .add(android.R.id.content, locationfragment, ReadGuideFragment.TAG)
-//                    .commit();
-//        }
 
 //        Intent checkIntent = new Intent();
 //        checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
 //        startActivityForResult(checkIntent, TTS_REQUEST_CODE);
     }
 
-    public void loadGuide(Guide guide) {
+    public void loadGuide(String url) {
+
+        FragmentManager fm = getFragmentManager();
+
+        LoadGuideFragment loadguide = (LoadGuideFragment) fm.findFragmentByTag(LoadGuideFragment.TAG);
+        if (loadguide == null) {
+            loadguide = new LoadGuideFragment();
+            fm.beginTransaction().add(loadguide, LoadGuideFragment.TAG).commit();
+        }
+
+        // Load the guide...
+        Log.d("com.adrguides.ReadGuideActivity", "Loading Data --> " + url);
+        // Calculate rezize dimensions
+        Point size = new Point();
+        getWindowManager().getDefaultDisplay().getSize(size);
+        int imagesize = Math.max(size.x, size.y);
+        loadguide.loadGuide(getApplicationContext(), url, imagesize);
+
+        // show Load Fragment
+        Log.d("com.adrguides.ReadGuideActivity", "showReadGuideFragment");
+        Fragment loadfragment = fm.findFragmentByTag(LoadFragment.TAG);
+        if (loadfragment == null) {
+            loadfragment = new LoadFragment();
+            fm.beginTransaction()
+                    .add(android.R.id.content, loadfragment, LoadFragment.TAG)
+                    .commit();
+        }
+    }
+
+    public void playGuide(Guide guide) {
 
         Log.d("com.adrguides.ReadGuideActivity", "loadGuide");
         FragmentManager fm = getFragmentManager();
@@ -103,18 +99,13 @@ public class ReadGuideActivity extends Activity {
                     .commit();
         }
 
-        openReadGuideFragment();
-    }
-
-    public void openReadGuideFragment() {
-
-        Log.d("com.adrguides.ReadGuideActivity", "openReadGuideFragment");
-        FragmentManager fm = getFragmentManager();
-        Fragment locationfragment = fm.findFragmentByTag(ReadGuideFragment.TAG);
-        if (locationfragment == null) {
-            locationfragment = new ReadGuideFragment();
+        // Show Read Guide Fragment
+        Log.d("com.adrguides.ReadGuideActivity", "showReadGuideFragment");
+        Fragment readguidefragment = fm.findFragmentByTag(ReadGuideFragment.TAG);
+        if (readguidefragment == null) {
+            readguidefragment = new ReadGuideFragment();
             fm.beginTransaction()
-                    .replace(android.R.id.content, locationfragment, ReadGuideFragment.TAG)
+                    .replace(android.R.id.content, readguidefragment, ReadGuideFragment.TAG)
                     .commit();
         }
     }
@@ -137,23 +128,4 @@ public class ReadGuideActivity extends Activity {
         Intent intent = new Intent(this, AboutActivity.class);
         startActivity(intent);
     }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == TTS_REQUEST_CODE) {
-//            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-//                // success, create the TTS instance
-//                tts = new TextToSpeech(this, this);
-//            } else {
-//
-////                // missing data, install it
-////                Intent installIntent = new Intent();
-////                installIntent.setAction(
-////                        TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-////                startActivity(installIntent);
-//                tts = null;
-//            }
-//        }
-//    }
-
 }

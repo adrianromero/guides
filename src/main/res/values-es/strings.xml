@@ -8,7 +8,7 @@
     <string name="hello_world">¡Hola mundo!</string>
     <string name="btn_talk">Hablar</string>
     <string name="btn_install">Instalar datos de síntesis de voz</string>
-    <string name="title_activity_read_guide">Leer guía</string>
+    <string name="title_activity_read_guide">Guidebook</string>
     <string name="title_activity_settings">Ajustes</string>
     <string name="title_activity_about">Acerca de</string>
 
@@ -21,7 +21,6 @@
     <string name="action_list">Lista</string>
 
 
-    <string name="title_activity_load">Guidebook</string>
     <string name="msg_loading">Cargando %s.</string>
     <string name="lbl_error_loading">Error cargando guía</string>
     <string name="msg_guide_not_available">Guía no disponible.</string>

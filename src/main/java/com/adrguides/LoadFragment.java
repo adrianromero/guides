@@ -83,7 +83,7 @@ public class LoadFragment extends Fragment implements LoadGuideFragment.LoadGuid
 
         if (result.getStatus() == 0) {
             Log.d("com.adrguides.LoadFragment", "going loading");
-            ((ReadGuideActivity) getActivity()).loadGuide(result.getGuide());
+            ((ReadGuideActivity) getActivity()).playGuide(result.getGuide());
         } else {
             ((TextView) v.findViewById(R.id.textException)).setText(result.getException());
             ViewSwitcher sw = (ViewSwitcher) v.findViewById(R.id.mySwitcher);
