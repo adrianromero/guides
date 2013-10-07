@@ -59,8 +59,6 @@ public class TTSFragment extends Fragment implements TextToSpeech.OnInitListener
         // Retain this fragment across configuration changes.
         setRetainInstance(true);
 
-        setGuide((Guide) getArguments().getParcelable("GUIDE"));
-
         // Loading TTS engine
         tts = new TextToSpeech(getActivity().getApplicationContext(), this);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -112,16 +110,16 @@ public class TTSFragment extends Fragment implements TextToSpeech.OnInitListener
         return initialized;
     }
 
-    private void setGuide(Guide guide) {
-        setGuide(guide, 0, -1);
+    public void playGuide(Guide guide) {
+        playGuide(guide, 0, -1);
     }
 
-    private void setGuide(Guide guide, int chapter) {
-        setGuide(guide, chapter, -1);
+    private void playGuide(Guide guide, int chapter) {
+        playGuide(guide, chapter, -1);
     }
 
 
-    private void setGuide(Guide guide, int chapter, int paragraph) {
+    private void playGuide(Guide guide, int chapter, int paragraph) {
 
         if (isTTSReady()) {
             tts.stop();

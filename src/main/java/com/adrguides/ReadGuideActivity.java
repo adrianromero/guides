@@ -91,13 +91,12 @@ public class ReadGuideActivity extends Activity {
         TTSFragment ttsfragment = (TTSFragment) fm.findFragmentByTag(TTSFragment.TAG);
         if (ttsfragment == null) {
             ttsfragment = new TTSFragment();
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("GUIDE", guide);
-            ttsfragment.setArguments(bundle);
             fm.beginTransaction()
                     .add(ttsfragment, TTSFragment.TAG)
                     .commit();
         }
+
+        ttsfragment.playGuide(guide);
 
         // Show Read Guide Fragment
         Log.d("com.adrguides.ReadGuideActivity", "showReadGuideFragment");
