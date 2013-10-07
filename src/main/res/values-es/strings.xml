@@ -13,12 +13,12 @@
     <string name="title_activity_about">Acerca de</string>
 
     <string name="action_play">Reproducir</string>
-    <string name="action_pause">Pausa</string>
+    <string name="action_stop">Parar</string>
     <string name="action_begin">Principio</string>
     <string name="action_previous">Anterior</string>
     <string name="action_next">Siguiente</string>
-    <string name="action_first">Primero</string>
     <string name="action_list">Lista</string>
+    <string name="action_search">Buscar</string>
 
 
     <string name="msg_loading">Cargando %s.</string>
@@ -56,5 +56,6 @@
     <string name="ex_chaptersneedtitle">Todos los capítulos necesitan definir un título.</string>
     <string name="ex_chaptersneedparagrahps">Todos los capítulos necesitan contener al menos un párrafo.</string>
     <string name="ex_paragraphsneedwords">Todos los párrafos necesitan contener al menos una palabra.</string>
-    <string name="ex_cannotaddimage">No se puede añadir una imagen a una guía sin capítulos.</string>
+    <string name="ex_cannotaddtext">No se puede añadir texto a una guía sin capítulos.</string>
+    <string name="ex_imagenotfound">No se ha encontrado la imagen referenciada.</string>
 </resources>
