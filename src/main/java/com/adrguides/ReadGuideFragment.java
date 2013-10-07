@@ -130,13 +130,6 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             }
         });
 
-        menu.findItem(R.id.action_first).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                ttsfragment.gotoFirst();
-                return true;
-            }
-        });
         menu.findItem(R.id.action_previous).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -179,14 +172,13 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
 
             menu.findItem(R.id.action_playpause)
                     .setEnabled(true)
-                    .setTitle(playing ? R.string.action_pause : R.string.action_play)
-                    .setIcon(playing ? R.drawable.ic_media_pause : R.drawable.ic_media_play);
+                    .setTitle(playing ? R.string.action_stop : R.string.action_play)
+                    .setIcon(playing ? R.drawable.ic_media_stop : R.drawable.ic_media_play);
             menu.findItem(R.id.menu_search)
                     .setEnabled(true)
                     .setIcon(R.drawable.ic_menu_search);
             menu.findItem(R.id.action_begin).setEnabled(true);
             menu.findItem(R.id.action_next).setEnabled(true);
-            menu.findItem(R.id.action_first).setEnabled(true);
             menu.findItem(R.id.action_previous).setEnabled(true);
             menu.findItem(R.id.action_list).setEnabled(true);
         } else {
@@ -198,7 +190,6 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
                     .setIcon(getDrawableDisabled(R.drawable.ic_menu_search));
             menu.findItem(R.id.action_begin).setEnabled(false);
             menu.findItem(R.id.action_next).setEnabled(false);
-            menu.findItem(R.id.action_first).setEnabled(false);
             menu.findItem(R.id.action_previous).setEnabled(false);
             menu.findItem(R.id.action_list).setEnabled(false);
         }

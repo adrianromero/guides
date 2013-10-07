@@ -38,26 +38,19 @@
                 android:name="com.adrguides.ReadGuideActivity"
                 android:label="@string/title_activity_read_guide"
                 android:uiOptions="splitActionBarWhenNarrow">
+                <intent-filter>
+                    <action android:name="android.intent.action.VIEW" />
+                    <category android:name="android.intent.category.DEFAULT" />
+                    <category android:name="android.intent.category.BROWSABLE" />
+                    <data android:scheme="https"
+                        android:pathPattern=".*\\.guidebook.*"
+                        android:host="*" />
+                    <data android:scheme="http"
+                        android:pathPattern=".*\\.guidebook.*"
+                        android:host="*" />
+                </intent-filter>
         </activity>
 
-        <activity
-            android:name="com.adrguides.LoadActivity"
-            android:label="@string/title_activity_load"
-            android:noHistory="true">
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https"
-                      android:pathPattern=".*\\.guidebook.*"
-                      android:host="*" />
-                <data android:scheme="http"
-                      android:pathPattern=".*\\.guidebook.*"
-                      android:host="*" />
-            </intent-filter>
-
-        </activity>
     </application>
 
 </manifest>

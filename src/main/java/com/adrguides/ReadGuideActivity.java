@@ -19,9 +19,11 @@ package com.adrguides;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.app.Activity;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -38,10 +40,52 @@ public class ReadGuideActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // setContentView(R.layout.activity_guide);
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
+        LoadGuideFragment loadguide = (LoadGuideFragment) getFragmentManager().findFragmentByTag(LoadGuideFragment.TAG);
+        if (loadguide == null) {
+            // It is the first time?
+            loadGuide(getIntent().getDataString());
+        }
+
+//        Intent checkIntent = new Intent();
+//        checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+//        startActivityForResult(checkIntent, TTS_REQUEST_CODE);
+    }
+
+    public void loadGuide(String url) {
+
+        FragmentManager fm = getFragmentManager();
+
+        LoadGuideFragment loadguide = (LoadGuideFragment) fm.findFragmentByTag(LoadGuideFragment.TAG);
+        if (loadguide == null) {
+            loadguide = new LoadGuideFragment();
+            fm.beginTransaction().add(loadguide, LoadGuideFragment.TAG).commit();
+        }
+
+        // Load the guide...
+        Log.d("com.adrguides.ReadGuideActivity", "Loading Data --> " + url);
+        // Calculate rezize dimensions
+        Point size = new Point();
+        getWindowManager().getDefaultDisplay().getSize(size);
+        int imagesize = Math.max(size.x, size.y);
+        loadguide.loadGuide(getApplicationContext(), url, imagesize);
+
+        // show Load Fragment
+        Log.d("com.adrguides.ReadGuideActivity", "showReadGuideFragment");
+        Fragment loadfragment = fm.findFragmentByTag(LoadFragment.TAG);
+        if (loadfragment == null) {
+            loadfragment = new LoadFragment();
+            fm.beginTransaction()
+                    .add(android.R.id.content, loadfragment, LoadFragment.TAG)
+                    .commit();
+        }
+    }
+
+    public void playGuide(Guide guide) {
+
+        Log.d("com.adrguides.ReadGuideActivity", "loadGuide");
         FragmentManager fm = getFragmentManager();
 
         TTSFragment ttsfragment = (TTSFragment) fm.findFragmentByTag(TTSFragment.TAG);
@@ -52,17 +96,17 @@ public class ReadGuideActivity extends Activity {
                     .commit();
         }
 
-        Fragment locationfragment = fm.findFragmentByTag(ReadGuideFragment.TAG);
-        if (locationfragment == null) {
-            locationfragment = new ReadGuideFragment();
+        ttsfragment.playGuide(guide);
+
+        // Show Read Guide Fragment
+        Log.d("com.adrguides.ReadGuideActivity", "showReadGuideFragment");
+        Fragment readguidefragment = fm.findFragmentByTag(ReadGuideFragment.TAG);
+        if (readguidefragment == null) {
+            readguidefragment = new ReadGuideFragment();
             fm.beginTransaction()
-                    .add(android.R.id.content, locationfragment, ReadGuideFragment.TAG)
+                    .replace(android.R.id.content, readguidefragment, ReadGuideFragment.TAG)
                     .commit();
         }
-
-//        Intent checkIntent = new Intent();
-//        checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-//        startActivityForResult(checkIntent, TTS_REQUEST_CODE);
     }
 
     @Override
@@ -83,23 +127,4 @@ public class ReadGuideActivity extends Activity {
         Intent intent = new Intent(this, AboutActivity.class);
         startActivity(intent);
     }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == TTS_REQUEST_CODE) {
-//            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-//                // success, create the TTS instance
-//                tts = new TextToSpeech(this, this);
-//            } else {
-//
-////                // missing data, install it
-////                Intent installIntent = new Intent();
-////                installIntent.setAction(
-////                        TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-////                startActivity(installIntent);
-//                tts = null;
-//            }
-//        }
-//    }
-
 }

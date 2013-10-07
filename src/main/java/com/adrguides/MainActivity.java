@@ -106,7 +106,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     }
 
     public void onLoadActivityClicked(View view) {
-        Intent intent = new Intent(this, LoadActivity.class);
+        Intent intent = new Intent(this, ReadGuideActivity.class);
         intent.setData(Uri.parse("file:///android_asset/mockguide.json"));
         startActivity(intent);
     }

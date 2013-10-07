@@ -31,6 +31,8 @@ import org.jsoup.select.Elements;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by adrian on 18/09/13.
@@ -42,6 +44,8 @@ public class LoadGuideHTML extends LoadGuide {
     }
 
     private Guide guide;
+    private String guidebookimage;
+    private String chapterimage;
 
     @Override
     protected Guide load_imp(String address, String text) throws Exception {
@@ -50,6 +54,8 @@ public class LoadGuideHTML extends LoadGuide {
         Document doc = Jsoup.parse(text);
 
         guide = new Guide();
+        guidebookimage = null;
+        chapterimage = null;
 
         // address
         Elements canonical = doc.head().getElementsByAttributeValue("rel", "canonical");
@@ -94,23 +100,17 @@ public class LoadGuideHTML extends LoadGuide {
             place.setId(elem.hasAttr("data-guidebook-id") ? elem.attr("data-guidebook-id") : null);
             place.setTitle(elem.text());
             guide.getPlaces().add(place);
+            chapterimage = null;
 
         } else if (elem.hasClass("guidebook_image")) {
             if (guide.getPlaces().size() == 0) {
-                throw new GuidesException(R.string.ex_cannotaddimage, "Cannot add an image to an empty guide.");
-            }
-            Place place = guide.getPlaces().get(guide.getPlaces().size() - 1);
-
-            if (place.getSections().size() == 0
-                    || !place.getSections().get(place.getSections().size() - 1).getText().equals("")) {
-                Section section = new Section();
-                section.setImage(loadImage(elem.attr("src")));
-                place.getSections().add(section);
+                guidebookimage = loadReferencedImage(elem);
             } else {
-                place.getSections().get(place.getSections().size() - 1).setImage(loadImage(elem.attr("src")));
+                chapterimage = loadReferencedImage(elem);
             }
         } else if (elem.hasClass("guidebook_paragraph")) {
             String text = elem.text();
+            String srcimage = loadLinkedImage(elem);
 
             int start = 0;
             while (start < text.length()) {
@@ -122,38 +122,72 @@ public class LoadGuideHTML extends LoadGuide {
                     i = Math.min(i, j);
                 }
                 if (i < 0) {
-                    addSection(text.substring(start));
+                    addSection(text.substring(start), srcimage);
                     start = text.length();
                 } else {
-                    addSection(text.substring(start, i + 2));
+                    addSection(text.substring(start, i + 2), srcimage);
                     start = i + 1;
                 }
             }
         } else if (elem.hasClass("guidebook_section")) {
-            addSection(elem.text());
+            addSection(elem.text(), loadLinkedImage(elem));
         } else {
             navigateChildren(elem);
         }
     }
 
-    private void addSection(String text) throws GuidesException {
+    private void addSection(String text, String loadedimage) throws GuidesException {
 
         if (guide.getPlaces().size() == 0) {
-            throw new GuidesException(R.string.ex_cannotaddimage, "Cannot add an image to an empty guide.");
+            throw new GuidesException(R.string.ex_cannotaddtext, "Cannot add text to an empty guide.");
         }
         Log.d("com.adrguides.LoadGuideHTML", "adding text -> " + text);
         if (text != null) {
             String texttrimmed = text.trim();
             if (!texttrimmed.equals("")) {
                 Place place = guide.getPlaces().get(guide.getPlaces().size() - 1);
+                Section section;
                 if (place.getSections().size() == 0
                         || !place.getSections().get(place.getSections().size() - 1).getText().equals("")) {
-                    Section section = new Section();
-                    section.setText(texttrimmed);
+                    section = new Section();
                     place.getSections().add(section);
                 } else { // if section has image but no text add it.
-                    place.getSections().get(place.getSections().size() - 1).setText(texttrimmed);
+                    section = place.getSections().get(place.getSections().size() - 1);
                 }
+                section.setText(texttrimmed);
+                section.setImage(loadedimage);
+            }
+        }
+    }
+
+    private String loadLinkedImage(Element elem) throws GuidesException {
+        try {
+            return loadReferencedImage(elem);
+        } catch (GuidesException e) {
+            if (chapterimage != null) {
+                return chapterimage;
+            } else if (guidebookimage != null) {
+                return guidebookimage;
+            } else {
+                return null;
+            }
+        }
+    }
+
+    private String loadReferencedImage(Element elem) throws GuidesException {
+        if (elem == null) {
+            throw new GuidesException(R.string.ex_imagenotfound, "Refered image has not been found.");
+        } else if ("img".equals(elem.tagName())) {
+            return loadImage(elem.attr("src"));
+        } else if (elem.hasAttr("data-guidebook-image")) {
+            return loadLinkedImage(elem.ownerDocument().getElementById(elem.attr("data-guidebook-image")));
+        } else {
+            Pattern p = Pattern.compile("background\\s*\\:\\s*url\\s*\\(('|\"?)?+(.*)\\1\\)");
+            Matcher m = p.matcher(elem.attr("style"));
+            if (m.find()) {
+                return loadImage(m.group(2));
+            } else {
+                throw new GuidesException(R.string.ex_imagenotfound, "Refered image has not been found.");
             }
         }
     }
@@ -164,5 +198,4 @@ public class LoadGuideHTML extends LoadGuide {
             navigateElement(e);
         }
     }
-
 }
