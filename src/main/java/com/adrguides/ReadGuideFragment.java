@@ -114,14 +114,6 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             }
         });
 
-        menu.findItem(R.id.action_begin).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                ttsfragment.restartChapter();
-                return true;
-            }
-        });
-
         menu.findItem(R.id.action_next).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -177,9 +169,8 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             menu.findItem(R.id.menu_search)
                     .setEnabled(true)
                     .setIcon(R.drawable.ic_menu_search);
-            menu.findItem(R.id.action_begin).setEnabled(true);
-            menu.findItem(R.id.action_next).setEnabled(true);
-            menu.findItem(R.id.action_previous).setEnabled(true);
+            menu.findItem(R.id.action_next).setEnabled(ttsfragment.isEnabledNext());
+            menu.findItem(R.id.action_previous).setEnabled(ttsfragment.isEnabledPrevious());
             menu.findItem(R.id.action_list).setEnabled(true);
         } else {
             menu.findItem(R.id.action_playpause)
@@ -188,7 +179,6 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             menu.findItem(R.id.menu_search)
                     .setEnabled(false)
                     .setIcon(getDrawableDisabled(R.drawable.ic_menu_search));
-            menu.findItem(R.id.action_begin).setEnabled(false);
             menu.findItem(R.id.action_next).setEnabled(false);
             menu.findItem(R.id.action_previous).setEnabled(false);
             menu.findItem(R.id.action_list).setEnabled(false);

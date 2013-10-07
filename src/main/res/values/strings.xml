@@ -14,7 +14,6 @@
 
     <string name="action_play">Play</string>
     <string name="action_stop">Stop</string>
-    <string name="action_begin">Begin</string>
     <string name="action_previous">Previous</string>
     <string name="action_next">Next</string>
     <string name="action_list">List</string>

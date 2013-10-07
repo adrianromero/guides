@@ -162,9 +162,23 @@ public class TTSFragment extends Fragment implements TextToSpeech.OnInitListener
         }
     }
 
+    public boolean isEnabledPrevious() {
+        return paragraph >= 0 || chapter > 0;
+    }
+
     public void gotoPrevious() {
 
-        gotoChapter(chapter - 1);
+        if (paragraph == -1) {
+            // if we are in the begining of a chapter go to previous chapter
+            gotoChapter(chapter -1);
+        } else {
+            // if we are not in the begining of a chapter go to the begining of the chapter
+            gotoChapter(chapter);
+        }
+    }
+
+    public boolean isEnabledNext() {
+        return chapter < guide.getPlaces().size() - 1;
     }
 
     public void gotoNext() {
@@ -174,10 +188,6 @@ public class TTSFragment extends Fragment implements TextToSpeech.OnInitListener
 
     public void gotoFirst() {
         gotoChapter(0);
-    }
-
-    public void restartChapter() {
-        gotoChapter(chapter);
     }
 
     private float calculateLogValue(int value, double exponent, double factor) {
