@@ -169,8 +169,24 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             menu.findItem(R.id.menu_search)
                     .setEnabled(true)
                     .setIcon(R.drawable.ic_menu_search);
-            menu.findItem(R.id.action_next).setEnabled(ttsfragment.isEnabledNext());
-            menu.findItem(R.id.action_previous).setEnabled(ttsfragment.isEnabledPrevious());
+            if (ttsfragment.isEnabledNext()) {
+                menu.findItem(R.id.action_next)
+                        .setEnabled(true)
+                        .setIcon(R.drawable.ic_media_next);
+            } else {
+                menu.findItem(R.id.action_next)
+                        .setEnabled(false)
+                        .setIcon(getDrawableDisabled(R.drawable.ic_media_next));
+            }
+            if (ttsfragment.isEnabledPrevious()) {
+                menu.findItem(R.id.action_previous)
+                        .setEnabled(true)
+                        .setIcon(R.drawable.ic_media_previous);
+            } else {
+                menu.findItem(R.id.action_previous)
+                        .setEnabled(false)
+                        .setIcon(getDrawableDisabled(R.drawable.ic_media_previous));
+            }
             menu.findItem(R.id.action_list).setEnabled(true);
         } else {
             menu.findItem(R.id.action_playpause)
@@ -179,8 +195,12 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             menu.findItem(R.id.menu_search)
                     .setEnabled(false)
                     .setIcon(getDrawableDisabled(R.drawable.ic_menu_search));
-            menu.findItem(R.id.action_next).setEnabled(false);
-            menu.findItem(R.id.action_previous).setEnabled(false);
+            menu.findItem(R.id.action_next)
+                    .setEnabled(false)
+                    .setIcon(getDrawableDisabled(R.drawable.ic_media_next));
+            menu.findItem(R.id.action_previous)
+                    .setEnabled(false)
+                    .setIcon(getDrawableDisabled(R.drawable.ic_media_previous));
             menu.findItem(R.id.action_list).setEnabled(false);
         }
     }
