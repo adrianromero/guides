@@ -25,9 +25,14 @@ import com.adrguides.model.Section;
 import com.adrguides.utils.GuidesException;
 
 import org.jsoup.Jsoup;
+import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
+import org.jsoup.select.NodeTraversor;
+import org.jsoup.select.NodeVisitor;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -109,41 +114,24 @@ public class LoadGuideHTML extends LoadGuide {
                 chapterimage = loadReferencedImage(elem);
             }
         } else if (elem.hasClass("guidebook_paragraph")) {
-            String text = elem.text();
-            String srcimage = loadLinkedImage(elem);
-
-            int start = 0;
-            while (start < text.length()) {
-                int i = text.indexOf(". ", start);
-                int j = text.indexOf("; ", start);
-                if (i < 0 || j < 0) {
-                    i = Math.max(i, j);
-                } else {
-                    i = Math.min(i, j);
-                }
-                if (i < 0) {
-                    addSection(text.substring(start), srcimage);
-                    start = text.length();
-                } else {
-                    addSection(text.substring(start, i + 2), srcimage);
-                    start = i + 1;
-                }
-            }
+            processParagraph(elem, loadLinkedImage(elem), true);
         } else if (elem.hasClass("guidebook_section")) {
-            addSection(elem.text(), loadLinkedImage(elem));
+            processParagraph(elem, loadLinkedImage(elem), false);
         } else {
             navigateChildren(elem);
         }
     }
 
-    private void addSection(String text, String loadedimage) throws GuidesException {
+    private void addSection(String text, String read, String loadedimage) throws GuidesException {
 
         if (guide.getPlaces().size() == 0) {
             throw new GuidesException(R.string.ex_cannotaddtext, "Cannot add text to an empty guide.");
         }
         Log.d("com.adrguides.LoadGuideHTML", "adding text -> " + text);
-        if (text != null) {
+        if (text != null && read != null) {
             String texttrimmed = text.trim();
+            String readtrimmed = read.trim();
+
             if (!texttrimmed.equals("")) {
                 Place place = guide.getPlaces().get(guide.getPlaces().size() - 1);
                 Section section;
@@ -155,6 +143,7 @@ public class LoadGuideHTML extends LoadGuide {
                     section = place.getSections().get(place.getSections().size() - 1);
                 }
                 section.setText(texttrimmed);
+                section.setRead(readtrimmed.equals(texttrimmed) ? null : readtrimmed);
                 section.setImage(loadedimage);
             }
         }
@@ -197,5 +186,90 @@ public class LoadGuideHTML extends LoadGuide {
         for (Element e : children) {
             navigateElement(e);
         }
+    }
+    private void processParagraph(Element elem, String srcimage, boolean divide) throws GuidesException {
+        final StringBuilder accum = new StringBuilder();
+        final StringBuilder accumread = new StringBuilder();
+
+        processParagraph(accum, accumread, elem, srcimage, divide);
+
+        if (accum.length() > 0) {
+            addSection(accum.toString(), accumread.toString(), srcimage);
+            accum.delete(0, accum.length());
+            accumread.delete(0, accumread.length());
+        }
+    }
+
+    private void processParagraph(StringBuilder accum, StringBuilder accumread, Element elem, String srcimage, boolean divide) throws GuidesException {
+
+        for (Node node : elem.childNodes()) {
+            if (node instanceof TextNode) {
+                TextNode textNode = (TextNode) node;
+                appendNormalisedText(accum, accumread, textNode, srcimage, divide);
+            } else if (node instanceof Element) {
+                Element element = (Element) node;
+                if (accum.length() > 0 &&
+                        (element.isBlock() || element.tagName().equals("br")) &&
+                        !(accum.length() != 0 && accum.charAt(accum.length() - 1) == ' ')) {
+                    accum.append(" ");
+                    accumread.append(" ");
+                } else if (element.hasAttr("data-guidebook-speech")) {
+                    accum.append(element.text());
+                    accumread.append(element.attr("data-guidebook-speech"));
+                } else {
+                    // recursion
+                    processParagraph(accum, accumread, element, srcimage, divide);
+                }
+            }
+        }
+    }
+
+    private void appendNormalisedText(StringBuilder accum, StringBuilder accumread, TextNode textNode, String srcimage, boolean divide) throws GuidesException {
+        String text = textNode.getWholeText();
+
+        if (!preserveWhitespace(textNode.parent())) {
+            text = StringUtil.normaliseWhitespace(text);
+            if (accum.length() != 0 && accum.charAt(accum.length() - 1) == ' ')
+                text = text.replaceFirst("^\\s+", "");
+        }
+
+        if (divide) {
+            // Divide text by . and ;
+            int start = 0;
+            while (start < text.length()) {
+                int i = text.indexOf(". ", start);
+                int j = text.indexOf("; ", start);
+                if (i < 0 || j < 0) {
+                    i = Math.max(i, j);
+                } else {
+                    i = Math.min(i, j);
+                }
+                if (i < 0) {
+                    accum.append(text.substring(start));
+                    accumread.append(text.substring(start));
+                    start = text.length();
+                } else {
+                    accum.append(text.substring(start, i + 2));
+                    accumread.append(text.substring(start, i + 2));
+                    addSection(accum.toString(), accumread.toString(), srcimage);
+                    accum.delete(0, accum.length());
+                    accumread.delete(0, accumread.length());
+                    start = i + 1;
+                }
+            }
+        } else {
+            accum.append(text);
+            accumread.append(text);
+        }
+    }
+
+    private boolean preserveWhitespace(Node node) {
+        // looks only at this element and one level up, to prevent recursion & needless stack searches
+        if (node != null && node instanceof Element) {
+            Element element = (Element) node;
+            return element.tag().preserveWhitespace() ||
+                    element.parent() != null && element.parent().tag().preserveWhitespace();
+        }
+        return false;
     }
 }
