@@ -9,6 +9,7 @@ import android.os.Parcelable;
 public class Section implements Parcelable {
 
     private String text = ""; // not null
+    private String read = ""; // Nullable. If null then the text to read is "text"
     private String image = null; // Nullable
 
     public String getText() {
@@ -17,6 +18,14 @@ public class Section implements Parcelable {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getRead() {
+        return read;
+    }
+
+    public void setRead(String read) {
+        this.read = read;
     }
 
     public String getImage() {
@@ -30,6 +39,7 @@ public class Section implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(getText());
+        parcel.writeString(getRead());
         parcel.writeString(getImage());
     }
 
@@ -42,6 +52,7 @@ public class Section implements Parcelable {
         public Section createFromParcel(Parcel in) {
             Section section = new Section();
             section.setText(in.readString());
+            section.setRead(in.readString());
             section.setImage(in.readString());
             return section;
         }

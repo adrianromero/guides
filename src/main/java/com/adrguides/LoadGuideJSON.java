@@ -67,6 +67,7 @@ public class LoadGuideJSON extends LoadGuide {
                     section.setText(paragraphs.getString(j));
                 } else {
                     section.setText(s.getString("text"));
+                    section.setRead(s.optString("read"));
                     section.setImage(loadImage(s.optString("image")));
                 }
                 p.getSections().add(section);

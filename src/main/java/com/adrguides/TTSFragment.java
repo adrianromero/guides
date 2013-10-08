@@ -213,11 +213,18 @@ public class TTSFragment extends Fragment implements TextToSpeech.OnInitListener
             }
             for (int i = paragraph; i < place.getSections().size(); i++) {
 
-                Log.d("com.adrguides.TTS", "playing --> " + Integer.toString(i) + " = " + place.getSections().get(i).getText());
-                String textparagraph = place.getSections().get(i).getText();
+
+
+                String readparagraph = place.getSections().get(i).getRead();
+                if (readparagraph == null || readparagraph.equals("")) {
+                    readparagraph = place.getSections().get(i).getText();
+                }
+
+                Log.d("com.adrguides.TTS", "playing --> " + readparagraph);
+
                 HashMap<String, String> ttsparams = new HashMap<String, String>();
                 ttsparams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, Integer.toString(i));
-                tts.speak(textparagraph, i == 0 ? TextToSpeech.QUEUE_FLUSH : TextToSpeech.QUEUE_ADD, ttsparams);
+                tts.speak(readparagraph, i == 0 ? TextToSpeech.QUEUE_FLUSH : TextToSpeech.QUEUE_ADD, ttsparams);
                 playing_last = Integer.toString(i);
             }
         }

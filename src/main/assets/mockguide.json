@@ -8,7 +8,8 @@
         "title": "Cuadro primero",
         "paragraphs": [{
             "image": "madrid_1.jpg",
-            "text": "Este es el cuadro primero"
+            "text": "Este es un cuadro del siglo XIX.",
+            "read": "Este es un cuadro del siglo diecinueve."
         }, {
             "image": "madrid_2.jpg",
             "text": "Muy bonito. Es nuevo."
