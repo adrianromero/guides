@@ -66,6 +66,8 @@ public class LoadGuideHTML extends LoadGuide {
         Elements canonical = doc.head().getElementsByAttributeValue("rel", "canonical");
         if (canonical.size() == 1 && canonical.get(0).tagName().equals("link")) {
             guide.setAddress(new URL(baseurl, canonical.get(0).attr("href")).toString());
+        } else {
+            guide.setAddress(address);
         }
 
         // Title if exists

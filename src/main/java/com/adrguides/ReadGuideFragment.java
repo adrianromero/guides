@@ -22,7 +22,6 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
@@ -141,9 +140,15 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
 
-                Intent internetIntent = new Intent(Intent.ACTION_VIEW);
-                internetIntent.setData(Uri.parse(ttsfragment.getGuide().getAddress()));
-                startActivity(internetIntent);
+//                Intent internetIntent = new Intent(Intent.ACTION_VIEW);
+//                internetIntent.setData(Uri.parse(ttsfragment.getGuide().getAddress()));
+//                startActivity(internetIntent);
+
+                Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                intent.putExtra(WebViewActivity.EXTRA_URL, ttsfragment.getGuide().getAddress());
+                intent.putExtra(WebViewActivity.EXTRA_TITLE, ttsfragment.getGuide().getTitle());
+                startActivity(intent);
+
                 return true;
             }
         });
