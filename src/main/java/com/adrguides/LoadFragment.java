@@ -59,6 +59,8 @@ public class LoadFragment extends Fragment implements LoadGuideFragment.LoadGuid
     public void onStart() {
         super.onStart();
 
+        getActivity().getActionBar().hide();
+
         loadguide = (LoadGuideFragment) getFragmentManager().findFragmentByTag(LoadGuideFragment.TAG);
         loadguide.setLoadListener(this);
     }

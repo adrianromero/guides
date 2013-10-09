@@ -91,6 +91,8 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
     public void onStart () {
         super.onStart();
 
+        getActivity().getActionBar().show();
+
         ttsfragment = (TTSFragment) getFragmentManager().findFragmentByTag(TTSFragment.TAG);
         ttsfragment.setPlayingListener(this);
         printStatus();
