@@ -21,10 +21,13 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 /**
  * Created by adrian on 9/10/13.
@@ -35,13 +38,18 @@ public class WebViewActivity extends Activity {
     public final static String EXTRA_TITLE = "EXTRA_TITLE";
 
     private WebView mWebView;
+    private ProgressBar webprogress;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_webview);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mWebView = new WebView(this);
+        mWebView = (WebView) findViewById(R.id.webView);
+        webprogress = (ProgressBar) findViewById(R.id.webProgress);
+
+
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         mWebView.setWebViewClient(new WebViewClient() {
@@ -52,13 +60,20 @@ public class WebViewActivity extends Activity {
             }
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                webprogress.setProgress(0);
+                webprogress.setVisibility(View.VISIBLE);
             }
             @Override
             public void onPageFinished(WebView view, String url) {
+                webprogress.setVisibility(View.INVISIBLE);
             }
         });
+        mWebView.setWebChromeClient(new WebChromeClient(){
 
-        setContentView(mWebView);
+            public void onProgressChanged(WebView view, int progress) {
+                webprogress.setProgress(progress);
+            }
+        });
 
         if (savedInstanceState == null) {
             mWebView.loadUrl(getIntent().getStringExtra(EXTRA_URL));
