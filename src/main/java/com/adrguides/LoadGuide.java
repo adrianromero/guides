@@ -86,29 +86,34 @@ public abstract class LoadGuide {
         }
     }
 
-    protected final String loadImage(final URL baseurl, final String address) throws GuidesException {
+    protected final String loadImage(URL baseurl, String address) throws GuidesException {
         try {
             if (address == null || address.equals("")) {
                 return null;
             } else {
-                String s = images.get(address);
-                if (s != null) {
-                    return s;
+                final URL loadimageURL = new URL(baseurl, address);
+                if ("file".equals(loadimageURL.getProtocol())) {
+                    return loadimageURL.toString();
                 } else {
-                    final File file = new File(context.getFilesDir(), "guide-" + UUID.randomUUID().toString() + ".png");
-                    final String url = file.toURI().toURL().toString();
-                    images.put(address, url);
-                    exec.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                loadImageTask(baseurl, address, file);
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                    String s = images.get(address);
+                    if (s != null) {
+                        return s;
+                    } else {
+                        final File file = new File(context.getFilesDir(), "guide-" + UUID.randomUUID().toString() + ".png");
+                        final String url = file.toURI().toURL().toString();
+                        images.put(address, url);
+                        exec.submit(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    loadImageTask(loadimageURL, file);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        }
-                    });
-                    return url;
+                        });
+                        return url;
+                    }
                 }
             }
         } catch (IOException e) {
@@ -139,14 +144,14 @@ public abstract class LoadGuide {
     }
 
 
-    private void loadImageTask(URL baseurl, String address, File file) throws IOException {
+    private void loadImageTask(URL imageURL, File file) throws IOException {
 
         InputStream in = null;
         OutputStream out = null;
 
         try {
             // read bitmap from source.
-            in = HTTPUtils.openAddress(context, new URL(baseurl, address));
+            in = HTTPUtils.openAddress(context, imageURL);
             Bitmap bmp = BitmapFactory.decodeStream(in);
 
             // resize if needed to save space

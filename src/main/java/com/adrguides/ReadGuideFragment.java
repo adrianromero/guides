@@ -288,8 +288,9 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
     }
 
     private String currentImageURL = null; // not already asigned an image
-
     private SwitchImageThread t = null;
+
+    // This address is supposed to be always a file://...
     private void switchImage(String imageURL) {
 
         if (imageURL == null) {
