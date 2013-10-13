@@ -93,18 +93,8 @@ public class LoadGuideFragment extends Fragment {
 
                 initBitmapStorage(context);
 
-                InputStream inguide = null;
                 try {
                     final URL urldoc = new URL(address);
-
-                    // Read Document
-                    inguide = HTTPUtils.openAddress(context, urldoc);
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inguide, "UTF-8"));
-                    StringBuffer text = new StringBuffer();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        text.append(line).append('\n');
-                    }
 
                     LoadGuide loadguide;
                     if (urldoc.getPath().endsWith(".json")) {
@@ -113,7 +103,7 @@ public class LoadGuideFragment extends Fragment {
                         loadguide = new LoadGuideHTML(context, imagesize);
                     }
 
-                    Guide guide = loadguide.load(urldoc, text.toString());
+                    Guide guide = loadguide.load(urldoc);
 
                     sanitized(guide);
 
@@ -132,13 +122,6 @@ public class LoadGuideFragment extends Fragment {
                     Log.d("com.adrguides.GuideFragment", null, e);
                     result.setStatus(-1);
                     result.setException(e.getMessage());
-                } finally {
-                    if (inguide != null) {
-                        try {
-                            inguide.close();
-                        } catch (IOException e) {
-                        }
-                    }
                 }
             }
             return result;

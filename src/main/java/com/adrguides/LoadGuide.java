@@ -25,8 +25,10 @@ import com.adrguides.model.Guide;
 import com.adrguides.utils.GuidesException;
 import com.adrguides.utils.HTTPUtils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.HashMap;
@@ -54,11 +56,31 @@ public abstract class LoadGuide {
 
     protected abstract Guide load_imp(URL address, String file) throws Exception;
 
-    public final Guide load(URL address, String file) throws Exception {
-        beginExecutor();
-        Guide guide = load_imp(address, file);
-        endExecutor();
-        return guide;
+    public final Guide load(URL address) throws Exception {
+
+        InputStream inguide = null;
+        try {
+            // Read Document
+            inguide = HTTPUtils.openAddress(context, address);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inguide, "UTF-8"));
+            StringBuffer text = new StringBuffer();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                text.append(line).append('\n');
+            }
+
+            beginExecutor();
+            Guide guide = load_imp(address, text.toString());
+            endExecutor();
+            return guide;
+        } finally {
+            if (inguide != null) {
+                try {
+                    inguide.close();
+                } catch (IOException e) {
+                }
+            }
+        }
     }
 
     protected final String loadImage(final URL baseurl, final String address) {
