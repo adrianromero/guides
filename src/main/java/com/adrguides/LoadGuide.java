@@ -42,29 +42,26 @@ public abstract class LoadGuide {
 
     private ExecutorService exec;
 
-    protected URL baseurl;
-
     private Context context;
     private int imagesize;
 
     private HashMap<String, String> images = new HashMap<String, String>();
 
-    public LoadGuide(Context context, URL baseurl, int imagesize) {
+    public LoadGuide(Context context, int imagesize) {
         this.context = context;
-        this.baseurl = baseurl;
         this.imagesize = imagesize;
     }
 
-    protected abstract Guide load_imp(String address, String file) throws Exception;
+    protected abstract Guide load_imp(URL address, String file) throws Exception;
 
-    public final Guide load(String address, String file) throws Exception {
+    public final Guide load(URL address, String file) throws Exception {
         beginExecutor();
         Guide guide = load_imp(address, file);
         endExecutor();
         return guide;
     }
 
-    protected final String loadImage(final String address) {
+    protected final String loadImage(final URL baseurl, final String address) {
         if (address == null || address.equals("")) {
             return null;
         } else {
@@ -78,7 +75,7 @@ public abstract class LoadGuide {
                     @Override
                     public void run() {
                         try {
-                            loadImageTask(address, name);
+                            loadImageTask(baseurl, address, name);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -112,7 +109,7 @@ public abstract class LoadGuide {
     }
 
 
-    private String loadImageTask(String address, String name) throws IOException {
+    private String loadImageTask(URL baseurl, String address, String name) throws IOException {
 
         InputStream in = null;
         OutputStream out = null;

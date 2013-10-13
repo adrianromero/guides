@@ -44,8 +44,8 @@ import java.util.regex.Pattern;
  */
 public class LoadGuideHTML extends LoadGuide {
 
-    public LoadGuideHTML(Context context, URL baseurl, int imagesize) {
-        super(context, baseurl, imagesize);
+    public LoadGuideHTML(Context context, int imagesize) {
+        super(context, imagesize);
     }
 
     private Guide guide;
@@ -53,7 +53,7 @@ public class LoadGuideHTML extends LoadGuide {
     private String chapterimage;
 
     @Override
-    protected Guide load_imp(String address, String text) throws Exception {
+    protected Guide load_imp(URL address, String text) throws Exception {
 
 
         Document doc = Jsoup.parse(text);
@@ -65,9 +65,9 @@ public class LoadGuideHTML extends LoadGuide {
         // address
         Elements canonical = doc.head().getElementsByAttributeValue("rel", "canonical");
         if (canonical.size() == 1 && canonical.get(0).tagName().equals("link")) {
-            guide.setAddress(new URL(baseurl, canonical.get(0).attr("href")).toString());
+            guide.setAddress(new URL(address, canonical.get(0).attr("href")).toString());
         } else {
-            guide.setAddress(address);
+            guide.setAddress(address.toString());
         }
 
         // Title if exists
@@ -84,7 +84,7 @@ public class LoadGuideHTML extends LoadGuide {
             setLanguage(lang);
         }
 
-        navigateElement(doc.body());
+        navigateElement(address, doc.body());
 
         return guide;
     }
@@ -96,7 +96,7 @@ public class LoadGuideHTML extends LoadGuide {
         guide.setLanguage(loc.length > 2 ? loc[2] : "");
     }
 
-    private void navigateElement(Element elem) throws GuidesException {
+    private void navigateElement(URL address, Element elem) throws GuidesException {
         ArrayList places;
 
         if (elem.hasClass("guidebook_title")) {
@@ -111,16 +111,16 @@ public class LoadGuideHTML extends LoadGuide {
 
         } else if (elem.hasClass("guidebook_image")) {
             if (guide.getPlaces().size() == 0) {
-                guidebookimage = loadReferencedImage(elem);
+                guidebookimage = loadReferencedImage(address, elem);
             } else {
-                chapterimage = loadReferencedImage(elem);
+                chapterimage = loadReferencedImage(address, elem);
             }
         } else if (elem.hasClass("guidebook_paragraph")) {
-            processParagraph(elem, loadLinkedImage(elem), true);
+            processParagraph(elem, loadLinkedImage(address, elem), true);
         } else if (elem.hasClass("guidebook_section")) {
-            processParagraph(elem, loadLinkedImage(elem), false);
+            processParagraph(elem, loadLinkedImage(address, elem), false);
         } else {
-            navigateChildren(elem);
+            navigateChildren(address, elem);
         }
     }
 
@@ -151,9 +151,9 @@ public class LoadGuideHTML extends LoadGuide {
         }
     }
 
-    private String loadLinkedImage(Element elem) throws GuidesException {
+    private String loadLinkedImage(URL address, Element elem) throws GuidesException {
         try {
-            return loadReferencedImage(elem);
+            return loadReferencedImage(address, elem);
         } catch (GuidesException e) {
             if (chapterimage != null) {
                 return chapterimage;
@@ -165,28 +165,28 @@ public class LoadGuideHTML extends LoadGuide {
         }
     }
 
-    private String loadReferencedImage(Element elem) throws GuidesException {
+    private String loadReferencedImage(URL address, Element elem) throws GuidesException {
         if (elem == null) {
             throw new GuidesException(R.string.ex_imagenotfound, "Refered image has not been found.");
         } else if ("img".equals(elem.tagName())) {
-            return loadImage(elem.attr("src"));
+            return loadImage(address, elem.attr("src"));
         } else if (elem.hasAttr("data-guidebook-image")) {
-            return loadLinkedImage(elem.ownerDocument().getElementById(elem.attr("data-guidebook-image")));
+            return loadLinkedImage(address, elem.ownerDocument().getElementById(elem.attr("data-guidebook-image")));
         } else {
             Pattern p = Pattern.compile("background\\s*\\:\\s*url\\s*\\(('|\"?)?+(.*)\\1\\)");
             Matcher m = p.matcher(elem.attr("style"));
             if (m.find()) {
-                return loadImage(m.group(2));
+                return loadImage(address, m.group(2));
             } else {
                 throw new GuidesException(R.string.ex_imagenotfound, "Refered image has not been found.");
             }
         }
     }
 
-    private void navigateChildren(Element content) throws GuidesException {
+    private void navigateChildren(URL address, Element content) throws GuidesException {
         Elements children = content.children();
         for (Element e : children) {
-            navigateElement(e);
+            navigateElement(address, e);
         }
     }
     private void processParagraph(Element elem, String srcimage, boolean divide) throws GuidesException {

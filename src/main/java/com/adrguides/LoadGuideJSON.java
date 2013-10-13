@@ -33,19 +33,19 @@ import java.net.URL;
  */
 public class LoadGuideJSON extends LoadGuide {
 
-    public LoadGuideJSON(Context context, URL baseurl, int imagesize) {
-        super(context, baseurl, imagesize);
+    public LoadGuideJSON(Context context, int imagesize) {
+        super(context, imagesize);
     }
 
     @Override
-    protected Guide load_imp(String address, String text) throws Exception {
+    protected Guide load_imp(URL address, String text) throws Exception {
 
         JSONObject data = new JSONObject(text);
 
         Guide guide = new Guide();
 
         if (data.has("address")) {
-            guide.setAddress(new URL(baseurl, data.getString("address")).toString());
+            guide.setAddress(new URL(address, data.getString("address")).toString());
         }
         guide.setTitle(data.getString("title"));
         guide.setLanguage(data.optString("language", "en"));
@@ -68,7 +68,7 @@ public class LoadGuideJSON extends LoadGuide {
                 } else {
                     section.setText(s.getString("text"));
                     section.setRead(s.optString("read"));
-                    section.setImage(loadImage(s.optString("image")));
+                    section.setImage(loadImage(address, s.optString("image")));
                 }
                 p.getSections().add(section);
             }

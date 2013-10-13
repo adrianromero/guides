@@ -108,12 +108,12 @@ public class LoadGuideFragment extends Fragment {
 
                     LoadGuide loadguide;
                     if (urldoc.getPath().endsWith(".json")) {
-                        loadguide = new LoadGuideJSON(context, urldoc, imagesize);
+                        loadguide = new LoadGuideJSON(context, imagesize);
                     } else {
-                        loadguide = new LoadGuideHTML(context, urldoc, imagesize);
+                        loadguide = new LoadGuideHTML(context, imagesize);
                     }
 
-                    Guide guide = loadguide.load(address, text.toString());
+                    Guide guide = loadguide.load(urldoc, text.toString());
 
                     sanitized(guide);
 
