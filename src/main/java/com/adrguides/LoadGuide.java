@@ -26,10 +26,13 @@ import com.adrguides.utils.GuidesException;
 import com.adrguides.utils.HTTPUtils;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.UUID;
@@ -83,28 +86,33 @@ public abstract class LoadGuide {
         }
     }
 
-    protected final String loadImage(final URL baseurl, final String address) {
-        if (address == null || address.equals("")) {
-            return null;
-        } else {
-            String s = images.get(address);
-            if (s != null) {
-                return s;
+    protected final String loadImage(final URL baseurl, final String address) throws GuidesException {
+        try {
+            if (address == null || address.equals("")) {
+                return null;
             } else {
-                final String name = "guide-" + UUID.randomUUID().toString() + ".png";
-                images.put(address, name);
-                exec.submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            loadImageTask(baseurl, address, name);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                String s = images.get(address);
+                if (s != null) {
+                    return s;
+                } else {
+                    final File file = new File(context.getFilesDir(), "guide-" + UUID.randomUUID().toString() + ".png");
+                    final String url = file.toURI().toURL().toString();
+                    images.put(address, url);
+                    exec.submit(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                loadImageTask(baseurl, address, file);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                });
-                return name;
+                    });
+                    return url;
+                }
             }
+        } catch (IOException e) {
+            throw new GuidesException(R.string.ex_imagenotfound, "Refered image has not been found.");
         }
     }
 
@@ -131,7 +139,7 @@ public abstract class LoadGuide {
     }
 
 
-    private String loadImageTask(URL baseurl, String address, String name) throws IOException {
+    private void loadImageTask(URL baseurl, String address, File file) throws IOException {
 
         InputStream in = null;
         OutputStream out = null;
@@ -152,10 +160,9 @@ public abstract class LoadGuide {
             }
 
             // store in local filesystem.
-            out =  context.openFileOutput(name, Context.MODE_PRIVATE);
+            out = new FileOutputStream(file); // context.openFileOutput(name, Context.MODE_PRIVATE);
             bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
             bmp.recycle();
-            return name;
         } finally {
             if (out != null) {
                 out.close();

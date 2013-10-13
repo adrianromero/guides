@@ -10,7 +10,7 @@ public class Section implements Parcelable {
 
     private String text = ""; // not null
     private String read = ""; // Nullable. If null then the text to read is "text"
-    private String image = null; // Nullable
+    private String imageURL = null; // Nullable
 
     public String getText() {
         return text;
@@ -28,19 +28,19 @@ public class Section implements Parcelable {
         this.read = read;
     }
 
-    public String getImage() {
-        return image;
+    public String getImageURL() {
+        return imageURL;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(getText());
         parcel.writeString(getRead());
-        parcel.writeString(getImage());
+        parcel.writeString(getImageURL());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class Section implements Parcelable {
             Section section = new Section();
             section.setText(in.readString());
             section.setRead(in.readString());
-            section.setImage(in.readString());
+            section.setImageURL(in.readString());
             return section;
         }
 

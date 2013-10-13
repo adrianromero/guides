@@ -31,8 +31,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
-import org.jsoup.select.NodeTraversor;
-import org.jsoup.select.NodeVisitor;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -146,7 +144,7 @@ public class LoadGuideHTML extends LoadGuide {
                 }
                 section.setText(texttrimmed);
                 section.setRead(readtrimmed.equals(texttrimmed) ? null : readtrimmed);
-                section.setImage(loadedimage);
+                section.setImageURL(loadedimage);
             }
         }
     }

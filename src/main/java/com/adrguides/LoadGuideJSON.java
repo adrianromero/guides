@@ -21,7 +21,6 @@ import android.content.Context;
 import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
 import com.adrguides.model.Section;
-import com.adrguides.utils.GuidesException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -68,7 +67,7 @@ public class LoadGuideJSON extends LoadGuide {
                 } else {
                     section.setText(s.getString("text"));
                     section.setRead(s.optString("read"));
-                    section.setImage(loadImage(address, s.optString("image")));
+                    section.setImageURL(loadImage(address, s.optString("image")));
                 }
                 p.getSections().add(section);
             }

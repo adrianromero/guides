@@ -26,14 +26,10 @@ import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
 import com.adrguides.model.Section;
 import com.adrguides.utils.GuidesException;
-import com.adrguides.utils.HTTPUtils;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 
 /**
@@ -164,11 +160,11 @@ public class LoadGuideFragment extends Fragment {
                 Section lastsection = p.getSections().get(p.getSections().size() -1);
                 if (lastsection.getText() == null || lastsection.getText().equals("")) {
                     // this is supposed to be the place image
-                    String img = lastsection.getImage();
+                    String img = lastsection.getImageURL();
                     p.getSections().remove(p.getSections().size() -1);
                     int h = 0;
-                    while(h < p.getSections().size() && p.getSections().get(h).getImage() == null) {
-                        p.getSections().get(h).setImage(img);
+                    while(h < p.getSections().size() && p.getSections().get(h).getImageURL() == null) {
+                        p.getSections().get(h).setImageURL(img);
                         h++;
                     }
                 }
@@ -179,14 +175,14 @@ public class LoadGuideFragment extends Fragment {
                     if (s.getText() == null || s.getText().equals("")) {
                         throw new GuidesException(R.string.ex_paragraphsneedwords, "All paragraphs need to have at leat one word.");
                     }
-                    if (s.getImage() == null) {
-                        s.setImage(lastimg);
-                    } else if (p.getSections().get(0).getImage() == null) {
+                    if (s.getImageURL() == null) {
+                        s.setImageURL(lastimg);
+                    } else if (p.getSections().get(0).getImageURL() == null) {
                        for (int j = 0; j < i; j++) {
-                           p.getSections().get(j).setImage(s.getImage());
+                           p.getSections().get(j).setImageURL(s.getImageURL());
                        }
                     }
-                    lastimg = s.getImage();
+                    lastimg = s.getImageURL();
                 }
             }
         }

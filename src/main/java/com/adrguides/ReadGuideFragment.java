@@ -17,6 +17,7 @@
 package com.adrguides;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -39,8 +40,11 @@ import android.widget.ViewSwitcher;
 
 import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
+import com.adrguides.utils.HTTPUtils;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 /**
  * Created by adrian on 19/08/13.
@@ -228,7 +232,7 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             Guide guide = ttsfragment.getGuide();
             int chapter = ttsfragment.getChapter();
             int paragraph = ttsfragment.getParagraph();
-            String b;
+            String imageURL;
 
             // Print title in bar
             getActivity().getActionBar().setTitle(guide.getTitle());
@@ -241,16 +245,16 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             if (paragraph >= 0) {
                 content.setVisibility(View.VISIBLE);
                 content.setText(mychapter.getSections().get(paragraph).getText());
-                b = mychapter.getSections().get(paragraph).getImage();
+                imageURL = mychapter.getSections().get(paragraph).getImageURL();
             } else {
                 content.setVisibility(View.GONE);
                 if (mychapter.getSections().size() > 0) {
-                    b = mychapter.getSections().get(0).getImage();
+                    imageURL = mychapter.getSections().get(0).getImageURL();
                 } else {
-                    b = null;
+                    imageURL = null;
                 }
             }
-            switchImage(b);
+            switchImage(imageURL);
         } else {
 
             getActivity().getActionBar().setTitle(getResources().getText(R.string.title_activity_read_guide));
@@ -283,16 +287,16 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
         getActivity().invalidateOptionsMenu();
     }
 
-    private String currentImage = null; // not already asigned an image
+    private String currentImageURL = null; // not already asigned an image
 
     private SwitchImageThread t = null;
-    private void switchImage(String image) {
+    private void switchImage(String imageURL) {
 
-        if (image == null) {
-            image = IMAGE_BLANK;
+        if (imageURL == null) {
+            imageURL = IMAGE_BLANK;
         }
 
-        if (image.equals(currentImage)) {
+        if (imageURL.equals(currentImageURL)) {
             // do not switch if the image is the same
             return;
         }
@@ -302,24 +306,26 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             t = null;
         }
 
-        currentImage = image;
+        currentImageURL = imageURL;
 
         ImageSwitcher imageSwitcher = (ImageSwitcher) v.findViewById(R.id.switcherImageGuide);
-        if (currentImage.equals(IMAGE_BLANK)) {
+        if (currentImageURL.equals(IMAGE_BLANK)) {
             imageSwitcher.setImageResource(R.drawable.place_default);
         } else {
-            t = new SwitchImageThread(new File(this.getActivity().getFilesDir(),currentImage).getPath());
+            t = new SwitchImageThread(this.getActivity().getApplicationContext(), currentImageURL);
             t.start();
         }
     }
 
     private class SwitchImageThread extends Thread {
 
-        private String file;
+        private Context context;
+        private String address;
         private boolean canceled = false;
 
-        public SwitchImageThread(String file) {
-            this.file = file;
+        public SwitchImageThread(Context context, String address) {
+            this.context = context;
+            this.address = address;
         }
 
         public synchronized void cancel() {
@@ -333,7 +339,14 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
         public void run() {
             // if file does not exist bitmap will be null and drawable will be a black rectangle.
             // that is OK for me.
-            final Drawable dr = new BitmapDrawable(getResources(), file);
+            InputStream inimage;
+            try {
+                inimage = HTTPUtils.openAddress(context, new URL(address));
+            } catch (IOException e) {
+                inimage = null;
+            }
+
+            final Drawable dr = new BitmapDrawable(getResources(), inimage);
             v.post(new Runnable(){
                 public void run() {
                     if (ttsfragment != null && !isCancelled()) { // Fragment not stopped
@@ -341,6 +354,13 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
                     }
                 }
             });
+
+            if (inimage != null) {
+                try {
+                    inimage.close();
+                } catch (IOException e) {
+                }
+            }
         }
     }
 
