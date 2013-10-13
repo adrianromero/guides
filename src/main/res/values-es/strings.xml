@@ -5,9 +5,6 @@
     <string name="action_settings">Ajustes</string>
     <string name="action_about">Acerca de</string>
     <string name="action_viewguide">Ver guía</string>
-    <string name="hello_world">¡Hola mundo!</string>
-    <string name="btn_talk">Hablar</string>
-    <string name="btn_install">Instalar datos de síntesis de voz</string>
     <string name="title_activity_read_guide">Guidebook</string>
     <string name="title_activity_settings">Ajustes</string>
     <string name="title_activity_about">Acerca de</string>

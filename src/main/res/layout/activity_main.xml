@@ -13,60 +13,19 @@
             android:layout_alignParentLeft="true"/>
 
     <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:onClick="onCheckTTSClicked"/>
-
-    <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_talk"
-            android:id="@+id/button2"
-            android:layout_below="@+id/button"
-            android:layout_alignParentLeft="true"
-            android:onClick="onTalkClicked"/>
-
-    <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_install"
-            android:id="@+id/button3"
-            android:layout_below="@+id/button2"
-            android:layout_alignParentLeft="true"
-            android:onClick="onInstallTTSClicked"/>
-
-    <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Read guide"
             android:id="@+id/button4"
-            android:layout_below="@+id/button3"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:onClick="onReadActivityClicked"/>
+        android:layout_alignParentLeft="true"
+        android:onClick="onReadActivityClicked"/>
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Load guide"
             android:id="@+id/button5"
-            android:layout_below="@+id/button4"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:onClick="onLoadActivityClicked"/>
-
-    <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView"
-            android:layout_below="@+id/button5"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/ic_launcher"
-            android:scaleType="fitCenter"/>
+        android:onClick="onLoadActivityClicked"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/button4" />
 
 </RelativeLayout>

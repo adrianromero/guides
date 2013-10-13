@@ -38,11 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends Activity implements TextToSpeech.OnInitListener {
-
-    private static final int TTS_REQUEST_CODE = 332342;
-
-    private TextToSpeech tts;
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,34 +46,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         setContentView(R.layout.activity_main);
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-
-
-
-        SpinnerAdapter mSpinnerAdapter = new ArrayAdapter(getActionBar().getThemedContext(),
-                android.R.layout.simple_spinner_dropdown_item,
-                new String[] {"one","two","three"});
-
-        ActionBar.OnNavigationListener mOnNavigationListener = new ActionBar.OnNavigationListener() {
-
-            @Override
-            public boolean onNavigationItemSelected(int position, long itemId) {
-
-                return true;
-            }
-        };
-
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        actionBar.setListNavigationCallbacks(mSpinnerAdapter, mOnNavigationListener);
     }
-    @Override
-    public void onDestroy() {
-        if (tts != null) {
-            tts.shutdown();
-        }
-        super.onDestroy();
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -98,8 +68,10 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         startActivity(intent);
     }
 
-    //// Test code
 
+
+
+    //// Test code
     public void onReadActivityClicked(View view) {
         Intent intent = new Intent(this, ReadGuideActivity.class);
         startActivity(intent);
@@ -110,72 +82,4 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         intent.setData(Uri.parse("file:///android_asset/mockguide.json"));
         startActivity(intent);
     }
-
-    public void onCheckTTSClicked(View view) {
-
-        Intent checkIntent = new Intent();
-        checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-        startActivityForResult(checkIntent, TTS_REQUEST_CODE);
-
-        TextView msg = (TextView) this.findViewById(R.id.messageText);
-        msg.setText("checking");
-    }
-
-    public void onTalkClicked(View view) {
-        String myText1 = "¿Has dormido bién?";
-        String myText2 = "Eso espero, porque es hora de levantarse.";
-
-        HashMap<String, String> ttsparams = new HashMap<String, String>();
-        ttsparams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "end of wakeup message ID");
-        tts.speak(myText1, TextToSpeech.QUEUE_FLUSH, ttsparams);
-        tts.speak(myText2, TextToSpeech.QUEUE_ADD, ttsparams);
-    }
-
-    public void onInstallTTSClicked(View view) {
-        Intent installIntent = new Intent();
-        installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-        startActivity(installIntent);
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == TTS_REQUEST_CODE) {
-            TextView msg = (TextView) this.findViewById(R.id.messageText);
-            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-                // success, create the TTS instance
-                tts = new TextToSpeech(this, this);
-
-
-                msg.setText("loading");
-            } else {
-
-//                // missing data, install it
-//                Intent installIntent = new Intent();
-//                installIntent.setAction(
-//                        TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-//                startActivity(installIntent);
-                msg.setText("error");
-            }
-        }
-    }
-
-    @Override
-    public void onInit(int i) {
-        TextView msg = (TextView) this.findViewById(R.id.messageText);
-        msg.setText("success");
-
-        List<TextToSpeech.EngineInfo> engines = tts.getEngines();
-        Log.d("com.adrguides.MainActivity", "TTS Engines >>");
-        for (TextToSpeech.EngineInfo e : engines) {
-            Log.d("com.adrguides.MainActivity", e.toString());
-        }
-        Log.d("com.adrguides.MainActivity", "<< TTS Engines");
-
-        tts.setLanguage(new Locale("spa", "ESP"));
-        if (tts.isSpeaking()) {
-            msg.setText("speaking");
-        }
-    }
-
 }
