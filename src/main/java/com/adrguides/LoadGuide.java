@@ -74,6 +74,9 @@ public abstract class LoadGuide {
 
             beginExecutor();
             Guide guide = load_imp(address, text.toString());
+
+            guide.setStored("file".equals(address.getProtocol()));
+
             endExecutor();
             return guide;
         } finally {
