@@ -160,6 +160,7 @@ public class Guide implements Parcelable {
             chapter.put("paragraphs", paragraphs);
             for (Section s : p.getSections()) {
                 JSONObject section = new JSONObject();
+                paragraphs.put(section);
                 section.put("text", s.getText());
                 section.put("read", s.getRead());
                 section.put("image", saveImage(context, processedimages, dir, s.getImageURL()));
@@ -180,6 +181,8 @@ public class Guide implements Parcelable {
             }
         }
 
+        //
+        setStored(true);
     }
 
     private String saveImage(Context context, Map<String, String> processedimages, File dir, String address) throws IOException {
