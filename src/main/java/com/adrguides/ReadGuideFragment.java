@@ -23,8 +23,10 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,11 +38,14 @@ import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
 import com.adrguides.utils.HTTPUtils;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -98,6 +103,7 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
         ttsfragment.setPlayingListener(this);
         printStatus();
     }
+
     public void onStop () {
         ttsfragment.setPlayingListener(null);
         ttsfragment = null;
@@ -157,6 +163,15 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             }
         });
 
+        menu.findItem(R.id.action_bookmark).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                new SaveGuideTask(ReadGuideFragment.this.getActivity().getApplicationContext())
+                        .execute(ttsfragment.getGuide());
+                return true;
+            }
+        });
+
         searchview = new SearchViewGuides(getActivity(), menu.findItem(R.id.menu_search));
     }
 
@@ -196,6 +211,7 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
                         .setEnabled(false)
                         .setIcon(getDrawableDisabled(R.drawable.ic_media_previous));
             }
+            menu.findItem(R.id.action_bookmark).setEnabled(!ttsfragment.getGuide().isStored());
             menu.findItem(R.id.action_list).setEnabled(true);
         } else {
             menu.findItem(R.id.action_playpause)
@@ -210,6 +226,7 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
             menu.findItem(R.id.action_previous)
                     .setEnabled(false)
                     .setIcon(getDrawableDisabled(R.drawable.ic_media_previous));
+            menu.findItem(R.id.action_bookmark).setEnabled(false);
             menu.findItem(R.id.action_list).setEnabled(false);
         }
     }
@@ -288,7 +305,7 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
     }
 
     private String currentImageURL = null; // not already asigned an image
-    private SwitchImageThread t = null;
+    private SwitchImageTask t = null;
 
     // This address is supposed to be always a file://...
     private void switchImage(String imageURL) {
@@ -303,9 +320,11 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
         }
 
         if (t != null) {
-            t.cancel();
+            t.cancel(true);
             t = null;
         }
+
+        Log.d("com.adrguides.ReadGuideFragment", "Switching to " + imageURL);
 
         currentImageURL = imageURL;
 
@@ -313,55 +332,8 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
         if (currentImageURL.equals(IMAGE_BLANK)) {
             imageSwitcher.setImageResource(R.drawable.place_default);
         } else {
-            t = new SwitchImageThread(this.getActivity().getApplicationContext(), currentImageURL);
-            t.start();
-        }
-    }
-
-    private class SwitchImageThread extends Thread {
-
-        private Context context;
-        private String address;
-        private boolean canceled = false;
-
-        public SwitchImageThread(Context context, String address) {
-            this.context = context;
-            this.address = address;
-        }
-
-        public synchronized void cancel() {
-            canceled = true;
-        }
-        public synchronized boolean isCancelled() {
-            return canceled;
-        }
-
-        @Override
-        public void run() {
-            // if file does not exist bitmap will be null and drawable will be a black rectangle.
-            // that is OK for me.
-            InputStream inimage;
-            try {
-                inimage = HTTPUtils.openAddress(context, new URL(address));
-            } catch (IOException e) {
-                inimage = null;
-            }
-
-            final Drawable dr = new BitmapDrawable(getResources(), inimage);
-            v.post(new Runnable(){
-                public void run() {
-                    if (ttsfragment != null && !isCancelled()) { // Fragment not stopped
-                        ((ImageSwitcher) v.findViewById(R.id.switcherImageGuide)).setImageDrawable(dr);
-                    }
-                }
-            });
-
-            if (inimage != null) {
-                try {
-                    inimage.close();
-                } catch (IOException e) {
-                }
-            }
+            t = new SwitchImageTask();
+            t.execute(this.getActivity().getApplicationContext(), currentImageURL);
         }
     }
 
@@ -374,5 +346,72 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
                 }
             }
         });
+    }
+
+    private class SwitchImageTask extends AsyncTask<Object, Void, Drawable>{
+
+        @Override
+        protected Drawable doInBackground(Object... params) {
+
+            Context appcontext = (Context) params[0];
+            String address = (String) params[1];
+
+            // if file does not exist bitmap will be null and drawable will be a black rectangle.
+            // that is OK for me.
+            InputStream inimage = null;
+            try {
+                inimage = HTTPUtils.openAddress(appcontext, new URL(address));
+                return new BitmapDrawable(getResources(), inimage);
+            } catch (IOException e) {
+                Log.d("com.adrguides.SwitchImageTask", e.getMessage());
+                return null;
+            } finally {
+                if (inimage != null) {
+                    try {
+                        inimage.close();
+                    } catch (IOException e) {
+                    }
+                }
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Drawable result) {
+            if (ttsfragment != null ) { // Fragment not stopped
+                ((ImageSwitcher) v.findViewById(R.id.switcherImageGuide)).setImageDrawable(result);
+            }
+        }
+    }
+
+    private class SaveGuideTask extends AsyncTask<Guide, Void, Boolean> {
+        private Context appcontext;
+
+        public SaveGuideTask(Context appcontext) {
+            this.appcontext = appcontext;
+        }
+
+        protected Boolean doInBackground(Guide... params) {
+
+            try {
+                Guide guide = params[0];
+                guide.saveToDisk(appcontext);
+                return true;
+            } catch (IOException ex) {
+                return false;
+            } catch (JSONException ex) {
+                return false;
+            }
+        }
+
+        protected void onPostExecute(Boolean result) {
+
+            CharSequence text = appcontext.getString(result
+                    ? R.string.msg_bookmark_saved
+                    : R.string.msg_bookmark_not_saved);
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(appcontext, text, duration);
+            toast.show();
+            update();
+        }
     }
 }
