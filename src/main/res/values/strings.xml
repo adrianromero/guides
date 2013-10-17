@@ -15,6 +15,7 @@
     <string name="action_next">Next</string>
     <string name="action_list">List</string>
     <string name="action_search">Search</string>
+    <string name="action_bookmark">Add bookmark</string>
 
 
     <string name="msg_loading">Loading %s.</string>
@@ -23,6 +24,9 @@
     <string name="msg_guide_language_not_available">Guidebook locale %s not available.</string>
     <string name="msg_tts_not_available">Text To Speech engine cannot be loaded.</string>
     <string name="msg_tts_initializing">Initializing Text To Speech engine.</string>
+
+    <string name="msg_bookmark_saved">Bookmark added successfully.</string>
+    <string name="msg_bookmark_not_saved">Bookmark cannot be added.</string>
 
     <string name="pref_gdi_autoplay">Auto play</string>
     <string name="pref_gdi_autoplay_summary">Defines whether start playing guidebooks automatically.</string>
