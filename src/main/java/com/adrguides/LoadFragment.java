@@ -48,8 +48,14 @@ public class LoadFragment extends Fragment implements LoadGuideFragment.LoadGuid
             }
         }
 
+        // Calculate the title to display.
+        String title = getActivity().getIntent().getStringExtra(ReadGuideActivity.ARG_GUIDE_TITLE);
+        if (title == null || title.equals("")) {
+            title = getActivity().getIntent().getData().getLastPathSegment();
+        }
+
         ((TextView) v.findViewById(R.id.textGuideName)).setText(
-                getResources().getString(R.string.msg_loading, getActivity().getIntent().getData().getLastPathSegment()));
+                getResources().getString(R.string.msg_loading, title));
 
         return v;
     }

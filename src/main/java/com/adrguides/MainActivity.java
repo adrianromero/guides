@@ -16,27 +16,26 @@
 
 package com.adrguides;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.SpinnerAdapter;
-import android.widget.TextView;
+import android.widget.ListView;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+
 
 public class MainActivity extends Activity {
 
@@ -46,6 +45,56 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
+        final ListView list = (ListView) findViewById(R.id.listView) ;
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                GuideBookItem o = (GuideBookItem)list.getAdapter().getItem(i);
+                Intent intent = new Intent(MainActivity.this, ReadGuideActivity.class);
+                intent.setData(Uri.parse(new File(o.getFiledir(), "guidebook.json").toURI().toString()));
+                intent.putExtra(ReadGuideActivity.ARG_GUIDE_TITLE, o.getTitle());
+                startActivity(intent);
+            }
+        });
+
+        ArrayAdapter<GuideBookItem> aa = new ArrayAdapter(this, R.layout.item_guide, R.id.textView2);
+        list.setAdapter(aa);
+
+
+        File[] bmps = getFilesDir().listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File file, String s) {
+                return file.isDirectory() && s.startsWith("saved-");
+            }
+        });
+        for (File b: bmps) {
+
+            Reader filename = null;
+            try {
+                filename = new InputStreamReader(new FileInputStream(new File(b, "guidebook.title.txt")), "UTF-8");
+                char[] buffer = new char[1024];
+                int len;
+                StringBuffer title = new StringBuffer();
+                while ((len = filename.read(buffer)) != -1) {
+                    title.append(buffer, 0, len);
+                }
+                aa.add(new GuideBookItem(b, title.toString()));
+            } catch (IOException e) {
+                Log.d("com.adrguides.MainActivity", "Directory is not a guidebook: " + b.getPath());
+            } finally {
+                if (filename != null) {
+                    try {
+                        filename.close();
+                    } catch (IOException e) {
+                    }
+                }
+            }
+        }
+
+        // aa.addAll(new String[] {"1", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2"});
     }
 
 

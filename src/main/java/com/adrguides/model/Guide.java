@@ -167,15 +167,29 @@ public class Guide implements Parcelable {
             }
         }
 
-        // Save guidebook as JSON object.
+
         Writer fileguide  = null;
+        Writer filename = null;
         try {
+            // Save guidebook as JSON object.
             fileguide = new OutputStreamWriter(new FileOutputStream(new File(dir, "guidebook.json")), "UTF-8");
             fileguide.append(jsonguide.toString());
+
+            // Save guidebook title
+            filename = new OutputStreamWriter(new FileOutputStream(new File(dir, "guidebook.title.txt")), "UTF-8");
+            filename.append(getTitle());
+
         } finally {
             if (fileguide != null) {
                 try {
                     fileguide.close();
+                } catch (IOException e) {
+                }
+            }
+
+            if (filename != null) {
+                try {
+                    filename.close();
                 } catch (IOException e) {
                 }
             }

@@ -32,10 +32,9 @@ import com.adrguides.model.Guide;
 
 public class ReadGuideActivity extends Activity {
 
-    private static final int TTS_REQUEST_CODE = 332342;
+    // private static final int TTS_REQUEST_CODE = 332342;
 
-    public static final String ARG_GUIDE = "ARG_GUIDE";
-    // public static final String ARG_PLACE = "ARG_PLACE";
+    public static final String ARG_GUIDE_TITLE = "ARG_GUIDE_TITLE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +69,8 @@ public class ReadGuideActivity extends Activity {
         Point size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);
         int imagesize = Math.max(size.x, size.y);
+
+
         loadguide.loadGuide(getApplicationContext(), url, imagesize);
 
         // show Load Fragment

@@ -17,6 +17,7 @@
 package com.adrguides;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
