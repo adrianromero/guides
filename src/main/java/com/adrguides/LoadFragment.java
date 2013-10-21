@@ -17,7 +17,6 @@
 package com.adrguides;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,7 +50,11 @@ public class LoadFragment extends Fragment implements LoadGuideFragment.LoadGuid
         // Calculate the title to display.
         String title = getActivity().getIntent().getStringExtra(ReadGuideActivity.ARG_GUIDE_TITLE);
         if (title == null || title.equals("")) {
-            title = getActivity().getIntent().getData().getLastPathSegment();
+            if (getActivity().getIntent().getData() == null) {
+                title = "";
+            } else {
+                title = getActivity().getIntent().getData().getLastPathSegment();
+            }
         }
 
         ((TextView) v.findViewById(R.id.textGuideName)).setText(
