@@ -54,13 +54,13 @@ public class MainActivity extends Activity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 GuideBookItem o = (GuideBookItem)list.getAdapter().getItem(i);
                 Intent intent = new Intent(MainActivity.this, ReadGuideActivity.class);
-                intent.setData(Uri.parse(new File(o.getFiledir(), "guidebook.json").toURI().toString()));
+                intent.setData(Uri.parse(o.getURI()));
                 intent.putExtra(ReadGuideActivity.ARG_GUIDE_TITLE, o.getTitle());
                 startActivity(intent);
             }
         });
 
-        ArrayAdapter<GuideBookItem> aa = new ArrayAdapter(this, R.layout.item_guide, R.id.textView2);
+        ArrayAdapter<GuideBookItem> aa = new ArrayAdapter(this, R.layout.item_guide, R.id.textItemTitle);
         list.setAdapter(aa);
 
 
@@ -81,7 +81,7 @@ public class MainActivity extends Activity {
                 while ((len = filename.read(buffer)) != -1) {
                     title.append(buffer, 0, len);
                 }
-                aa.add(new GuideBookItem(b, title.toString()));
+                aa.add(new GuideBookItem(new File(b, "guidebook.json").toURI().toString(), title.toString()));
             } catch (IOException e) {
                 Log.d("com.adrguides.MainActivity", "Directory is not a guidebook: " + b.getPath());
             } finally {
@@ -93,6 +93,10 @@ public class MainActivity extends Activity {
                 }
             }
         }
+
+        // Internal test guidebooks.
+        aa.add(new GuideBookItem("file:///android_asset/mockguide.json", "Mock guidebook"));
+        aa.add(new GuideBookItem("", "Null guidebook"));
 
         // aa.addAll(new String[] {"1", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2"});
     }
@@ -114,21 +118,6 @@ public class MainActivity extends Activity {
     public void onAboutClicked(MenuItem item) {
 
         Intent intent = new Intent(this, AboutActivity.class);
-        startActivity(intent);
-    }
-
-
-
-
-    //// Test code
-    public void onReadActivityClicked(View view) {
-        Intent intent = new Intent(this, ReadGuideActivity.class);
-        startActivity(intent);
-    }
-
-    public void onLoadActivityClicked(View view) {
-        Intent intent = new Intent(this, ReadGuideActivity.class);
-        intent.setData(Uri.parse("file:///android_asset/mockguide.json"));
         startActivity(intent);
     }
 }

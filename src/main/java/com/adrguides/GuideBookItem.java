@@ -23,16 +23,16 @@ import java.io.File;
  */
 public class GuideBookItem {
 
-    private File filedir;
+    private String uri;
     private String title;
 
-    public GuideBookItem(File filedir, String title) {
-        this.filedir = filedir;
+    public GuideBookItem(String uri, String title) {
+        this.uri = uri;
         this.title = title;
     }
 
-    public File getFiledir() {
-        return filedir;
+    public String getURI() {
+        return uri;
     }
 
     public String getTitle() {
