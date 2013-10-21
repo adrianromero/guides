@@ -71,15 +71,19 @@ public class LoadGuideHTML extends LoadGuide {
         // Title if exists
         guide.setTitle(doc.title());
 
-        // Language
-        String lang = doc.attr("lang");
-        if (lang == null || lang.equals("")) {
-            Elements metalang = doc.head().getElementsByAttributeValue("http-equiv", "Content-Language");
-            if (metalang.size() == 1 && metalang.get(0).tagName().equals("meta")) {
-                setLanguage(metalang.get(0).attr("content"));
+        // Language in html
+        Elements htmls = doc.getElementsByTag("html");
+        if (htmls.size() == 1) {
+            String lang = htmls.get(0).attr("lang");
+            if (lang != null && !lang.equals("")) {
+                setLanguage(lang);
             }
-        } else {
-            setLanguage(lang);
+        }
+
+        // Language in Content-Language
+        Elements metalang = doc.head().getElementsByAttributeValue("http-equiv", "Content-Language");
+        if (metalang.size() == 1 && metalang.get(0).tagName().equals("meta")) {
+            setLanguage(metalang.get(0).attr("content"));
         }
 
         navigateElement(address, doc.body());
@@ -90,17 +94,18 @@ public class LoadGuideHTML extends LoadGuide {
     private void setLanguage(String lang) {
         String[] loc = lang.split("-");
         guide.setLanguage(loc.length > 0 ? loc[0] : "");
-        guide.setLanguage(loc.length > 1 ? loc[1] : "");
-        guide.setLanguage(loc.length > 2 ? loc[2] : "");
+        guide.setCountry(loc.length > 1 ? loc[1] : "");
+        guide.setVariant(loc.length > 2 ? loc[2] : "");
     }
 
     private void navigateElement(URL address, Element elem) throws GuidesException {
         ArrayList places;
 
         if (elem.hasClass("guidebook_title")) {
+            Log.d("com.adrguides.LoadGuideHTML", "Processing guidebook_title " + elem.tagName());
             guide.setTitle(elem.text());
         } else if (elem.hasClass("guidebook_chapter")) {
-
+            Log.d("com.adrguides.LoadGuideHTML", "Processing guidebook_chapter " + elem.tagName());
             Place place = new Place();
             place.setId(elem.hasAttr("data-guidebook-id") ? elem.attr("data-guidebook-id") : null);
             place.setTitle(elem.text());

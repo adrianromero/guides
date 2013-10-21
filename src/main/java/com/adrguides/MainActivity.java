@@ -60,7 +60,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        ArrayAdapter<GuideBookItem> aa = new ArrayAdapter(this, R.layout.item_guide, R.id.textItemTitle);
+        GuideBookItemAdapter aa = new GuideBookItemAdapter(this);
         list.setAdapter(aa);
 
 
