@@ -27,7 +27,9 @@
         <activity
             android:name="com.adrguides.ReadGuideActivity"
             android:label="@string/title_activity_read_guide"
-            android:uiOptions="splitActionBarWhenNarrow">
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:parentActivityName="com.adrguides.MainActivity">
+            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value="com.adrguides.MainActivity"/>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
