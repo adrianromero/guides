@@ -35,6 +35,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Locale;
 
 
 public class MainActivity extends Activity {
@@ -72,33 +73,43 @@ public class MainActivity extends Activity {
         });
         for (File b: bmps) {
 
-            Reader filename = null;
             try {
-                filename = new InputStreamReader(new FileInputStream(new File(b, "guidebook.title.txt")), "UTF-8");
-                char[] buffer = new char[1024];
-                int len;
-                StringBuffer title = new StringBuffer();
-                while ((len = filename.read(buffer)) != -1) {
-                    title.append(buffer, 0, len);
-                }
-                aa.add(new GuideBookItem(new File(b, "guidebook.json").toURI().toString(), title.toString()));
+                aa.add(new GuideBookItem(
+                        new File(b, "guidebook.json").toURI().toString(),
+                        readFileText(new File(b, "guidebook.title.txt")),
+                        readFileText(new File(b, "guidebook.locale.txt")),
+                        new File(b, "guidebook.image.png").toString()));
+                Log.d("com.adrguides.MainActivity", "imageurl " + new File(b, "guidebook.image.png").toURI().toString());
+
             } catch (IOException e) {
                 Log.d("com.adrguides.MainActivity", "Directory is not a guidebook: " + b.getPath());
-            } finally {
-                if (filename != null) {
-                    try {
-                        filename.close();
-                    } catch (IOException e) {
-                    }
-                }
             }
         }
 
         // Internal test guidebooks.
-        aa.add(new GuideBookItem("file:///android_asset/mockguide.json", "Mock guidebook"));
-        aa.add(new GuideBookItem("", "Null guidebook"));
+        aa.add(new GuideBookItem("file:///android_asset/mockguide.json", "Mock guidebook", Locale.UK.getDisplayName(), null));
+        aa.add(new GuideBookItem("", "Null guidebook", Locale.UK.getDisplayName(), null));
+    }
 
-        // aa.addAll(new String[] {"1", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2"});
+    private String readFileText(File file) throws IOException {
+        Reader filename = null;
+        try {
+            filename = new InputStreamReader(new FileInputStream(file), "UTF-8");
+            char[] buffer = new char[1024];
+            int len;
+            StringBuffer text = new StringBuffer();
+            while ((len = filename.read(buffer)) != -1) {
+                text.append(buffer, 0, len);
+            }
+            return text.toString();
+        } finally {
+            if (filename != null) {
+                try {
+                    filename.close();
+                } catch (IOException e) {
+                }
+            }
+        }
     }
 
 

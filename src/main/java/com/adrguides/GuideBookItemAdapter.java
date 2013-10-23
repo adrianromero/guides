@@ -17,10 +17,14 @@
 package com.adrguides;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -56,7 +60,18 @@ public class GuideBookItemAdapter extends ArrayAdapter<GuideBookItem> {
         textItemTitle.setText(item.getTitle());
 
         TextView textItemDescription = (TextView) view.findViewById(R.id.textItemDescription);
-        textItemDescription.setText(item.getURI());
+        textItemDescription.setText(item.getLocaleName());
+
+        ImageView imageItem = (ImageView) view.findViewById(R.id.imageItem);
+
+        Bitmap bmp;
+        if (item.getImageFile() == null || item.getImageFile().equals("")) {
+            bmp = BitmapFactory.decodeResource(this.getContext().getResources(), R.drawable.ic_launcher);
+        } else {
+            bmp = BitmapFactory.decodeFile(item.getImageFile());
+        }
+
+        imageItem.setImageBitmap(bmp);
 
         return view;
     }

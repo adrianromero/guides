@@ -16,8 +16,6 @@
 
 package com.adrguides;
 
-import java.io.File;
-
 /**
  * Created by adrian on 21/10/13.
  */
@@ -25,10 +23,14 @@ public class GuideBookItem {
 
     private String uri;
     private String title;
+    private String localename;
+    private String imagefile;
 
-    public GuideBookItem(String uri, String title) {
+    public GuideBookItem(String uri, String title, String localename, String imagefile) {
         this.uri = uri;
         this.title = title;
+        this.localename = localename;
+        this.imagefile = imagefile;
     }
 
     public String getURI() {
@@ -37,6 +39,14 @@ public class GuideBookItem {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getLocaleName() {
+        return localename;
+    }
+
+    public String getImageFile() {
+        return imagefile;
     }
 
     @Override

@@ -175,9 +175,12 @@ public class Guide implements Parcelable {
         saveTextToFile(new File(dir, "guidebook.json"), jsonguide.toString());
         saveTextToFile(new File(dir, "guidebook.title.txt"), getTitle());
         saveTextToFile(new File(dir, "guidebook.locale.txt"), getLocale().getDisplayName());
-        saveBitmapToFile(context, new File(dir, "guidebook.image.png"), new URL(getPlaces().get(0).getSections().get(0).getImageURL()));
 
-        Log.d("com.adrguides.model.Guide", "imageurl " + getPlaces().get(0).getSections().get(0).getImageURL());
+        if (getPlaces().size() > 0 &&
+                getPlaces().get(0).getSections().size() > 0 &&
+                getPlaces().get(0).getSections().get(0).getImageURL() != null) {
+            saveBitmapToFile(context, new File(dir, "guidebook.image.png"), new URL(getPlaces().get(0).getSections().get(0).getImageURL()));
+        }
 
         //
         setStored(true);
@@ -223,7 +226,9 @@ public class Guide implements Parcelable {
                 bmp = newbmp;
             }
 
-            newbmp = Bitmap.createScaledBitmap(bmp, 96, 96, true); // TODO: dimensions must be according screen density.
+
+            float density = context.getResources().getDisplayMetrics().density;
+            newbmp = Bitmap.createScaledBitmap(bmp, (int)(48 * density), (int)(48 * density), true); // TODO: dimensions must be according screen density.
             if (newbmp != bmp) {
                 bmp.recycle();
                 bmp = newbmp;

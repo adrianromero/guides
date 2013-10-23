@@ -9,12 +9,11 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
+        android:id="@+id/imageItem"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
-        android:src="@drawable/ic_launcher"
-        android:scaleType="fitCenter" />
+        android:src="@drawable/ic_launcher" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,7 +22,7 @@
         android:text="Large Text"
         android:id="@+id/textItemTitle"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/imageView"
+        android:layout_toRightOf="@+id/imageItem"
         android:layout_alignParentRight="true"
         android:layout_marginLeft="5dp" />
 
@@ -39,8 +38,9 @@
         android:shadowRadius="2"
         android:layout_below="@+id/textItemTitle"
         android:layout_alignParentRight="true"
-        android:layout_toRightOf="@+id/imageView"
-        android:layout_marginLeft="10dp" />
+        android:layout_toRightOf="@+id/imageItem"
+        android:layout_marginLeft="10dp"
+        android:gravity="right" />
 
 
 </RelativeLayout>

@@ -163,8 +163,10 @@ public abstract class LoadGuide {
                 float factor = imagesize  / originsize;
                 Log.d("com.adrguides.LoadGuideFragment", "factor --> " + factor);
                 Bitmap newbmp = Bitmap.createScaledBitmap(bmp, (int) (bmp.getWidth() * factor), (int) (bmp.getHeight() * factor), true);
-                bmp.recycle();
-                bmp = newbmp;
+                if (newbmp != bmp) {
+                    bmp.recycle();
+                    bmp = newbmp;
+                }
             }
 
             // store in local filesystem.
