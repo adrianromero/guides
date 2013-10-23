@@ -17,8 +17,11 @@
 package com.adrguides.model;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.adrguides.utils.HTTPUtils;
 
@@ -44,6 +47,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+
 
 /**
  * Created by adrian on 20/08/13.
@@ -132,7 +136,8 @@ public class Guide implements Parcelable {
 
     public void saveToDisk(Context context) throws IOException, JSONException {
 
-        File dir = new File(context.getFilesDir(), "saved-" + sha256(getTitle()));
+        File dir = new File(context.getFilesDir(), "saved-" +
+                sha256(getTitle() + "_" + getLanguage() + "_" + getCountry() + "_" + getVariant()));
         dir.mkdir();
         File[] children = dir.listFiles();
         for (File c: children) {
@@ -167,36 +172,76 @@ public class Guide implements Parcelable {
             }
         }
 
+        saveTextToFile(new File(dir, "guidebook.json"), jsonguide.toString());
+        saveTextToFile(new File(dir, "guidebook.title.txt"), getTitle());
+        saveTextToFile(new File(dir, "guidebook.locale.txt"), getLocale().getDisplayName());
+        saveBitmapToFile(context, new File(dir, "guidebook.image.png"), new URL(getPlaces().get(0).getSections().get(0).getImageURL()));
 
-        Writer fileguide  = null;
-        Writer filename = null;
+        Log.d("com.adrguides.model.Guide", "imageurl " + getPlaces().get(0).getSections().get(0).getImageURL());
+
+        //
+        setStored(true);
+    }
+
+    private void saveTextToFile(File f, String text) throws IOException {
+
+        Writer filewriter = null;
         try {
-            // Save guidebook as JSON object.
-            fileguide = new OutputStreamWriter(new FileOutputStream(new File(dir, "guidebook.json")), "UTF-8");
-            fileguide.append(jsonguide.toString());
-
-            // Save guidebook title
-            filename = new OutputStreamWriter(new FileOutputStream(new File(dir, "guidebook.title.txt")), "UTF-8");
-            filename.append(getTitle());
-
+            filewriter = new OutputStreamWriter(new FileOutputStream(f), "UTF-8");
+            filewriter.append(text);
         } finally {
-            if (fileguide != null) {
+            if (filewriter != null) {
                 try {
-                    fileguide.close();
-                } catch (IOException e) {
-                }
-            }
-
-            if (filename != null) {
-                try {
-                    filename.close();
+                    filewriter.close();
                 } catch (IOException e) {
                 }
             }
         }
+    }
 
-        //
-        setStored(true);
+    private void saveBitmapToFile(Context context, File f, URL imageURL) throws IOException {
+
+
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+
+            Bitmap newbmp;
+
+            // read bitmap from source.
+            in = HTTPUtils.openAddress(context, imageURL);
+            Bitmap bmp = BitmapFactory.decodeStream(in);
+            int w = bmp.getWidth();
+            int h = bmp.getHeight();
+            if (w > h) {
+                newbmp = Bitmap.createBitmap(bmp, (w - h) / 2, 0, h, h);
+            } else {
+                newbmp = Bitmap.createBitmap(bmp, 0, (h - w) / 2, w, w);
+            }
+            if (newbmp != bmp) {
+                bmp.recycle();
+                bmp = newbmp;
+            }
+
+            newbmp = Bitmap.createScaledBitmap(bmp, 96, 96, true); // TODO: dimensions must be according screen density.
+            if (newbmp != bmp) {
+                bmp.recycle();
+                bmp = newbmp;
+            }
+
+            // store in local filesystem.
+            out = new FileOutputStream(f);
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+            bmp.recycle();
+
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (in != null){
+                in.close();
+            }
+        }
     }
 
     private String saveImage(Context context, Map<String, String> processedimages, File dir, String address) throws IOException {
