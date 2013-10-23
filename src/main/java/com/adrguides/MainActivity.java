@@ -35,6 +35,9 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -64,7 +67,7 @@ public class MainActivity extends Activity {
         GuideBookItemAdapter aa = new GuideBookItemAdapter(this);
         list.setAdapter(aa);
 
-
+        List<GuideBookItem> listguidebooks = new ArrayList<GuideBookItem>();
         File[] bmps = getFilesDir().listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File file, String s) {
@@ -74,7 +77,7 @@ public class MainActivity extends Activity {
         for (File b: bmps) {
 
             try {
-                aa.add(new GuideBookItem(
+                listguidebooks.add(new GuideBookItem(
                         new File(b, "guidebook.json").toURI().toString(),
                         readFileText(new File(b, "guidebook.title.txt")),
                         readFileText(new File(b, "guidebook.locale.txt")),
@@ -87,8 +90,13 @@ public class MainActivity extends Activity {
         }
 
         // Internal test guidebooks.
-        aa.add(new GuideBookItem("file:///android_asset/mockguide.json", "Mock guidebook", Locale.UK.getDisplayName(), null));
-        aa.add(new GuideBookItem("", "Null guidebook", Locale.UK.getDisplayName(), null));
+        listguidebooks.add(new GuideBookItem("file:///android_asset/mockguide.json", "Mock guidebook", Locale.UK.getDisplayName(), null));
+        listguidebooks.add(new GuideBookItem("", "Null guidebook", Locale.UK.getDisplayName(), null));
+
+        Collections.sort(listguidebooks);
+
+        aa.addAll(listguidebooks);
+
     }
 
     private String readFileText(File file) throws IOException {

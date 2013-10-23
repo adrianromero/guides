@@ -19,7 +19,7 @@ package com.adrguides;
 /**
  * Created by adrian on 21/10/13.
  */
-public class GuideBookItem {
+public class GuideBookItem implements Comparable<GuideBookItem> {
 
     private String uri;
     private String title;
@@ -52,5 +52,14 @@ public class GuideBookItem {
     @Override
     public String toString() {
         return title;
+    }
+
+    private String comparer() {
+        return "///" + title + "///" + localename;
+    }
+
+    @Override
+    public int compareTo(GuideBookItem guidebookitem) {
+        return comparer().compareTo(guidebookitem.comparer());
     }
 }
