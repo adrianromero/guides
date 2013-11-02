@@ -16,7 +16,8 @@
     <string name="action_list">List</string>
     <string name="action_search">Search</string>
     <string name="action_bookmark">Add bookmark</string>
-
+    <string name="action_delete">Delete</string>
+    <string name="action_open">Open</string>
 
     <string name="msg_loading">Loading %s.</string>
     <string name="lbl_error_loading">Error loading guidebook</string>

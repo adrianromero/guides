@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="5dp"
+    android:background="?android:attr/activatedBackgroundIndicator"
 >
 
     <ImageView
@@ -32,10 +33,6 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Small Text"
         android:id="@+id/textItemDescription"
-        android:shadowColor="#00ff00"
-        android:shadowDx="2"
-        android:shadowDy="2"
-        android:shadowRadius="2"
         android:layout_below="@+id/textItemTitle"
         android:layout_alignParentRight="true"
         android:layout_toRightOf="@+id/imageItem"

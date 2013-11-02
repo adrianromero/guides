@@ -55,7 +55,7 @@ public class GuideBookItem implements Comparable<GuideBookItem> {
     }
 
     private String comparer() {
-        return "///" + title + "///" + localename;
+        return title + "\n\n\n\n" + localename;
     }
 
     @Override
