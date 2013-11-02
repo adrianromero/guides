@@ -28,10 +28,10 @@
     <string name="msg_bookmark_not_saved">El marcador no se ha podido añadir.</string>
 
     <string name="pref_gdi_autoplay">Reproducción automática</string>
-    <string name="pref_gdi_autoplay_summary">Define si empezar la reproducción de la guía automáticamente..</string>
+    <string name="pref_gdi_autoplay_summary">Define si empezar la reproducción de la guía automáticamente.</string>
     <string name="pref_gdi_pitch">Tono</string>
     <string name="pref_gdi_pitch_summary">Ajusta el tono del sistema de síntesis de voz.</string>
-    <string name="pref_gdi_speechrate">Velocidad del habla.</string>
+    <string name="pref_gdi_speechrate">Velocidad del habla</string>
     <string name="pref_gdi_speechrate_summary">Ajusta la velocidad del habla del sistema de síntesis de voz.</string>
 
     <string name="html_about"><![CDATA[
