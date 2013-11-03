@@ -60,16 +60,8 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (actionmodeForList == null) {
-                    GuideBookItem o = (GuideBookItem)list.getAdapter().getItem(i);
-                    Intent intent = new Intent(MainActivity.this, ReadGuideActivity.class);
-                    intent.setData(Uri.parse(o.getURI()));
-                    intent.putExtra(ReadGuideActivity.ARG_GUIDE_TITLE, o.getTitle());
-                    startActivity(intent);
-                    Log.d("com.adrguides.MainActivity", "list clicked null");
-                    list.setItemChecked(i, false);
+                    runGuideBook(i);
                 } else {
-                    Log.d("com.adrguides.MainActivity", "list clicked not null");
-
                     int ischecked = list.getCheckedItemPosition();
                     if (ischecked < 0) {
                         actionmodeForList.finish();
@@ -144,12 +136,7 @@ public class MainActivity extends Activity {
 
         aa.addAll(listguidebooks);
     }
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // The activity is about to become visible.
-        Log.d("com.adrguides.MainActivity", "Start Checked: " + ((ListView) findViewById(R.id.listGuideBooks)).getCheckedItemPosition());
-    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -164,26 +151,18 @@ public class MainActivity extends Activity {
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // Another activity is taking focus (this activity is about to be "paused").
-        Log.d("com.adrguides.MainActivity", "Pause Checked: " + (actionmodeForList == null));
+    private void runGuideBook(int position) {
 
+        ListView list = (ListView) findViewById(R.id.listGuideBooks);
+        GuideBookItem o = (GuideBookItem)list.getAdapter().getItem(position);
+        list.setItemChecked(position, false);
 
+        Intent intent = new Intent(MainActivity.this, ReadGuideActivity.class);
+        intent.setData(Uri.parse(o.getURI()));
+        intent.putExtra(ReadGuideActivity.ARG_GUIDE_TITLE, o.getTitle());
+        startActivity(intent);
     }
-    @Override
-    protected void onStop() {
-        super.onStop();
-        // The activity is no longer visible (it is now "stopped")
-        Log.d("com.adrguides.MainActivity", "Pause Checked: " + (actionmodeForList == null));
-    }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // The activity is about to be destroyed.
-        Log.d("com.adrguides.MainActivity", "Pause Checked: " + (actionmodeForList == null));
-    }
+
     private String readFileText(File file) throws IOException {
         Reader filename = null;
         try {
@@ -248,8 +227,8 @@ public class MainActivity extends Activity {
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.action_openguidebook:
-
-                    //shareCurrentItem();
+                    ListView list = (ListView) findViewById(R.id.listGuideBooks);
+                    runGuideBook(list.getCheckedItemPosition());
 
                     mode.finish(); // Action picked, so close the CAB
                     return true;
