@@ -36,6 +36,10 @@
     <string name="pref_gdi_speechrate">Speech rate</string>
     <string name="pref_gdi_speechrate_summary">Sets the speech rate for the text to speech engine.</string>
 
+    <string name="title_dialog_delete">Delete guidebook</string>
+    <string name="msg_dialog_delete">Are you sure you want to delete the guidebook %s?</string>
+    <string name="msg_guidebook_deleted">Guidebook %s has been deleted.</string>
+
     <string name="html_about"><![CDATA[
         <h2>${app_name} ${app_version}</h2>
         <p>

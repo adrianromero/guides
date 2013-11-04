@@ -36,6 +36,10 @@
     <string name="pref_gdi_speechrate">Velocidad del habla</string>
     <string name="pref_gdi_speechrate_summary">Ajusta la velocidad del habla del sistema de síntesis de voz.</string>
 
+    <string name="title_dialog_delete">Borrar guía</string>
+    <string name="msg_dialog_delete">¿Seguro que quiere borrar la guía %s?</string>
+    <string name="msg_guidebook_deleted">Se ha borrado la guía %s.</string>
+
     <string name="html_about"><![CDATA[
         <h2>${app_name} ${app_version}</h2>
         <p>

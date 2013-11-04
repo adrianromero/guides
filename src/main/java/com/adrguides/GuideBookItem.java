@@ -21,16 +21,22 @@ package com.adrguides;
  */
 public class GuideBookItem implements Comparable<GuideBookItem> {
 
+    private String folder;
     private String uri;
     private String title;
     private String localename;
     private String imagefile;
 
-    public GuideBookItem(String uri, String title, String localename, String imagefile) {
+    public GuideBookItem(String folder, String uri, String title, String localename, String imagefile) {
+        this.folder = folder;
         this.uri = uri;
         this.title = title;
         this.localename = localename;
         this.imagefile = imagefile;
+    }
+
+    public String getFolder() {
+        return folder;
     }
 
     public String getURI() {

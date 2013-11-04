@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements AlertFragment.NoticeDialogListener {
 
     private ActionMode actionmodeForList = null;
 
@@ -104,6 +104,7 @@ public class MainActivity extends Activity {
 
             try {
                 listguidebooks.add(new GuideBookItem(
+                        b.toString(),
                         new File(b, "guidebook.json").toURI().toString(),
                         readFileText(new File(b, "guidebook.title.txt")),
                         readFileText(new File(b, "guidebook.locale.txt")),
@@ -115,22 +116,22 @@ public class MainActivity extends Activity {
             }
         }
 
-        // Internal test guidebooks.
-        listguidebooks.add(new GuideBookItem("file:///android_asset/mockguide.json", "Mock guidebook", Locale.UK.getDisplayName(), null));
-        listguidebooks.add(new GuideBookItem("", "Null guidebook", Locale.US.getDisplayName(), null));
-        listguidebooks.add(new GuideBookItem("", "Null guidebook 2", Locale.UK.getDisplayName(), null));
-        listguidebooks.add(new GuideBookItem("", "Null guidebook 3", Locale.UK.getDisplayName(), null));
-        listguidebooks.add(new GuideBookItem("", "Null guidebook 4", Locale.UK.getDisplayName(), null));
-        listguidebooks.add(new GuideBookItem("", "Null guidebook 5", Locale.UK.getDisplayName(), null));
-        listguidebooks.add(new GuideBookItem("", "Null guidebook 6", Locale.UK.getDisplayName(), null));
-        listguidebooks.add(new GuideBookItem("", "Null guidebook 7", Locale.UK.getDisplayName(), null));
-        listguidebooks.add(new GuideBookItem("", "Null guidebook 8", Locale.UK.getDisplayName(), null));
-        listguidebooks.add(new GuideBookItem("", "Null guidebook 9", Locale.UK.getDisplayName(), null));
-        listguidebooks.add(new GuideBookItem("", "Null guidebook 10", Locale.UK.getDisplayName(), null));
-        listguidebooks.add(new GuideBookItem("", "Null guidebook 11", Locale.UK.getDisplayName(), null));
-        listguidebooks.add(new GuideBookItem("", "Null guidebook 12", Locale.UK.getDisplayName(), null));
-        listguidebooks.add(new GuideBookItem("", "Null guidebook 13", Locale.UK.getDisplayName(), null));
-        listguidebooks.add(new GuideBookItem("", "Null guidebook 14", Locale.UK.getDisplayName(), null));
+//        // Internal test guidebooks.
+//        listguidebooks.add(new GuideBookItem(null, "file:///android_asset/mockguide.json", "Mock guidebook", Locale.UK.getDisplayName(), null));
+//        listguidebooks.add(new GuideBookItem(null, "", "Null guidebook", Locale.US.getDisplayName(), null));
+//        listguidebooks.add(new GuideBookItem(null, "", "Null guidebook 2", Locale.UK.getDisplayName(), null));
+//        listguidebooks.add(new GuideBookItem(null, "", "Null guidebook 3", Locale.UK.getDisplayName(), null));
+//        listguidebooks.add(new GuideBookItem(null, "", "Null guidebook 4", Locale.UK.getDisplayName(), null));
+//        listguidebooks.add(new GuideBookItem(null, "", "Null guidebook 5", Locale.UK.getDisplayName(), null));
+//        listguidebooks.add(new GuideBookItem(null, "", "Null guidebook 6", Locale.UK.getDisplayName(), null));
+//        listguidebooks.add(new GuideBookItem(null, "", "Null guidebook 7", Locale.UK.getDisplayName(), null));
+//        listguidebooks.add(new GuideBookItem(null, "", "Null guidebook 8", Locale.UK.getDisplayName(), null));
+//        listguidebooks.add(new GuideBookItem(null, "", "Null guidebook 9", Locale.UK.getDisplayName(), null));
+//        listguidebooks.add(new GuideBookItem(null, "", "Null guidebook 10", Locale.UK.getDisplayName(), null));
+//        listguidebooks.add(new GuideBookItem(null, "", "Null guidebook 11", Locale.UK.getDisplayName(), null));
+//        listguidebooks.add(new GuideBookItem(null, "", "Null guidebook 12", Locale.UK.getDisplayName(), null));
+//        listguidebooks.add(new GuideBookItem(null, "", "Null guidebook 13", Locale.UK.getDisplayName(), null));
+//        listguidebooks.add(new GuideBookItem(null, "", "Null guidebook 14", Locale.UK.getDisplayName(), null));
 
         Collections.sort(listguidebooks);
 
@@ -233,10 +234,19 @@ public class MainActivity extends Activity {
                     mode.finish(); // Action picked, so close the CAB
                     return true;
                 case R.id.action_deleteguidebook:
+                    ListView list2 = (ListView) findViewById(R.id.listGuideBooks);
+                    GuideBookItem o = (GuideBookItem)list2.getAdapter().getItem(list2.getCheckedItemPosition());
 
-                    //shareCurrentItem();
-
-                    mode.finish(); // Action picked, so close the CAB
+                    if (o.getFolder() == null) {
+                        Log.d("com.adrguides.MainActivity", "Cannot delete " + o.getTitle());
+                    } else {
+                        AlertFragment dialog = new AlertFragment();
+                        Bundle b = new Bundle();
+                        b.putString(AlertFragment.TITLE, getString(R.string.title_dialog_delete));
+                        b.putString(AlertFragment.MESSAGE, getString(R.string.msg_dialog_delete, o.getTitle()));
+                        dialog.setArguments(b);
+                        dialog.show(getFragmentManager(), "AlertFragment");
+                    }
                     return true;
                 default:
                     return false;
@@ -254,4 +264,28 @@ public class MainActivity extends Activity {
             actionmodeForList = null;
         }
     };
+
+    @Override
+    public void onDialogPositiveClick(AlertFragment dialog) {
+
+        if (actionmodeForList != null) {
+
+            ListView l = (ListView) findViewById(R.id.listGuideBooks);
+            int position = l.getCheckedItemPosition();
+            if (position >= 0) {
+                GuideBookItemAdapter adapter = (GuideBookItemAdapter) l.getAdapter();
+                GuideBookItem item = adapter.getItem(position);
+                // remove the item in the adapter
+                adapter.remove(item);
+                // delete the guidebook
+                new DeleteGuideBookTask(this.getApplicationContext()).execute(item);
+            }
+
+            actionmodeForList.finish(); // Action picked, so close the CAB
+        }
+    }
+
+    @Override
+    public void onDialogNegativeClick(AlertFragment dialog) {
+    }
 }
