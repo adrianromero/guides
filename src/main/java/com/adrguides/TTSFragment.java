@@ -36,6 +36,10 @@ public class TTSFragment extends Fragment implements TextToSpeech.OnInitListener
 
     public static final String TAG = "TTSFragment-Tag";
 
+    private static final String CURRENT_GUIDE= "TTS_Current_guide";
+    private static final String CURRENT_CHAPTER = "TTS_Current_chapter";
+    private static final String CURRENT_PARAGRAPH = "TTS_Current_paragraph";
+
     // On create members
     private SharedPreferences sharedPref;
     private TextToSpeech tts = null;
@@ -62,6 +66,33 @@ public class TTSFragment extends Fragment implements TextToSpeech.OnInitListener
         // Loading TTS engine
         tts = new TextToSpeech(getActivity().getApplicationContext(), this);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        if (savedInstanceState != null) {
+            Guide g = savedInstanceState.getParcelable(CURRENT_GUIDE);
+            int c = savedInstanceState.getInt(CURRENT_CHAPTER);
+            int p = savedInstanceState.getInt(CURRENT_PARAGRAPH);
+            playGuide(g, c, p);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable(CURRENT_GUIDE, guide);
+        outState.putInt(CURRENT_CHAPTER, chapter);
+        outState.putInt(CURRENT_PARAGRAPH, paragraph);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (isTTSReady()) {
+            tts.stop();
+            playing = false;
+            tts.shutdown();
+            tts = null;
+        }
     }
 
     @Override
