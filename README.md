@@ -15,7 +15,12 @@ SeekBarPreference and SeekBarLogPreference java classes.
 File: [Android Seekbar preference v2](http://robobunny.com/wp/2013/08/24/android-seekbar-preference-v2/).  
 Author: [Kirk Baucom](http://robobunny.com/wp/author/kbaucom/).  
 Public Domain.  
-Modifications by Adrián Romero.  
+Modifications by Adrián Romero.
+
+PhotoView library
+Maven: [com.github.chrisbanes.photoview:library:1.2.2](https://github.com/chrisbanes/PhotoView).
+Author: [Chris Banes](https://github.com/chrisbanes).
+Licensed under the Apache License, Version 2.0;
 
 ## License ##
 

@@ -51,6 +51,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import uk.co.senab.photoview.PhotoView;
+
 /**
  * Created by adrian on 19/08/13.
  */
@@ -81,7 +83,7 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
         imageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
             public View makeView() {
-                ImageView iView = new ImageView(getActivity());
+                PhotoView iView = new PhotoView(getActivity());
                 iView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 iView.setCropToPadding(false);
                 iView.setLayoutParams(new ImageSwitcher.LayoutParams(
