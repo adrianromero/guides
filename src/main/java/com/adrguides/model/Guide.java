@@ -54,6 +54,9 @@ import java.util.UUID;
  */
 public class Guide implements Parcelable {
 
+    private static final int THUMBNAIL_WIDTH = 96;
+    private static final int THUMBNAIL_HEIGHT = 96;
+
     private String address;
     private String title;
     private String language;
@@ -228,7 +231,7 @@ public class Guide implements Parcelable {
 
 
             float density = context.getResources().getDisplayMetrics().density;
-            newbmp = Bitmap.createScaledBitmap(bmp, (int)(48 * density), (int)(48 * density), true); // TODO: dimensions must be according screen density.
+            newbmp = Bitmap.createScaledBitmap(bmp, (int)(THUMBNAIL_WIDTH * density), (int)(THUMBNAIL_HEIGHT * density), true);
             if (newbmp != bmp) {
                 bmp.recycle();
                 bmp = newbmp;
