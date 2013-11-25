@@ -89,6 +89,14 @@ public class MainActivity extends Activity implements AlertFragment.NoticeDialog
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // The activity is about to become visible.
+
+        final ListView list = (ListView) findViewById(R.id.listGuideBooks);
 
         GuideBookItemAdapter aa = new GuideBookItemAdapter(this);
         list.setAdapter(aa);
@@ -140,6 +148,10 @@ public class MainActivity extends Activity implements AlertFragment.NoticeDialog
 
     @Override
     protected void onResume() {
+
+
+
+
         super.onResume();
         // The activity has become visible (it is now "resumed").
 
