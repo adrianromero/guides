@@ -115,6 +115,9 @@ public class MainActivity extends Activity implements AlertFragment.NoticeDialog
                         b.toString(),
                         new File(b, "guidebook.json").toURI().toString(),
                         readFileText(new File(b, "guidebook.title.txt")),
+                        readFileText(new File(b, "guidebook.description.txt")),
+                        readFileText(new File(b, "guidebook.author.txt")),
+                        readFileText(new File(b, "guidebook.keywords.txt")),
                         readFileText(new File(b, "guidebook.locale.txt")),
                         new File(b, "guidebook.image.png").toString()));
                 Log.d("com.adrguides.MainActivity", "imageurl " + new File(b, "guidebook.image.png").toURI().toString());

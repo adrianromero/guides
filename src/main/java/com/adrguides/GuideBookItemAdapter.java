@@ -59,8 +59,12 @@ public class GuideBookItemAdapter extends ArrayAdapter<GuideBookItem> {
         TextView textItemTitle = (TextView) view.findViewById(R.id.textItemTitle);
         textItemTitle.setText(item.getTitle());
 
-        TextView textItemDescription = (TextView) view.findViewById(R.id.textItemDescription);
-        textItemDescription.setText(item.getLocaleName());
+        TextView textDescription = (TextView) view.findViewById(R.id.textDescription);
+        textDescription.setText(item.getDescription());
+        TextView textAuthor = (TextView) view.findViewById(R.id.textAuthor);
+        textAuthor.setText(item.getAuthor());
+        TextView textLanguage = (TextView) view.findViewById(R.id.textLanguage);
+        textLanguage.setText(item.getLocaleName());
 
         ImageView imageItem = (ImageView) view.findViewById(R.id.imageItem);
 
