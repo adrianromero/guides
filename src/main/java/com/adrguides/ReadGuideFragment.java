@@ -19,6 +19,7 @@ package com.adrguides;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+// import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
@@ -44,6 +45,9 @@ import android.widget.ViewSwitcher;
 import com.adrguides.model.Guide;
 import com.adrguides.model.Place;
 import com.adrguides.utils.HTTPUtils;
+
+//import com.squareup.picasso.Picasso;
+//import com.squareup.picasso.Target;
 
 import org.json.JSONException;
 
@@ -110,6 +114,8 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
         ttsfragment.setPlayingListener(null);
         ttsfragment = null;
         super.onStop();
+
+//        Picasso.with(this.getActivity()).cancelRequest(target);
     }
 
     public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
@@ -334,10 +340,29 @@ public class ReadGuideFragment extends Fragment implements TTSFragment.PlayingLi
         if (currentImageURL.equals(IMAGE_BLANK)) {
             imageSwitcher.setImageResource(R.drawable.place_default);
         } else {
+//            Picasso.with(this.getActivity()).load(imageURL).into(target);
             t = new SwitchImageTask();
             t.execute(this.getActivity().getApplicationContext(), currentImageURL);
         }
     }
+
+//    private Target target = new Target() {
+//        @Override
+//        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//            if (ttsfragment != null ) { // Fragment not stopped
+//                ((ImageSwitcher) v.findViewById(R.id.switcherImageGuide)).setImageDrawable(new BitmapDrawable(getResources(), bitmap));
+//            }
+//        }
+//        @Override
+//        public void onBitmapFailed(Drawable drawable) {
+//            if (ttsfragment != null ) { // Fragment not stopped
+//                ((ImageSwitcher) v.findViewById(R.id.switcherImageGuide)).setImageResource(R.drawable.place_default);
+//            }
+//        }
+//        @Override
+//        public void onPrepareLoad(Drawable drawable) {
+//        }
+//    };
 
     @Override
     public void update() {
