@@ -59,6 +59,10 @@ public class Guide implements Parcelable {
 
     private String address;
     private String title;
+    private String description;
+    private String author;
+    private String keywords;
+
     private String language;
     private String country;
     private String variant;
@@ -70,6 +74,9 @@ public class Guide implements Parcelable {
     public Guide() {
         address = null;
         title = "* * *";
+        description = "";
+        author = "";
+        keywords = "";
         language = Locale.getDefault().getLanguage();
         country = Locale.getDefault().getCountry();
         variant = Locale.getDefault().getVariant();
@@ -91,6 +98,30 @@ public class Guide implements Parcelable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
     }
 
     public String getLanguage() {
@@ -152,6 +183,9 @@ public class Guide implements Parcelable {
         JSONObject jsonguide = new JSONObject();
         jsonguide.put("address", getAddress());
         jsonguide.put("title", getTitle());
+        jsonguide.put("description", getDescription());
+        jsonguide.put("author", getAuthor());
+        jsonguide.put("keywords", getKeywords());
         jsonguide.put("language", getLanguage());
         jsonguide.put("country", getCountry());
         jsonguide.put("variant", getVariant());
@@ -177,6 +211,9 @@ public class Guide implements Parcelable {
 
         saveTextToFile(new File(dir, "guidebook.json"), jsonguide.toString());
         saveTextToFile(new File(dir, "guidebook.title.txt"), getTitle());
+        saveTextToFile(new File(dir, "guidebook.description.txt"), getDescription());
+        saveTextToFile(new File(dir, "guidebook.author.txt"), getAuthor());
+        saveTextToFile(new File(dir, "guidebook.keywords.txt"), getKeywords());
         saveTextToFile(new File(dir, "guidebook.locale.txt"), getLocale().getDisplayName());
 
         if (getPlaces().size() > 0 &&
@@ -332,6 +369,9 @@ public class Guide implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(getAddress());
         parcel.writeString(getTitle());
+        parcel.writeString(getDescription());
+        parcel.writeString(getAuthor());
+        parcel.writeString(getKeywords());
         parcel.writeString(getLanguage());
         parcel.writeString(getCountry());
         parcel.writeString(getVariant());
@@ -344,6 +384,9 @@ public class Guide implements Parcelable {
             Guide guide = new Guide();
             guide.setAddress(in.readString());
             guide.setTitle(in.readString());
+            guide.setDescription(in.readString());
+            guide.setAuthor(in.readString());
+            guide.setKeywords(in.readString());
             guide.setLanguage(in.readString());
             guide.setCountry(in.readString());
             guide.setVariant(in.readString());

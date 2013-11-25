@@ -71,6 +71,19 @@ public class LoadGuideHTML extends LoadGuide {
         // Title if exists
         guide.setTitle(doc.title());
 
+        // Description, Author and Keywords.
+        Elements metas = doc.head().getElementsByTag("meta");
+        for (Element meta: metas) {
+            if ("description".equals(meta.attr("name"))) {
+                guide.setDescription(meta.attr("content"));
+            } else if ("author".equals(meta.attr("name"))) {
+                guide.setAuthor(meta.attr("content"));
+            } else if ("keywords".equals(meta.attr("name"))) {
+                guide.setKeywords(meta.attr("content"));
+            }
+        }
+
+
         // Language in html
         Elements htmls = doc.getElementsByTag("html");
         if (htmls.size() == 1) {

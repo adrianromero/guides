@@ -48,6 +48,9 @@ public class LoadGuideJSON extends LoadGuide {
             guide.setAddress(new URL(address, data.getString("address")).toString());
         }
         guide.setTitle(data.getString("title"));
+        guide.setDescription(data.optString("description"));
+        guide.setAuthor(data.optString("author"));
+        guide.setKeywords(data.optString("keywords"));
         guide.setLanguage(data.optString("language", "en"));
         guide.setCountry(data.optString("country", "US"));
         guide.setVariant(data.optString("variant", ""));
