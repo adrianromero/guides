@@ -7,61 +7,65 @@
     android:background="?android:attr/activatedBackgroundIndicator"
 >
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageItem"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:src="@drawable/ic_launcher" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@+id/imageItem"
-        android:id="@+id/relativeLayout"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin">
-
-        <TextView
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
-            android:id="@+id/textItemTitle"
+            android:id="@+id/imageItem"
             android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Description"
-            android:id="@+id/textDescription"
-            android:layout_below="@+id/textItemTitle"
             android:layout_alignParentLeft="true"
-            android:textColor="@android:color/secondary_text_light" />
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/ic_launcher" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Author"
-            android:id="@+id/textAuthor"
-            android:textColor="@android:color/secondary_text_light"
-            android:layout_below="@+id/textDescription"
-            android:layout_alignParentLeft="true" />
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/imageItem"
+            android:id="@+id/relativeLayout"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Large Text"
+                android:id="@+id/textItemTitle"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:maxLines="1" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Small Text"
-            android:id="@+id/textLanguage"
-            android:gravity="right"
-            android:layout_below="@+id/textAuthor"
-            android:layout_alignParentRight="true" />
-    </RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:id="@+id/textDescription"
+                android:layout_below="@+id/textItemTitle"
+                android:layout_alignParentLeft="true"
+                android:textColor="@android:color/secondary_text_light"
+                android:maxLines="1" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Author"
+                android:id="@+id/textAuthor"
+                android:textColor="@android:color/secondary_text_light"
+                android:layout_below="@+id/textDescription"
+                android:layout_alignParentLeft="true"
+                android:maxLines="1" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Small Text"
+                android:id="@+id/textLanguage"
+                android:gravity="right"
+                android:layout_below="@+id/textAuthor"
+                android:layout_alignParentRight="true"
+                android:maxLines="1" />
+        </RelativeLayout>
 </RelativeLayout>
+
+

@@ -33,7 +33,6 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -112,7 +111,6 @@ public class LoadGuideHTML extends LoadGuide {
     }
 
     private void navigateElement(URL address, Element elem) throws GuidesException {
-        ArrayList places;
 
         if (elem.hasClass("guidebook_title")) {
             Log.d("com.adrguides.LoadGuideHTML", "Processing guidebook_title " + elem.tagName());
@@ -189,7 +187,7 @@ public class LoadGuideHTML extends LoadGuide {
         } else if (elem.hasAttr("data-guidebook-image")) {
             return loadLinkedImage(address, elem.ownerDocument().getElementById(elem.attr("data-guidebook-image")));
         } else {
-            Pattern p = Pattern.compile("background\\s*\\:\\s*url\\s*\\(('|\"?)?+(.*)\\1\\)");
+            Pattern p = Pattern.compile("background\\s*:\\s*url\\s*\\(('|\"?)?+(.*)\\1\\)");
             Matcher m = p.matcher(elem.attr("style"));
             if (m.find()) {
                 return loadImage(address, m.group(2));
