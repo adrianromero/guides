@@ -4,37 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/activatedBackgroundIndicator"
+    android:padding="@dimen/listview_margin"
 >
 
 
             <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             android:id="@+id/imageItem"
                 android:src="@drawable/ic_launcher"
 
+
                 android:scaleType="centerCrop"
                 android:alpha=".75"
-                android:layout_alignBottom="@+id/relativeLayout"
-                android:layout_alignTop="@+id/relativeLayout"
+                android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/relativeLayout"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
-            android:padding="@dimen/listview_margin">
 
-            <Space
-                android:id="@+id/spacePicture"
-                android:layout_width="match_parent"
-                android:layout_height="150px"
-                android:layout_alignParentTop="true"
-                android:layout_alignRight="@+id/textLanguage" />
+            android:layout_below="@+id/imageItem"
+            android:layout_marginTop="@dimen/listview_margin">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -43,11 +38,9 @@
                 android:text="Large Text"
                 android:id="@+id/textItemTitle"
                 android:maxLines="1"
-                android:layout_below="@+id/spacePicture"
                 android:layout_alignParentLeft="true"
                 android:textColor="@android:color/primary_text_light"
-                android:background="@android:color/darker_gray"
-                android:layout_alignRight="@+id/spacePicture" />
+                android:layout_alignRight="@+id/textLanguage" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -57,7 +50,9 @@
                 android:layout_below="@+id/textItemTitle"
                 android:layout_alignParentLeft="true"
                 android:textColor="@android:color/secondary_text_light"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:lines="2"
+                android:ellipsize="end" />
 
             <TextView
                 android:layout_width="wrap_content"
